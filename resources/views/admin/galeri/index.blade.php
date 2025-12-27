@@ -173,7 +173,7 @@
             <h3>Galeri Foto</h3>
             <p>Total: {{ count($galeri) }} foto</p>
         </div>
-        <button class="btn-add-photo" data-bs-toggle="modal" data-bs-target="#tambahFotoModal">
+        <button type="button" class="btn-add-photo" data-bs-toggle="modal" data-bs-target="#tambahFotoModal">
             <i class='bx bx-plus'></i> Tambah Foto
         </button>
     </div>
@@ -196,39 +196,81 @@
 
 <!-- Modal Tambah Foto -->
 <div class="modal fade" id="tambahFotoModal" tabindex="-1" aria-labelledby="tambahFotoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tambahFotoModalLabel">Tambah Foto Baru</h5>
+                <h5 class="modal-title fw-bold" id="tambahFotoModalLabel">
+                    <i class='bx bx-image-add me-2'></i>Unggah Foto Baru
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="formTambahFoto">
-                    <div class="mb-3">
-                        <label for="judul" class="form-label">Judul Foto</label>
-                        <input type="text" class="form-control" id="judul" required>
+            <form id="formTambahFoto" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="judul" class="form-label fw-medium">Judul Foto <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" id="judul" name="judul" placeholder="Contoh: Kegiatan Vaksinasi 2024" required>
+                                <div class="form-text">Masukkan judul yang deskriptif untuk foto Anda</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="deskripsi" class="form-label fw-medium">Deskripsi (Opsional)</label>
+                                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" placeholder="Tambahkan deskripsi singkat tentang foto ini"></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="kategori" class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="kategori" name="kategori" required>
+                                            <option value="" disabled selected>Pilih Kategori</option>
+                                            <option value="kesehatan">Kesehatan</option>
+                                            <option value="sosial">Sosial</option>
+                                            <option value="lingkungan">Lingkungan</option>
+                                            <option value="ekonomi">Ekonomi</option>
+                                            <option value="budaya">Budaya</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="tanggal" class="form-label fw-medium">Tanggal Kegiatan</label>
+                                        <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="upload-area p-4 border rounded-3 text-center">
+                                <div id="imagePreview" class="mb-3" style="min-height: 150px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px;">
+                                    <div class="text-center">
+                                        <i class='bx bx-image-add display-4 text-muted mb-2'></i>
+                                        <p class="mb-0 text-muted">Pratinjau gambar akan muncul di sini</p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gambar" class="btn btn-outline-primary w-100">
+                                        <i class='bx bx-upload me-2'></i>Pilih Gambar
+                                        <input type="file" class="d-none" id="gambar" name="gambar" accept="image/*" required>
+                                    </label>
+                                    <div class="form-text text-center mt-2">Format: JPG, PNG, atau GIF (Maks. 5MB)</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="kategori" class="form-label">Kategori</label>
-                        <select class="form-select" id="kategori" required>
-                            <option value="">Pilih Kategori</option>
-                            <option value="kesehatan">Kesehatan</option>
-                            <option value="sosial">Sosial</option>
-                            <option value="lingkungan">Lingkungan</option>
-                            <option value="ekonomi">Ekonomi</option>
-                            <option value="budaya">Budaya</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="gambar" class="form-label">Unggah Gambar</label>
-                        <input class="form-control" type="file" id="gambar" accept="image/*" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" form="formTambahFoto" class="btn btn-primary">Simpan</button>
-            </div>
+                </div>
+                <div class="modal-footer border-top-0 bg-light">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        <i class='bx bx-x me-1'></i> Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-save me-1'></i> Simpan Foto
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -239,16 +281,72 @@
         // Inisialisasi tooltip
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
+          return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Inisialisasi modal
+        var tambahFotoModal = new bootstrap.Modal(document.getElementById('tambahFotoModal'));
+        
+        // Preview gambar yang diunggah
+        document.getElementById('gambar').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').innerHTML = 
+                        `<img src="${e.target.result}" class="img-fluid rounded" alt="Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
         });
 
         // Handle form submission
         document.getElementById('formTambahFoto').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Add your form submission logic here
-            alert('Foto berhasil ditambahkan!');
-            var tambahFotoModal = bootstrap.Modal.getInstance(document.getElementById('tambahFotoModal'));
-            tambahFotoModal.hide();
+            
+            // Show loading state
+            const submitBtn = document.querySelector('#formTambahFoto button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...';
+            
+            // Simulate API call (ganti dengan kode AJAX sebenarnya)
+            setTimeout(() => {
+                // Reset form
+                this.reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                
+                // Show success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.role = 'alert';
+                alertDiv.innerHTML = `
+                    <strong>Berhasil!</strong> Foto baru berhasil ditambahkan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.home-content').insertBefore(alertDiv, document.querySelector('.gallery-header-card'));
+                
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('tambahFotoModal'));
+                modal.hide();
+                
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                
+                // Auto-hide alert after 5 seconds
+                setTimeout(() => {
+                    alertDiv.classList.remove('show');
+                    setTimeout(() => alertDiv.remove(), 150);
+                }, 5000);
+                
+            }, 1500);
+        });
+
+        // Reset form when modal is closed
+        document.getElementById('tambahFotoModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('formTambahFoto').reset();
+            document.getElementById('imagePreview').innerHTML = '';
         });
     });
 </script>
