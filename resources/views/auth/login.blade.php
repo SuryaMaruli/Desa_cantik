@@ -25,20 +25,20 @@
             margin-bottom: 30px;
         }
         .login-header h2 {
-            color: #0d6efd;
+            color: #28a745;
         }
         .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
         }
         .btn-login {
-            background-color: #0d6efd;
+            background-color: #28a745;
             border: none;
             padding: 10px;
             font-weight: 600;
         }
         .btn-login:hover {
-            background-color: #0b5ed7;
+            background-color: #218838;
         }
     </style>
 </head>
