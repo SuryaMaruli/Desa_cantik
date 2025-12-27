@@ -35,6 +35,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Berita & Informasi
     Route::get('/berita', [\App\Http\Controllers\Admin\BeritaController::class, 'index'])->name('berita.index');
     
+    // Data Kelurahan
+    Route::get('/data-kelurahan', [\App\Http\Controllers\Admin\DataKelurahanController::class, 'index'])->name('data-kelurahan.index');
+    
     // Add more admin routes here
     // Example:
     // Route::resource('users', UserController::class);

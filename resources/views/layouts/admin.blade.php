@@ -308,7 +308,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.data-kelurahan.index') }}" class="{{ request()->is('admin/data-kelurahan*') ? 'active' : '' }}">
                     <i class='bx bx-data'></i>
                     <span class="links_name">Data Kelurahan</span>
                 </a>
