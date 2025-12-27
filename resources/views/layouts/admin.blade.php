@@ -314,7 +314,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.galeri.index') }}" class="{{ request()->is('admin/galeri*') ? 'active' : '' }}">
                     <i class='bx bx-image'></i>
                     <span class="links_name">Galeri</span>
                 </a>

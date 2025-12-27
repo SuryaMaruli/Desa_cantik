@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\DataKelurahanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/berita', [\App\Http\Controllers\Admin\BeritaController::class, 'index'])->name('berita.index');
     
     // Data Kelurahan
-    Route::get('/data-kelurahan', [\App\Http\Controllers\Admin\DataKelurahanController::class, 'index'])->name('data-kelurahan.index');
+    Route::get('/data-kelurahan', [DataKelurahanController::class, 'index'])->name('data-kelurahan.index');
+    
+    // Galeri
+    Route::get('/galeri', [\App\Http\Controllers\Admin\GaleriController::class, 'index'])->name('galeri.index');
     
     // Add more admin routes here
     // Example:
