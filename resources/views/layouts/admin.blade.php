@@ -302,7 +302,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.berita.index') }}" class="{{ request()->is('admin/berita*') ? 'active' : '' }}">
                     <i class='bx bx-news'></i>
                     <span class="links_name">Berita & Informasi</span>
                 </a>

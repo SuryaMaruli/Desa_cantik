@@ -32,6 +32,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Admin Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
+    // Berita & Informasi
+    Route::get('/berita', [\App\Http\Controllers\Admin\BeritaController::class, 'index'])->name('berita.index');
+    
     // Add more admin routes here
     // Example:
     // Route::resource('users', UserController::class);
