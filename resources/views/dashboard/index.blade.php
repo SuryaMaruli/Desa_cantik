@@ -179,9 +179,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Kontak</a>
                     </li>
-                    <li class="nav-item ms-lg-3">
-                        <a href="{{ route('login') }}" class="btn btn-primary">Masuk</a>
-                    </li>
                 </ul>
             </div>
         </div>
