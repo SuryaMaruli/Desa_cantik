@@ -338,7 +338,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.pengaturan.index') }}" class="{{ request()->is('admin/pengaturan*') ? 'active' : '' }}">
                     <i class='bx bx-cog'></i>
                     <span class="links_name">Pengaturan</span>
                 </a>

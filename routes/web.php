@@ -51,6 +51,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Desa Cantik
     Route::get('/desa-cantik', [\App\Http\Controllers\Admin\DesaCantikController::class, 'index'])->name('desa-cantik.index');
     
+    // Pengaturan
+    Route::get('/pengaturan', [\App\Http\Controllers\Admin\PengaturanController::class, 'index'])->name('pengaturan.index');
+    
     // Add more admin routes here
     // Example:
     // Route::resource('users', UserController::class);
