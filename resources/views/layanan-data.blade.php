@@ -4,564 +4,314 @@
 
 @section('content')
     <style>
-        /* --- RESET & GLOBAL STYLES --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* --- CSS Reset & Global --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; overflow-x: hidden; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-            color: #333;
-            line-height: 1.6;
-        }
+        /* --- Header Section --- */
+        .header { background-color: #00856F; color: white; padding: 40px 20px 60px 20px; }
+        .header-container { width: 95%; max-width: none; margin: 0 auto; }
+        .back-link { display: inline-flex; align-items: center; color: white; text-decoration: none; font-size: 14px; margin-bottom: 20px; cursor: pointer; }
+        .back-link i { margin-right: 8px; }
+        .header h1 { font-size: 32px; font-weight: 600; margin-bottom: 15px; }
+        .header p { font-size: 16px; opacity: 0.9; line-height: 1.5; max-width: 600px; }
 
-        /* --- COLORS --- */
-        :root {
-            --primary-blue: #1e40af;
-            --bg-blue-light: #eff6ff;
-            --icon-bg-blue: #dbeafe;
-            --text-blue: #1e40af;
-            --bg-gray-light: #f8f9fa;
-            --border-color: #e9ecef;
-        }
+        /* --- Main Content Section --- */
+        .main-content { width: 95%; max-width: none; margin: 0 auto; padding: 40px 20px 0 20px; }
+        .section-title { text-align: center; margin-bottom: 40px; }
+        .section-title h2 { color: #00856F; font-size: 24px; margin-bottom: 10px; }
+        .section-title p { color: #666; font-size: 14px; }
 
-        /* --- HEADER SECTION --- */
-        .hero-header {
-            background-color: var(--primary-blue);
-            color: white;
-            padding: 60px 20px;
-        }
-
-        .container {
-            width: 95%;
-            max-width: none;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .hero-header h1 {
-            font-size: 2.5rem;
-            font-weight: 500;
-            margin-bottom: 15px;
-        }
-
-        .hero-header p {
-            max-width: 600px;
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            padding: 40px 0;
-        }
-
-        .section-title {
-            color: var(--primary-blue);
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            font-weight: 500;
-        }
-
-        /* --- CHANNEL CARDS --- */
-        .channels-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .channel-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .channel-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border-color: var(--primary-blue);
-        }
-
-        .channel-icon {
-            width: 80px;
-            height: 80px;
-            background-color: var(--icon-bg-blue);
-            color: var(--text-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 20px;
-        }
-
-        .channel-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .channel-card p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .channel-steps {
-            text-align: left;
-            background-color: var(--bg-gray-light);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .channel-steps h4 {
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
-
-        .channel-steps ol {
-            list-style: none;
-            padding: 0;
-            counter-reset: step-counter;
-        }
-
-        .channel-steps li {
-            padding: 8px 0;
-            font-size: 0.85rem;
-            color: #555;
-            position: relative;
-            padding-left: 35px;
-            margin-bottom: 8px;
-        }
-
-        .channel-steps li::before {
-            counter-increment: step-counter;
-            content: counter(step-counter);
-            position: absolute;
-            left: 0;
-            top: 8px;
-            width: 25px;
-            height: 25px;
-            background-color: var(--primary-blue);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .channel-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: var(--primary-blue);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .channel-link:hover {
-            background-color: #1e3a8a;
-            transform: translateX(5px);
-        }
-
-        /* --- DATA TYPES SECTION --- */
-        .data-types-section {
-            background-color: var(--bg-blue-light);
+        /* --- CARD STYLE (Layanan) --- */
+        .service-card {
+            border-radius: 16px;
             padding: 40px;
-            border-radius: 12px;
-            border: 1px solid #dbeafe;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 40px;
         }
 
-        .data-types-section h3 {
-            color: var(--primary-blue);
-            font-size: 1.4rem;
-            margin-bottom: 30px;
-            text-align: center;
-        }
+        /* --- THEME COLORS --- */
+        /* Hijau (WhatsApp) */
+        .theme-green { background-color: #F0FDF9; }
+        .theme-green .icon-box { background-color: #009688; }
+        .theme-green h3 { color: #00856F; }
+        .theme-green .step-number { background-color: #C8E6C9; color: #2E7D32; }
 
-        .data-types-grid {
+        /* Biru (Offline) */
+        .theme-blue { background-color: #F0F8FF; }
+        .theme-blue .icon-box { background-color: #1877F2; }
+        .theme-blue h3 { color: #1877F2; }
+        .theme-blue .step-number { background-color: #D1E9FF; color: #1877F2; }
+
+        /* Ungu (Website) */
+        .theme-purple { background-color: #FDF2FF; }
+        .theme-purple .icon-box { background-color: #A020F0; }
+        .theme-purple h3 { color: #A020F0; }
+        .theme-purple .step-number { background-color: #F3E5F5; color: #A020F0; }
+
+        /* --- Common Elements --- */
+        .method-header { display: flex; align-items: center; margin-bottom: 30px; }
+        .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; margin-right: 15px; }
+        .method-info h3 { font-size: 20px; margin-bottom: 4px; }
+        .method-info p { color: #666; font-size: 14px; }
+
+        /* --- Steps Grid --- */
+        .steps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
         }
-
-        .data-type-item {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e0e7ff;
-            text-align: center;
-        }
-
-        .data-type-item i {
-            font-size: 2rem;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-        }
-
-        .data-type-item h4 {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .data-type-item p {
-            color: #666;
-            font-size: 0.85rem;
-        }
-
-        /* --- INFO SECTION --- */
-        .info-section {
-            background-color: var(--bg-gray-light);
-            padding: 40px;
+        .step-item {
+            background-color: white;
+            padding: 25px;
             border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
+        .step-number {
+            width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px; margin-bottom: 20px;
+        }
+        .step-item h4 { font-size: 15px; color: #333; margin-bottom: 8px; font-weight: 600; }
+        .step-item p { font-size: 13px; color: #666; line-height: 1.5; }
+        .step-link { color: inherit; text-decoration: underline; word-break: break-all; font-weight: 600; }
 
-        .info-section h3 {
-            color: var(--primary-blue);
-            font-size: 1.4rem;
+        /* --- CTA Box (Google Form) --- */
+        .cta-box {
+            background-color: white; border-radius: 12px; padding: 30px; margin-top: 30px;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .cta-box h4 { margin-bottom: 15px; font-weight: 500; font-size: 16px; }
+        .btn-purple {
+            background-color: #A020F0; color: white; text-decoration: none; padding: 12px 30px;
+            border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; transition: background 0.3s;
+        }
+        .btn-purple:hover { background-color: #8a1bc9; }
+        .btn-purple i { margin-right: 8px; }
+        .cta-caption { margin-top: 15px; font-size: 12px; color: #888; }
+
+
+        /* --- INFO SECTION (Bagian Baru Paling Bawah) --- */
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
             margin-bottom: 20px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+        .info-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
-        .info-item {
-            text-align: center;
+        .info-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .info-item i {
-            font-size: 2.5rem;
-            color: var(--primary-blue);
-            margin-bottom: 15px;
+        .info-header i {
+            font-size: 22px;
+            margin-right: 12px;
         }
 
-        .info-item h4 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .info-item p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* --- FAQ SECTION --- */
-        .faq-section {
-            margin-bottom: 40px;
-        }
-
-        .faq-item {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .faq-question {
-            width: 100%;
-            padding: 20px;
-            background: none;
-            border: none;
-            text-align: left;
-            font-size: 1rem;
+        .info-header h4 {
+            font-size: 16px;
             font-weight: 600;
             color: #333;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.3s ease;
         }
 
-        .faq-question:hover {
-            background-color: var(--bg-gray-light);
-        }
-
-        .faq-question i {
-            transition: transform 0.3s ease;
-        }
-
-        .faq-question.active i {
-            transform: rotate(180deg);
-        }
-
-        .faq-answer {
-            padding: 0 20px;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .faq-answer.show {
-            padding: 20px;
-            max-height: 200px;
-        }
-
-        .faq-answer p {
-            color: #666;
+        .info-content p {
+            font-size: 14px;
+            color: #555;
             line-height: 1.6;
+            margin-bottom: 8px;
         }
 
-        /* --- RESPONSIVE --- */
+        /* Warna Khusus untuk Header Info */
+        .text-green { color: #00856F; }
+        .text-blue { color: #1877F2; }
+        .text-purple { color: #A020F0; }
+
+        /* --- Responsive --- */
         @media (max-width: 768px) {
-            .hero-header {
-                padding: 40px 20px;
-            }
-            
-            .hero-header h1 {
-                font-size: 2rem;
-            }
-            
-            .channels-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .data-types-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .info-section, .data-types-section {
-                padding: 25px;
-            }
+            .header h1 { font-size: 24px; }
+            .service-card { padding: 20px; }
+            .steps-grid, .info-section { grid-template-columns: 1fr; }
         }
     </style>
 
-    <header class="hero-header">
-        <div class="container">
+    <header class="header">
+        <div class="header-container">
+            <a href="/layanan" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Layanan</a>
             <h1>Layanan Permintaan Data</h1>
-            <p>Akses data dan informasi kelurahan melalui berbagai channel pelayanan yang tersedia</p>
+            <p>Ajukan permintaan data dan informasi kelurahan dengan mudah melalui berbagai channel yang tersedia</p>
         </div>
     </header>
 
-    <main class="container main-content">
+    <main class="main-content">
         
-        <div class="info-section">
-            <h3>Informasi Layanan</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <i class="fa-solid fa-clock"></i>
+        <section class="section-title">
+            <h2>Pilih Cara Permintaan Data</h2>
+            <p>Kami menyediakan 3 cara untuk memudahkan Anda dalam mengajukan permintaan data kelurahan</p>
+        </section>
+
+        <section class="service-card theme-green">
+            <div class="method-header">
+                <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
+                <div class="method-info">
+                    <h3>Online (WhatsApp)</h3>
+                    <p>Ajukan permintaan data melalui WhatsApp</p>
+                </div>
+            </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4>Siapkan Data</h4>
+                    <p>Nama, alamat, dan jenis data yang dibutuhkan</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4>Hubungi WhatsApp</h4>
+                    <p><a href="#" class="step-link" style="color: #00856F;">wa.me/62878...</a></p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4>Tunggu Konfirmasi</h4>
+                    <p>Petugas akan memberikan instruksi lebih lanjut</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <h4>Ambil Data</h4>
+                    <p>Data dikirimkan atau diambil langsung sesuai instruksi</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="service-card theme-blue">
+            <div class="method-header">
+                <div class="icon-box"><i class="fas fa-building"></i></div>
+                <div class="method-info">
+                    <h3>Offline (Datang Langsung)</h3>
+                    <p>Kunjungi kantor kelurahan secara langsung</p>
+                </div>
+            </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4>Siapkan Dokumen</h4>
+                    <p>KTP, surat permohonan, dan informasi data yang dibutuhkan</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4>Kunjungi Kantor</h4>
+                    <p>Buka Senin – Jumat<br>08:00 – 15:30 WIB</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4>Sampaikan Permintaan</h4>
+                    <p>Berikan data yang diperlukan kepada petugas</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <h4>Tunggu Proses</h4>
+                    <p>Petugas akan mengolah data</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">5</div>
+                    <h4>Ambil Data</h4>
+                    <p>Ambil data pada waktu yang ditentukan</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="service-card theme-purple">
+            <div class="method-header">
+                <div class="icon-box"><i class="fas fa-globe"></i></div>
+                <div class="method-info">
+                    <h3>Website (Google Form)</h3>
+                    <p>Isi formulir permintaan data secara online</p>
+                </div>
+            </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4>Siapkan Dokumen</h4>
+                    <p>Nama, alamat, dan jenis data yang dibutuhkan</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4>Isikan Form</h4>
+                    <p>Lengkapi formulir permintaan data secara online</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4>Tunggu Proses</h4>
+                    <p>Petugas akan mengolah data</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <h4>Terima Data</h4>
+                    <p>Terima data pada waktu yang ditentukan</p>
+                </div>
+            </div>
+            <div class="cta-box">
+                <h4>Formulir Permintaan Data</h4>
+                <a href="#" class="btn-purple"><i class="fas fa-globe"></i> Isi Google Form</a>
+                <p class="cta-caption">Klik tombol di atas untuk mengisi formulir permintaan data</p>
+            </div>
+        </section>
+
+        <section class="info-section">
+            
+            <div class="info-card">
+                <div class="info-header">
+                    <i class="fas fa-map-marker-alt text-green"></i>
+                    <h4>Lokasi Kantor</h4>
+                </div>
+                <div class="info-content">
+                    <p><strong>Kantor Kelurahan Citangkil</strong></p>
+                    <p>Jl. Raya Citangkil No. 123</p>
+                    <p>Kota Cilegon, Banten 42441</p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-header">
+                    <i class="far fa-clock text-blue"></i>
                     <h4>Jam Pelayanan</h4>
-                    <p>Senin - Jumat<br>08.00 - 15.00 WIB</p>
                 </div>
-                <div class="info-item">
-                    <i class="fa-solid fa-location-dot"></i>
-                    <h4>Lokasi</h4>
-                    <p>Kantor Kelurahan Citangkil<br>Jl. Raya Citangkil No. 123</p>
+                <div class="info-content">
+                    <p>Senin – Jumat</p>
+                    <p>08:00 – 15:30 WIB</p>
+                    <p style="color: #888; font-size: 13px; margin-top: 5px;">(Tutup pada hari libur nasional)</p>
                 </div>
-                <div class="info-item">
-                    <i class="fa-solid fa-phone"></i>
+            </div>
+
+            <div class="info-card">
+                <div class="info-header">
+                    <i class="fas fa-phone-alt text-purple"></i>
                     <h4>Kontak</h4>
-                    <p>(0254) 123-4567<br>data@citangkil.go.id</p>
                 </div>
-            </div>
-        </div>
-
-        <h2 class="section-title">Channel Pelayanan</h2>
-
-        <div class="channels-grid">
-            
-            <div class="channel-card">
-                <div class="channel-icon">
-                    <i class="fa-solid fa-laptop"></i>
-                </div>
-                <h3>Layanan Online</h3>
-                <p>Ajukan permintaan data secara online melalui website resmi Kelurahan Citangkil.</p>
-                <div class="channel-steps">
-                    <h4>Cara Pengajuan:</h4>
-                    <ol>
-                        <li>Kunjungi website kelurahan</li>
-                        <li>Isi formulir permintaan data</li>
-                        <li>Upload dokumen pendukung</li>
-                        <li>Tunggu verifikasi dari admin</li>
-                        <li>Data dikirim via email</li>
-                    </ol>
-                </div>
-                <a href="#" class="channel-link">Ajukan Online <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-
-            <div class="channel-card">
-                <div class="channel-icon">
-                    <i class="fa-solid fa-building"></i>
-                </div>
-                <h3>Layanan Offline</h3>
-                <p>Datang langsung ke kantor kelurahan untuk mengajukan permintaan data.</p>
-                <div class="channel-steps">
-                    <h4>Cara Pengajuan:</h4>
-                    <ol>
-                        <li>Siapkan dokumen identitas</li>
-                        <li>Datang ke kantor kelurahan</li>
-                        <li>Isi formulir permintaan data</li>
-                        <li>Serahkan dokumen pendukung</li>
-                        <li>Ambil data di lokasi atau tunggu pengiriman</li>
-                    </ol>
-                </div>
-                <a href="#" class="channel-link">Datang Langsung <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-
-            <div class="channel-card">
-                <div class="channel-icon">
-                    <i class="fa-solid fa-mobile-screen"></i>
-                </div>
-                <h3>Layanan WhatsApp</h3>
-                <p>Ajukan permintaan data melalui WhatsApp untuk kemudahan dan kecepatan.</p>
-                <div class="channel-steps">
-                    <h4>Cara Pengajuan:</h4>
-                    <ol>
-                        <li>Simpan nomor WhatsApp kelurahan</li>
-                        <li>Kirim pesan dengan format permintaan</li>
-                        <li>Lampirkan dokumen yang dibutuhkan</li>
-                        <li>Konfirmasi identitas Anda</li>
-                        <li>Data dikirim via WhatsApp</li>
-                    </ol>
-                </div>
-                <a href="#" class="channel-link">Hubungi WA <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-
-        </div>
-
-        <div class="data-types-section">
-            <h3>Jenis Data yang Tersedia</h3>
-            <div class="data-types-grid">
-                <div class="data-type-item">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <h4>Data Demografi</h4>
-                    <p>Jumlah penduduk, kepadatan, pertumbuhan penduduk</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-home"></i>
-                    <h4Data Wilayah</h4>
-                    <p>Batas wilayah, luas area, penggunaan lahan</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                    <h4>Data Pendidikan</h4>
-                    <p>Jumlah sekolah, tingkat pendidikan, fasilitas pendidikan</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-hospital"></i>
-                    <h4>Data Kesehatan</h4>
-                    <p>Fasilitas kesehatan, cakupan layanan, program kesehatan</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-briefcase"></i>
-                    <h4Data Ekonomi</h4>
-                    <p>Data usaha, tingkat pengangguran, program ekonomi</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-road"></i>
-                    <h4Data Infrastruktur</h4>
-                    <p>Jalan, drainase, listrik, air bersih, fasilitas umum</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-shield-alt"></i>
-                    <h4>Data Keamanan</h4>
-                    <p>Pos kamling, ronda, program keamanan masyarakat</p>
-                </div>
-                <div class="data-type-item">
-                    <i class="fa-solid fa-hands-helping"></i>
-                    <h4Data Sosial</h4>
-                    <p>Penerima bantuan, program sosial, kegiatan kemasyarakatan</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="faq-section">
-            <h2 class="section-title">Pertanyaan Umum (FAQ)</h2>
-            
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFAQ(this)">
-                    <span>Bagaimana cara mengajukan permintaan data?</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>Anda dapat mengajukan permintaan data melalui tiga cara: online melalui website, datang langsung ke kantor, atau via WhatsApp. Pilih cara yang paling nyaman untuk Anda.</p>
+                <div class="info-content">
+                    <p>Telepon: (0254) 123-4567</p>
+                    <p>WhatsApp: +62 878-5351-6685</p>
+                    <p>Email: kelurahan@citangkil.go.id</p>
                 </div>
             </div>
 
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFAQ(this)">
-                    <span>Dokumen apa yang diperlukan untuk pengajuan data?</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>Umumnya diperlukan KTP, KK, dan surat pengantar RT/RW. Untuk data tertentu mungkin diperlukan dokumen tambahan sesuai dengan jenis data yang diminta.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFAQ(this)">
-                    <span>Berapa lama waktu pemrosesan permintaan data?</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>Waktu pemrosesan biasanya 1-3 hari kerja tergantung pada kompleksitas data yang diminta. Data yang umum tersedia bisa lebih cepat, sedangkan data khusus memerlukan waktu lebih lama.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFAQ(this)">
-                    <span>Apakah ada biaya untuk permintaan data?</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>Data umum untuk kepentingan masyarakat biasanya gratis. Namun untuk data khusus atau dalam jumlah besar mungkin dikenakan biaya administrasi sesuai dengan peraturan yang berlaku.</p>
-                </div>
-            </div>
-
-        </div>
+        </section>
 
     </main>
-
-    <script>
-        function toggleFAQ(button) {
-            const answer = button.nextElementSibling;
-            const allQuestions = document.querySelectorAll('.faq-question');
-            const allAnswers = document.querySelectorAll('.faq-answer');
-            
-            // Close all other FAQs
-            allQuestions.forEach(q => {
-                if (q !== button) {
-                    q.classList.remove('active');
-                }
-            });
-            
-            allAnswers.forEach(a => {
-                if (a !== answer) {
-                    a.classList.remove('show');
-                }
-            });
-            
-            // Toggle current FAQ
-            button.classList.toggle('active');
-            answer.classList.toggle('show');
-        }
-    </script>
 @endsection
