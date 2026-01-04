@@ -29,6 +29,14 @@ Route::get('/layanan', function () {
     return view('layanan');
 });
 
+Route::get('/layanan-kependudukan', function () {
+    return view('layanan-kependudukan');
+});
+
+Route::get('/layanan-data', function () {
+    return view('layanan-data');
+});
+
 Route::get('/data', function () {
     return view('data');
 });

@@ -216,7 +216,7 @@
                 </div>
                 <h3>Layanan Kependudukan</h3>
                 <p>Berbagai layanan administrasi kependudukan seperti KTP, KK, Akta Kelahiran, dan dokumen kependudukan lainnya.</p>
-                <a href="#" class="card-link">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="/layanan-kependudukan" class="card-link">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="card card-blue">
@@ -225,7 +225,7 @@
                 </div>
                 <h3>Layanan Permintaan Data</h3>
                 <p>Layanan permintaan data dan informasi kelurahan melalui berbagai channel: Online, Offline, dan Website.</p>
-                <a href="#" class="card-link">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="/layanan-data" class="card-link">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
         </div>
