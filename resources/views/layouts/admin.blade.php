@@ -320,7 +320,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.layanan.index') }}" class="{{ request()->is('admin/layanan*') ? 'active' : '' }}">
                     <i class='bx bx-file'></i>
                     <span class="links_name">Layanan</span>
                 </a>

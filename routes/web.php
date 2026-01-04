@@ -42,6 +42,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Galeri
     Route::get('/galeri', [\App\Http\Controllers\Admin\GaleriController::class, 'index'])->name('galeri.index');
     
+    // Layanan
+    Route::get('/layanan', [\App\Http\Controllers\Admin\LayananController::class, 'index'])->name('layanan.index');
+    
+    // Profil Kelurahan
+    Route::get('/profil-kelurahan', [\App\Http\Controllers\Admin\ProfilKelurahanController::class, 'index'])->name('profil-kelurahan.index');
+    
     // Add more admin routes here
     // Example:
     // Route::resource('users', UserController::class);
