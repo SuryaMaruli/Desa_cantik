@@ -12,7 +12,7 @@
             color: #333;
             line-height: 1.6;
         }
-        .container { width: 95%; max-width: 100%; margin: 0 auto; padding: 0 20px; }
+        .container { width: 90%; max-width: 1000px; margin: 0 auto; }
 
         /* --- HEADER SECTION --- */
         .header-section {
@@ -34,7 +34,6 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             padding: 40px;
             margin-bottom: 40px;
-            max-width: none;
         }
 
         /* --- TYPOGRAPHY UTILS --- */
@@ -152,7 +151,6 @@
         /* --- RESPONSIF (HP) --- */
         @media (max-width: 768px) {
             .header-section { text-align: center; padding-bottom: 90px; }
-            .container { padding: 0 15px; }
             .info-row { flex-direction: column; }
             .separator { display: none; }
             .label, .value { width: 100%; }
@@ -205,150 +203,121 @@
                     <div class="label">Nomor Kode Pos</div>
                     <div class="separator">:</div>
                     <div class="value">42441</div>
-                </div>
-                <div class="info-row">
-                    <div class="label">Kecamatan</div>
-                    <div class="separator">:</div>
-                    <div class="value">Citangkil</div>
-                </div>
-                <div class="info-row">
-                    <div class="label">Kabupaten/Kota</div>
-                    <div class="separator">:</div>
-                    <div class="value">Cilegon</div>
-                </div>
-                <div class="info-row">
-                    <div class="label">Provinsi</div>
-                    <div class="separator">:</div>
-                    <div class="value">Banten</div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title">Sejarah Kelurahan Citangkil</h2>
-        <div class="card history-text">
-            <p>Kelurahan Citangkil merupakan salah satu kelurahan di Kecamatan Citangkil, Kota Cilegon, Provinsi Banten. Kelurahan ini memiliki sejarah panjang yang berkaitan erat dengan perkembangan industri di Kota Cilegon.</p>
-            <p>Sejak didirikan, Kelurahan Citangkil terus berkembang dan bertransformasi menjadi salah satu Kelurahan yang maju dengan berbagai fasilitas publik dan pelayanan yang baik untuk masyarakat.</p>
-            <p>Dengan komitmen untuk terus meningkatkan kualitas pelayanan dan pembangunan, Kelurahan Citangkil senantiasa berinovasi dalam berbagai program dan kegiatan demi kesejahteraan masyarakat.</p>
-        </div>
-
-        <div class="vm-grid">
-            <div class="vm-card visi-card">
-                <div class="vm-header">
-                    <div class="icon-circle bg-green-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    </div>
-                    <h3 class="vm-title text-green">Visi</h3>
-                </div>
-                <div class="vm-content visi-text">
-                    "Terwujudnya Kelurahan Citangkil yang Maju, Sejahtera, dan Bermartabat melalui Pelayanan Prima dan Pemberdayaan Masyarakat yang Berkelanjutan"
-                </div>
-            </div>
-
-            <div class="vm-card misi-card">
-                <div class="vm-header">
-                    <div class="icon-circle bg-blue-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                    </div>
-                    <h3 class="vm-title text-blue">Misi</h3>
-                </div>
-                <div class="vm-content">
-                    <ul class="misi-list">
-                        <li>Meningkatkan kualitas pelayanan publik yang cepat, akurat, dan transparan</li>
-                        <li>Memberdayakan masyarakat melalui program-program pembangunan berkelanjutan</li>
-                        <li>Menciptakan lingkungan yang bersih, sehat, dan asri</li>
-                        <li>Meningkatkan partisipasi masyarakat dalam pembangunan daerah</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title">Data Wilayah</h2>
-        <div class="stats-grid">
-            <div class="stat-card border-green">
-                <div class="stat-icon icon-green">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-label">Luas Wilayah</div>
-                    <div class="stat-number">8.5 km²</div>
-                </div>
-            </div>
-            <div class="stat-card border-blue">
-                <div class="stat-icon icon-blue">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-label">Jumlah Penduduk</div>
-                    <div class="stat-number">25,340</div>
-                </div>
-            </div>
-            <div class="stat-card border-purple">
-                <div class="stat-icon icon-purple">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4.9V17L12 22l-9-4.9V7z"/></svg>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-label">Jumlah RW</div>
-                    <div class="stat-number">12 RW</div>
-                </div>
-            </div>
-            <div class="stat-card border-orange">
-                <div class="stat-icon icon-orange">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-label">Jumlah RT</div>
-                    <div class="stat-number">48 RT</div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title">Batas Wilayah</h2>
-        <div class="card">
-            <div class="boundaries-grid">
-                <div class="boundary-item bg-blue-light">
-                    <div class="direction-box bg-blue">U</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Utara</h4>
-                        <p>Kelurahan Ramanuju Kec. Purwakarta</p>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="info-card">
+                        <h3><i class="bi bi-graph-up me-2"></i>Statistik Demografi</h3>
+                        <ul class="info-list">
+                            <li><strong>Jumlah Penduduk:</strong> 5.234 jiwa</li>
+                            <li><strong>Laki-laki:</strong> 2.678 jiwa</li>
+                            <li><strong>Perempuan:</strong> 2.556 jiwa</li>
+                            <li><strong>Kepala Keluarga:</strong> 1.567 KK</li>
+                            <li><strong>Luas Wilayah:</strong> 450 Ha</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="boundary-item bg-orange-light">
-                    <div class="direction-box bg-orange">S</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Selatan</h4>
-                        <p>Kelurahan Taman Baru Kec. Citangkil</p>
-                    </div>
-                </div>
-                <div class="boundary-item bg-purple-light">
-                    <div class="direction-box bg-purple">B</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Barat</h4>
-                        <p>Kelurahan Kebonsari Kec. Citangkil</p>
-                    </div>
-                </div>
-                <div class="boundary-item bg-green-light">
-                    <div class="direction-box bg-green">T</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Timur</h4>
-                        <p>Kelurahan Masigit Kec. Purwakarta</p>
+                <div class="col-lg-6 mb-4">
+                    <div class="info-card">
+                        <h3><i class="bi bi-award me-2"></i>Prestasi</h3>
+                        <ul class="achievement-list">
+                            <li><i class="bi bi-trophy-fill text-warning"></i> Desa Terbaik Tingkat Provinsi 2023</li>
+                            <li><i class="bi bi-award-fill text-success"></i> Program Inovasi Pelayanan Publik</li>
+                            <li><i class="bi bi-star-fill text-primary"></i> Sistem Informasi Desa Terpadu</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-
-        <h2 class="section-title-center">MONOGRAFI KELURAHAN CITANGKIL</h2>
-        <div class="card">
-            <div class="image-container">
-                <img src="https://placehold.co/900x500?text=Foto+Papan+Monografi" alt="Papan Monografi" class="image-board">
-            </div>
-        </div>
-
-        <h2 class="section-title-center normal-case">Struktur Organisasi</h2>
-        <div class="card">
-            <div class="image-container">
-                <img src="https://placehold.co/900x500?text=Foto+Struktur+Organisasi" alt="Struktur Organisasi" class="image-board">
-            </div>
-        </div>
-
-    </main>
+    </section>
 @endsection
+
+@push('styles')
+<style>
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 4px solid #009688;
+    }
+
+    .leader-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border: 3px solid #009688;
+    }
+
+    .leader-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .leader-details h4 {
+        margin-bottom: 5px;
+        color: #009688;
+    }
+
+    .leader-details p {
+        margin-bottom: 2px;
+    }
+
+    .info-card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+
+    .info-card h3 {
+        color: #009688;
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .info-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+
+    .org-structure {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .org-level {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .org-level h4 {
+        color: #009688;
+        margin-bottom: 10px;
+    }
+
+    .achievement-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .achievement-list li {
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+@endpush
