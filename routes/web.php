@@ -20,6 +20,31 @@ use App\Http\Controllers\Admin\DataKelurahanController;
 // Public Routes
 Route::get('/', [DashboardController::class, 'index'])->name('home');
 
+// Route untuk halaman lainnya
+Route::get('/profil', function () {
+    return view('profil');
+});
+
+Route::get('/layanan', function () {
+    return view('layanan');
+});
+
+Route::get('/data', function () {
+    return view('data');
+});
+
+Route::get('/desa-cantik', function () {
+    return view('desa-cantik');
+});
+
+Route::get('/berita', function () {
+    return view('berita');
+});
+
+Route::get('/kontak', function () {
+    return view('kontak');
+});
+
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -29,7 +54,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Admin Routes
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     // Admin Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
