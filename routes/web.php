@@ -48,6 +48,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Profil Kelurahan
     Route::get('/profil-kelurahan', [\App\Http\Controllers\Admin\ProfilKelurahanController::class, 'index'])->name('profil-kelurahan.index');
     
+    // Desa Cantik
+    Route::get('/desa-cantik', [\App\Http\Controllers\Admin\DesaCantikController::class, 'index'])->name('desa-cantik.index');
+    
     // Add more admin routes here
     // Example:
     // Route::resource('users', UserController::class);

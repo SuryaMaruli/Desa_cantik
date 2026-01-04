@@ -332,7 +332,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.desa-cantik.index') }}" class="{{ request()->is('admin/desa-cantik*') ? 'active' : '' }}">
                     <i class='bx bx-map'></i>
                     <span class="links_name">Desa Cantik</span>
                 </a>
