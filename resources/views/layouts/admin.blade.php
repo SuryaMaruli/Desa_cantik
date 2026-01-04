@@ -326,7 +326,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.profil-kelurahan.index') }}" class="{{ request()->is('admin/profil-kelurahan*') ? 'active' : '' }}">
                     <i class='bx bx-group'></i>
                     <span class="links_name">Profil Kelurahan</span>
                 </a>
