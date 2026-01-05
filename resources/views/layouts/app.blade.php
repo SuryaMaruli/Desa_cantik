@@ -24,7 +24,7 @@
 
         /* --- Header Hijau --- */
         .hero-section {
-            background-color: #037d58; /* Warna Hijau Teal */
+            background-color: #F89039; /* Warna Oranye */
             color: white;
             text-align: center;
             position: relative;
@@ -46,7 +46,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         .icon-circle i {
-            color: #037d58;
+            color: #F89039;
             font-size: 34px;
         }
 
@@ -131,7 +131,7 @@
         .logo-circle {
             width: 45px;
             height: 45px;
-            background-color: #009688;
+            background-color: #F89039;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -146,7 +146,7 @@
         }
 
         .brand-title {
-            color: #009688;
+            color: #F89039;
             font-weight: 600;
             font-size: 18px;
             line-height: 1.2;
@@ -175,7 +175,7 @@
 
         /* Efek saat mouse diarahkan ke menu (Hover) */
         .nav-links li a:hover {
-            color: #009688;
+            color: #F89039;
         }
 
         /* Membuat icon lokasi sederhana dengan CSS/SVG */
@@ -208,7 +208,7 @@
         
         .feature-icon {
             font-size: 2.5rem;
-            color: #009688;
+            color: #F89039;
             margin-bottom: 20px;
         }
         
@@ -252,7 +252,7 @@
         
         .service-icon {
             font-size: 3rem;
-            color: #009688;
+            color: #F89039;
             margin-bottom: 20px;
         }
         
@@ -276,7 +276,7 @@
         }
         
         .footer-links h5 {
-            color: #009688;
+            color: #F89039;
             margin-bottom: 20px;
             font-weight: 600;
         }
@@ -297,7 +297,7 @@
         }
         
         .footer-links ul li a:hover {
-            color: #009688;
+            color: #F89039;
         }
         
         .social-icons a {
@@ -314,7 +314,7 @@
         }
         
         .social-icons a:hover {
-            background: #009688;
+            background: #F89039;
             transform: translateY(-3px);
         }
     </style>

@@ -1,7 +1,7 @@
 <style>
     /* --- FOOTER STYLES --- */
     .footer-section {
-        background-color: #004d40;
+        background-color: #F89039;
         color: #d1d5db;
         font-family: 'Roboto', sans-serif;
         padding: 48px 24px;
@@ -53,7 +53,7 @@
     .footer-divider {
         width: 48px;
         height: 4px;
-        background-color: #14b8a6;
+        background-color: #F89039;
         border-radius: 2px;
     }
 
@@ -79,7 +79,7 @@
     }
 
     .footer-icon {
-        color: #14b8a6;
+        color: #F89039;
         margin-right: 12px;
         font-size: 1rem;
     }
@@ -95,7 +95,7 @@
     }
 
     .footer-link:hover {
-        color: #14b8a6;
+        color: #F89039;
         padding-left: 4px;
     }
 
@@ -116,19 +116,19 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background-color: #134e4a;
+        background-color: #cc5500;
         color: white;
         text-decoration: none;
         transition: background-color 0.3s ease;
     }
 
     .social-link:hover {
-        background-color: #14b8a6;
+        background-color: #F89039;
     }
 
     .footer-hr {
         border: none;
-        border-top: 1px solid #134e4a;
+        border-top: 1px solid #cc5500;
         margin: 32px 0;
     }
 
