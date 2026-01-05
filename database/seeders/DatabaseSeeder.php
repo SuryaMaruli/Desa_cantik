@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
         //     DataLurahSeeder::class,
         // ]);
         
-        $this->call(DataLurahSeeder::class);
+        $this->call([
+            DataLurahSeeder::class,
+            BeritaSeeder::class,
+        ]);
     }
 }

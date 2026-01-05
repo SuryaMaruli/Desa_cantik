@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DataKelurahanController;
+use App\Models\Berita;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/data-lurah', [\App\Http\Controllers\Admin\DataLurahController::class, 'index'])->name('data-lurah.index');
     Route::get('/data-lurah/api', [\App\Http\Controllers\Admin\DataLurahController::class, 'getData'])->name('data-lurah.api');
     Route::post('/data-lurah/update', [\App\Http\Controllers\Admin\DataLurahController::class, 'update'])->name('data-lurah.update');
+    
+    // Berita
+    Route::resource('berita', \App\Http\Controllers\Admin\BeritaController::class);
+    Route::post('/berita/{berita}/toggle-publish', [\App\Http\Controllers\Admin\BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
+    Route::get('/berita/{berita}/edit-data', [\App\Http\Controllers\Admin\BeritaController::class, 'getEditData'])->name('berita.edit-data');
     
     // Pengaturan
     Route::get('/pengaturan', [\App\Http\Controllers\Admin\PengaturanController::class, 'index'])->name('pengaturan.index');
