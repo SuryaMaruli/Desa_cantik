@@ -258,18 +258,26 @@
         <div class="lurah-card">
             <div class="lurah-left">
                 <div class="photo-frame">
-                    <img src="https://via.placeholder.com/300x400/eeeeee/333333?text=FOTO+LURAH" alt="Foto Lurah">
+                    @if($dataLurah && $dataLurah->foto_lurah)
+                        <img src="{{ asset('storage/foto-lurah/' . $dataLurah->foto_lurah) }}" alt="Foto Lurah">
+                    @else
+                        <img src="https://via.placeholder.com/300x400/eeeeee/333333?text=FOTO+LURAH" alt="Foto Lurah">
+                    @endif
                 </div>
                 <div class="name-container">
-                    <span>Lurah Citangkil</span>
-                    <h3>M. ALI WAHIDI, S.Sos.M.Si</h3>
+                    <span>{{ $dataLurah->jabatan ?? 'Lurah Citangkil' }}</span>
+                    <h3>{{ $dataLurah->nama_lurah ?? 'M. ALI WAHIDI, S.Sos.M.Si' }}</h3>
                 </div>
             </div>
             <div class="lurah-right">
                 <i class="fas fa-quote-left quote-icon"></i>
-                <p>"Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat..."</p>
-                <p>"Kami berkomitmen untuk terus memberikan layanan terbaik, transparan, dan akuntabilitas..."</p>
-                <a href="#" class="btn-sambutan">Baca Sambutan Lengkap</a>
+                @if($dataLurah && $dataLurah->sambutan_lurah)
+                    <p>"{{ $dataLurah->sambutan_lurah }}"</p>
+                @else
+                    <p>"Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat..."</p>
+                    <p>"Kami berkomitmen untuk terus memberikan layanan terbaik, transparan, dan akuntabilitas..."</p>
+                @endif
+                <a href="#sambutan-lengkap" class="btn-sambutan">Baca Sambutan Lengkap</a>
             </div>
         </div>
     </section>

@@ -84,6 +84,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Desa Cantik
     Route::get('/desa-cantik', [\App\Http\Controllers\Admin\DesaCantikController::class, 'index'])->name('desa-cantik.index');
     
+    // Data Lurah
+    Route::get('/data-lurah', [\App\Http\Controllers\Admin\DataLurahController::class, 'index'])->name('data-lurah.index');
+    Route::get('/data-lurah/api', [\App\Http\Controllers\Admin\DataLurahController::class, 'getData'])->name('data-lurah.api');
+    Route::post('/data-lurah/update', [\App\Http\Controllers\Admin\DataLurahController::class, 'update'])->name('data-lurah.update');
+    
     // Pengaturan
     Route::get('/pengaturan', [\App\Http\Controllers\Admin\PengaturanController::class, 'index'])->name('pengaturan.index');
     

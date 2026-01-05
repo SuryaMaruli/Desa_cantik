@@ -11,6 +11,9 @@
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -338,6 +341,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.data-lurah.index') }}" class="{{ request()->is('admin/data-lurah*') ? 'active' : '' }}">
+                    <i class='bx bx-user'></i>
+                    <span class="links_name">Data Lurah</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.pengaturan.index') }}" class="{{ request()->is('admin/pengaturan*') ? 'active' : '' }}">
                     <i class='bx bx-cog'></i>
                     <span class="links_name">Pengaturan</span>
@@ -410,6 +419,81 @@
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Data Lurah Modal (Global) -->
+    <div class="modal fade" id="dataLurahModal" tabindex="-1" aria-labelledby="dataLurahModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataLurahModalLabel">Edit Data Lurah</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="dataLurahForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="namaLurah" class="form-label">Nama Lurah</label>
+                                <input type="text" class="form-control" id="namaLurah" value="Budi Santoso, S.Sos">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nipLurah" class="form-label">NIP</label>
+                                <input type="text" class="form-control" id="nipLurah" value="198504152009031001">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="pangkatLurah" class="form-label">Pangkat</label>
+                                <input type="text" class="form-control" id="pangkatLurah" value="Pembina Tingkat I">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="golonganLurah" class="form-label">Golongan</label>
+                                <input type="text" class="form-control" id="golonganLurah" value="IV/b">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="jabatanLurah" class="form-label">Jabatan</label>
+                                <input type="text" class="form-control" id="jabatanLurah" value="Lurah Citangkil">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nipLurah" class="form-label">NIP</label>
+                                <input type="text" class="form-control" id="nipLurah" value="196512311985031023">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fotoLurah" class="form-label">Foto Lurah</label>
+                            <input type="file" class="form-control" id="fotoLurah" accept="image/*">
+                            <div class="mt-2" id="fotoPreview" style="display: none;">
+                                <img id="previewImage" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                                <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeFoto()">
+                                    <i class='bx bx-trash'></i> Hapus Foto
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sambutanLurah" class="form-label">Sambutan Lurah</label>
+                            <textarea class="form-control" id="sambutanLurah" rows="4">Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-outline-info me-auto" onclick="exportDataLurah()">
+                        <i class='bx bx-download'></i> Export
+                    </button>
+                    <div class="btn-group me-auto">
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importDataLurah(event)">
+                        <button type="button" class="btn btn-outline-warning" onclick="document.getElementById('importFile').click()">
+                            <i class='bx bx-upload'></i> Import
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="simpanDataLurah()">
+                        <i class='bx bx-save'></i> Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Custom Scripts -->
     <script>
         // Toggle Sidebar
@@ -477,6 +561,186 @@
                 sidebar.style.left = '0';
                 mainHeader.style.left = 'var(--sidebar-width)';
                 mainContent.style.marginLeft = 'var(--sidebar-width)';
+                
+                // Reset icon
+                icon.classList.remove('bx-x');
+                icon.classList.add('bx-menu');
+                sidebar.classList.remove('active');
+            } else {
+                // Mobile view
+                if (!sidebar.classList.contains('active')) {
+                    sidebar.style.left = 'calc(-1 * var(--sidebar-width))';
+                    mainHeader.style.left = '0';
+                    mainContent.style.marginLeft = '0';
+                } else {
+                    sidebar.style.left = '0';
+                    mainHeader.style.left = '0';
+                    mainContent.style.marginLeft = '0';
+                }
+            }
+        }
+
+        // Data Lurah Functions
+        // Load data lurah dari localStorage saat page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDataLurah();
+        });
+
+        // Fungsi untuk membuka modal Data Lurah
+        function openDataLurahModal() {
+            const modal = new bootstrap.Modal(document.getElementById('dataLurahModal'));
+            modal.show();
+        }
+
+        // Fungsi untuk menyimpan data lurah ke localStorage
+        function simpanDataLurah() {
+            const dataLurah = {
+                namaLurah: document.getElementById('namaLurah').value,
+                nipLurah: document.getElementById('nipLurah').value,
+                pangkatLurah: document.getElementById('pangkatLurah').value,
+                golonganLurah: document.getElementById('golonganLurah').value,
+                jabatanLurah: document.getElementById('jabatanLurah').value,
+                sambutanLurah: document.getElementById('sambutanLurah').value,
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Simpan ke localStorage
+            localStorage.setItem('dataLurah', JSON.stringify(dataLurah));
+            
+            // Tampilkan notifikasi sukses
+            showNotification('Data lurah berhasil disimpan!', 'success');
+            
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('dataLurahModal'));
+            modal.hide();
+        }
+
+        // Fungsi untuk load data lurah dari localStorage
+        function loadDataLurah() {
+            const savedData = localStorage.getItem('dataLurah');
+            
+            if (savedData) {
+                const dataLurah = JSON.parse(savedData);
+                
+                // Isi form dengan data yang tersimpan
+                document.getElementById('namaLurah').value = dataLurah.namaLurah || 'M. ALI WAHIDI, S.Sos.M.Si';
+                document.getElementById('nipLurah').value = dataLurah.nipLurah || '196512311985031023';
+                document.getElementById('pangkatLurah').value = dataLurah.pangkatLurah || 'Pembina Tingkat I';
+                document.getElementById('golonganLurah').value = dataLurah.golonganLurah || 'IV/b';
+                document.getElementById('jabatanLurah').value = dataLurah.jabatanLurah || 'Lurah Citangkil';
+                document.getElementById('sambutanLurah').value = dataLurah.sambutanLurah || 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.';
+                
+                // Load foto jika ada
+                if (dataLurah.fotoLurah) {
+                    showFotoPreview(dataLurah.fotoLurah);
+                }
+            }
+        }
+
+        // Fungsi untuk preview foto
+        function showFotoPreview(imageSrc) {
+            const previewDiv = document.getElementById('fotoPreview');
+            const previewImage = document.getElementById('previewImage');
+            
+            previewImage.src = imageSrc;
+            previewDiv.style.display = 'block';
+        }
+
+        // Fungsi untuk menghapus foto
+        function removeFoto() {
+            const previewDiv = document.getElementById('fotoPreview');
+            const fileInput = document.getElementById('fotoLurah');
+            
+            previewDiv.style.display = 'none';
+            fileInput.value = '';
+        }
+
+        // Event listener untuk file input
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fotoLurah');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            showFotoPreview(e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type = 'info') {
+            // Buat elemen notifikasi
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Tambahkan ke body
+            document.body.appendChild(notification);
+            
+            // Auto remove setelah 5 detik
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Fungsi untuk export data lurah (backup)
+        function exportDataLurah() {
+            const savedData = localStorage.getItem('dataLurah');
+            
+            if (savedData) {
+                const dataLurah = JSON.parse(savedData);
+                const dataStr = JSON.stringify(dataLurah, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'data_lurah_' + new Date().toISOString().slice(0,10) + '.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                showNotification('Data lurah berhasil di-export!', 'success');
+            } else {
+                showNotification('Tidak ada data lurah untuk di-export!', 'warning');
+            }
+        }
+
+        // Fungsi untuk import data lurah
+        function importDataLurah(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        // Validasi data
+                        if (importedData.namaLurah) {
+                            localStorage.setItem('dataLurah', JSON.stringify(importedData));
+                            loadDataLurah();
+                            showNotification('Data lurah berhasil di-import!', 'success');
+                        } else {
+                            showNotification('Format file tidak valid!', 'danger');
+                        }
+                    } catch (error) {
+                        showNotification('Gagal membaca file. Pastikan format JSON benar!', 'danger');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
                 
                 // Reset icon to menu
                 if (icon.classList.contains('bx-x')) {
