@@ -17,9 +17,9 @@
                 <div class="icon-box icon-news"><i class='bx bx-news'></i></div>
                 <i class='bx bx-trending-up trend-icon'></i>
             </div>
-            <div class="number">24</div>
+            <div class="number">{{ $totalBeritaPublished }}</div>
             <span class="box-topic">Total Berita</span>
-            <div class="indicator">+3 bulan ini</div>
+            <div class="indicator">+{{ $beritaBulanIni }} bulan ini</div>
         </div>
 
         <div class="box">
@@ -27,9 +27,9 @@
                 <div class="icon-box icon-people"><i class='bx bx-group'></i></div>
                 <i class='bx bx-trending-up trend-icon'></i>
             </div>
-            <div class="number">15.847</div>
+            <div class="number">{{ number_format($totalPenduduk, 0, ',', '.') }}</div>
             <span class="box-topic">Total Penduduk</span>
-            <div class="indicator">+127 bulan ini</div>
+            <div class="indicator">+{{ $pendudukBulanIni }} bulan ini</div>
         </div>
 
         <div class="box">
@@ -37,9 +37,9 @@
                 <div class="icon-box icon-visitor"><i class='bx bx-show'></i></div>
                 <i class='bx bx-trending-up trend-icon'></i>
             </div>
-            <div class="number">8.542</div>
-            <span class="box-topic">Pengunjung Website</span>
-            <div class="indicator">+1.2k minggu ini</div>
+            <div class="number">{{ number_format($totalKepalaKeluarga, 0, ',', '.') }}</div>
+            <span class="box-topic">Kepala Keluarga</span>
+            <div class="indicator">{{ number_format($totalLakiLaki, 0, ',', '.') }} L, {{ number_format($totalPerempuan, 0, ',', '.') }} P</div>
         </div>
 
         <div class="box">
@@ -47,9 +47,9 @@
                 <div class="icon-box icon-service"><i class='bx bx-file'></i></div>
                 <i class='bx bx-trending-up trend-icon'></i>
             </div>
-            <div class="number">10</div>
-            <span class="box-topic">Layanan Aktif</span>
-            <div class="indicator">2 kategori</div>
+            <div class="number">{{ $totalBerita - $totalBeritaPublished }}</div>
+            <span class="box-topic">Draft Berita</span>
+            <div class="indicator">{{ $totalBerita }} total</div>
         </div>
     </div>
 
@@ -59,32 +59,27 @@
         <div class="recent-panel">
             <div class="panel-header">
                 <h3>Berita Terbaru</h3>
-                <a href="#">Lihat Semua</a>
+                <a href="/admin/berita">Lihat Semua</a>
             </div>
 
-            <div class="news-item">
-                <div class="news-title">Vaksinasi Massal COVID-19 di Kelurahan Citangkil</div>
-                <div class="news-meta">
-                    <span class="date"><i class='bx bx-calendar'></i> 2024-12-15</span>
-                    <span class="badge published">Published</span>
+            @if($recentBerita->count() > 0)
+                @foreach($recentBerita as $berita)
+                    <div class="news-item">
+                        <div class="news-title">{{ $berita->judul }}</div>
+                        <div class="news-meta">
+                            <span class="date"><i class='bx bx-calendar'></i> {{ \Carbon\Carbon::parse($berita->tanggal_publikasi)->format('d M Y') }}</span>
+                            <span class="badge {{ $berita->is_published ? 'published' : 'draft' }}">
+                                {{ $berita->is_published ? 'Published' : 'Draft' }}
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div style="text-align: center; padding: 30px; color: #999;">
+                    <i class='bx bx-news' style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>Belum ada berita</p>
                 </div>
-            </div>
-
-            <div class="news-item">
-                <div class="news-title">Pembagian Bantuan Sosial kepada Warga Kurang Mampu</div>
-                <div class="news-meta">
-                    <span class="date"><i class='bx bx-calendar'></i> 2024-12-10</span>
-                    <span class="badge published">Published</span>
-                </div>
-            </div>
-
-            <div class="news-item">
-                <div class="news-title">Kegiatan Gotong Royong Bersama Warga RW 05</div>
-                <div class="news-meta">
-                    <span class="date"><i class='bx bx-calendar'></i> 2024-12-05</span>
-                    <span class="badge draft">Draft</span>
-                </div>
-            </div>
+            @endif
         </div>
 
         <!-- Aktivitas Terbaru -->
@@ -118,19 +113,19 @@
     <div class="quick-actions">
         <h3>Aksi Cepat</h3>
         <div class="action-buttons">
-            <a href="#" class="action-btn btn-green">
+            <a href="/admin/berita/create" class="action-btn btn-green">
                 <i class='bx bx-layer-plus'></i>
                 <span>Tambah<br>Berita</span>
             </a>
-            <a href="#" class="action-btn btn-blue">
+            <a href="/admin/data-kelurahan" class="action-btn btn-blue">
                 <i class='bx bx-user-check'></i>
                 <span>Update<br>Data</span>
             </a>
-            <a href="#" class="action-btn btn-purple">
+            <a href="/admin/galeri" class="action-btn btn-purple">
                 <i class='bx bx-image-add'></i>
                 <span>Upload<br>Galeri</span>
             </a>
-            <a href="#" class="action-btn btn-orange">
+            <a href="/admin/profil" class="action-btn btn-orange">
                 <i class='bx bx-edit'></i>
                 <span>Edit<br>Profil</span>
             </a>

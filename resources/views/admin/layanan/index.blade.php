@@ -215,7 +215,7 @@
     .header-content { display: flex; justify-content: space-between; align-items: center; }
     .header-text h2 { margin: 0; font-size: 1.25rem; }
     .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
-    .btn-primary { background: #00a65a; color: white; }
+    .btn-primary { background: #F6903A; color: white; }
     .btn-secondary { background: #e2e8f0; color: #4a5568; }
     .btn-danger { background: #dc3545; color: white; }
     .icon-btn { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }

@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             DesaCantikSeeder::class,
             PrestasiSeeder::class,
             LayananSeeder::class,
+            ProfilKelurahanSeeder::class,
+            PendudukSeeder::class,
         ]);
     }
 }

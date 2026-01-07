@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin - Kelurahan Citangkil')</title>
     
     <!-- Bootstrap 5 CSS -->
@@ -34,10 +35,10 @@
 
         /* Variabel Warna */
         :root {
-            --sidebar-color: #025945; /* Hijau Tua Utama */
-            --hover-color: #0d7a5e;   /* Hijau lebih terang untuk tombol aktif */
+            --sidebar-color: #F6903A; /* Oranye Utama */
+            --hover-color: #E57A2A;   /* Oranye lebih gelap untuk hover */
             --text-color: #ffffff;
-            --sub-text-color: #8dbcb2;
+            --sub-text-color: #FFE5CC; /* Oranye muda untuk sub teks */
             --sidebar-width: 260px;
             --header-height: 60px;
         }
@@ -314,6 +315,12 @@
                 <a href="{{ route('admin.data-kelurahan.index') }}" class="{{ request()->is('admin/data-kelurahan*') ? 'active' : '' }}">
                     <i class='bx bx-data'></i>
                     <span class="links_name">Data Kelurahan</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.monografi.index') }}" class="{{ request()->is('admin/monografi*') ? 'active' : '' }}">
+                    <i class='bx bx-book-bookmark'></i>
+                    <span class="links_name">Monografi</span>
                 </a>
             </li>
             <li>

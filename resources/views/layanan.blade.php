@@ -20,16 +20,16 @@
 
         /* --- COLORS --- */
         :root {
-            --primary-green: #00897B; /* Warna Header */
-            --bg-green-light: #effaf3; /* BG Card Kiri */
+            --primary-green: #F6903A; /* Warna Header */
+            --bg-green-light: #FFF9F2; /* BG Card Kiri */
             --icon-bg-green: #d1e7dd;
             --text-green: #146c43;
             
-            --bg-blue-light: #eff6ff; /* BG Card Kanan */
+            --bg-blue-light: #FFF9F2; /* BG Card Kanan */
             --icon-bg-blue: #dbeafe;
             --text-blue: #1e40af;
             
-            --bg-info-blue: #f0f9ff; /* BG Info Bawah */
+            --bg-info-blue: #FFF9F2; /* BG Info Bawah */
         }
 
         /* --- HEADER SECTION --- */

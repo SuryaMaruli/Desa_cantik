@@ -5,15 +5,11 @@
 @section('content')
     <style>
         /* --- 1. RESET & GLOBAL VARIABLES --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             /* Warna Utama */
-            --primary-green: #00897B;
+            --primary-green: #F6903A;
             --text-dark: #1f2937;
             --text-muted: #4b5563;
             
@@ -23,17 +19,10 @@
             --info-text: #1e40af;
 
             /* Warna Tema Card (Background & Icon) */
-            --card-green-bg: #ecfdf5;
-            --card-green-icon: #10b981;
-            
-            --card-blue-bg: #eff6ff;
-            --card-blue-icon: #3b82f6;
-            
-            --card-purple-bg: #faf5ff;
-            --card-purple-icon: #a855f7;
-            
-            --card-teal-bg: #f0fdfa;
-            --card-teal-icon: #14b8a6;
+            --card-green-bg: #FFF9F2; --card-green-icon: #10b981;
+            --card-blue-bg: #FFF9F2; --card-blue-icon: #3b82f6;
+            --card-purple-bg: #FFF9F2; --card-purple-icon: #a855f7;
+            --card-teal-bg: #FFF9F2; --card-teal-icon: #14b8a6;
         }
 
         body {
@@ -70,10 +59,7 @@
             transition: opacity 0.2s;
         }
 
-        .back-link:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
+        .back-link:hover { opacity: 1; text-decoration: underline; }
 
         .page-header h1 {
             font-size: 2.5rem;
@@ -110,14 +96,9 @@
             font-size: 1.1rem;
         }
 
-        .info-header i {
-            font-size: 1.4rem;
-        }
+        .info-header i { font-size: 1.4rem; }
 
-        .info-list {
-            list-style: none;
-            padding-left: 36px; /* Align with text inside header */
-        }
+        .info-list { list-style: none; padding-left: 36px; }
 
         .info-list li {
             position: relative;
@@ -137,7 +118,7 @@
         /* --- 4. SERVICES GRID SYSTEM --- */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 Kolom */
+            grid-template-columns: repeat(2, 1fr);
             gap: 30px;
             margin-bottom: 80px;
         }
@@ -178,7 +159,6 @@
         .theme-purple .card-icon { background-color: #f3e8ff; color: var(--card-purple-icon); }
         .theme-teal .card-icon { background-color: #ccfbf1; color: var(--card-teal-icon); }
 
-        /* Typography Card */
         .service-card h3 {
             font-size: 1.25rem;
             margin-bottom: 12px;
@@ -190,7 +170,6 @@
             color: var(--text-muted);
             margin-bottom: 25px;
             font-size: 0.95rem;
-            min-height: 45px;
         }
 
         /* Requirements List */
@@ -202,9 +181,7 @@
             color: #374151;
         }
 
-        .req-list {
-            list-style: none;
-        }
+        .req-list { list-style: none; }
 
         .req-list li {
             display: flex;
@@ -216,39 +193,19 @@
             line-height: 1.5;
         }
 
-        .req-list li i {
-            margin-top: 3px;
-            flex-shrink: 0;
-        }
+        .req-list li i { margin-top: 3px; flex-shrink: 0; }
 
-        /* Warna Check Icon sesuai Tema */
         .theme-green .req-list i { color: var(--card-green-icon); }
         .theme-blue .req-list i { color: var(--card-blue-icon); }
         .theme-purple .req-list i { color: var(--card-purple-icon); }
         .theme-teal .req-list i { color: var(--card-teal-icon); }
 
-        /* --- 5. RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 768px) {
-            .page-header {
-                padding: 40px 0;
-            }
-            
-            .page-header h1 {
-                font-size: 2rem;
-            }
-            
-            .services-grid {
-                grid-template-columns: 1fr; /* 1 Kolom di HP */
-                gap: 20px;
-            }
-            
-            .info-list {
-                padding-left: 0; /* Reset padding di mobile agar rapi */
-            }
-            
-            .info-list li {
-                padding-left: 15px;
-            }
+            .page-header { padding: 40px 0; }
+            .page-header h1 { font-size: 2rem; }
+            .services-grid { grid-template-columns: 1fr; gap: 20px; }
+            .info-list { padding-left: 0; }
+            .info-list li { padding-left: 15px; }
         }
     </style>
 
@@ -278,75 +235,58 @@
         </div>
 
         <div class="services-grid">
-
-            <div class="service-card theme-green">
-                <div class="card-icon">
-                    <i class="fa-regular fa-id-card"></i>
-                </div>
-                <h3>Pembuatan E-KTP</h3>
-                <p>Pengurusan KTP elektronik baru, perpanjangan, dan penggantian.</p>
+            
+            {{-- Mulai Loop Data Database --}}
+            @forelse($layananKependudukan as $layanan)
                 
-                <span class="req-label">Persyaratan:</span>
-                <ul class="req-list">
-                    <li><i class="fa-regular fa-circle-check"></i> Pengantar RT/RW</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Fotocopi Kartu Keluarga</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Membawa Kartu Keluarga Asli</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Fotocopi Buku Nikah</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Membawa data dukungan apabila terdapat perubahan elemen data</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Surat Keterangan Kehilangan dari Kelurahan jika hilang</li>
-                </ul>
-            </div>
+                @php
+                    // Logika untuk merotasi tema warna dan ikon agar bervariasi
+                    // Urutan: Green -> Blue -> Purple -> Teal -> ulang lagi
+                    $index = $loop->index % 4; 
+                    
+                    $themes = ['theme-green', 'theme-blue', 'theme-purple', 'theme-teal'];
+                    $icons  = ['fa-id-card', 'fa-users', 'fa-file-contract', 'fa-user-pen'];
+                    
+                    $currentTheme = $themes[$index];
+                    $currentIcon  = $icons[$index];
+                @endphp
 
-            <div class="service-card theme-blue">
-                <div class="card-icon">
-                    <i class="fa-solid fa-users"></i>
+                <div class="service-card {{ $currentTheme }}">
+                    <div class="card-icon">
+                        <i class="fa-solid {{ $currentIcon }}"></i>
+                    </div>
+                    
+                    <h3>{{ $layanan->nama_layanan }}</h3>
+                    
+                    {{-- Deskripsi statis atau bisa diambil dari DB jika ada --}}
+                    <p>Layanan resmi kelurahan untuk keperluan {{ strtolower($layanan->nama_layanan) }}.</p>
+                    
+                    <span class="req-label">Persyaratan:</span>
+                    <ul class="req-list">
+                        {{-- Loop untuk Array Persyaratan --}}
+                        @if(is_array($layanan->persyaratan))
+                            @foreach($layanan->persyaratan as $syarat)
+                                <li>
+                                    <i class="fa-regular fa-circle-check"></i> 
+                                    {{ $syarat }}
+                                </li>
+                            @endforeach
+                        @else
+                            <li><i class="fa-regular fa-circle-xmark"></i> Data persyaratan belum diinput.</li>
+                        @endif
+                    </ul>
                 </div>
-                <h3>KK Baru/Perubahan</h3>
-                <p>Pengurusan Kartu Keluarga baru atau perubahan data anggota keluarga.</p>
-                
-                <span class="req-label">Persyaratan:</span>
-                <ul class="req-list">
-                    <li><i class="fa-regular fa-circle-check"></i> Pengantar RT/RW</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Kartu Keluarga Asli</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Kartu Keluarga Induk suami istri</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Buku Nikah yang bersangkutan</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Buku Nikah Kartu Keluarga Induk</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Surat Pindah (SKPWNI) bila salah satu bukan Penduduk Kota Cilegon</li>
-                </ul>
-            </div>
 
-            <div class="service-card theme-purple">
-                <div class="card-icon">
-                    <i class="fa-solid fa-file-contract"></i>
+            @empty
+                <div class="service-card theme-blue" style="grid-column: span 2; text-align: center;">
+                    <div class="card-icon" style="margin: 0 auto 20px auto;">
+                        <i class="fa-solid fa-inbox"></i>
+                    </div>
+                    <h3>Belum Ada Data Layanan</h3>
+                    <p>Saat ini belum ada data layanan kependudukan yang diinput ke dalam sistem.</p>
                 </div>
-                <h3>KK Hilang</h3>
-                <p>Pengurusan Kartu Keluarga yang hilang.</p>
-                
-                <span class="req-label">Persyaratan:</span>
-                <ul class="req-list">
-                    <li><i class="fa-regular fa-circle-check"></i> Pengantar RT/RW</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Surat Keterangan hilang dari Kepolisian</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Kartu Keluarga/KTP/Buku Nikah</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Data Pendukung</li>
-                </ul>
-            </div>
-
-            <div class="service-card theme-teal">
-                <div class="card-icon">
-                    <i class="fa-solid fa-user-pen"></i>
-                </div>
-                <h3>KK Perubahan Elemen Data</h3>
-                <p>Perubahan data spesifik pada Kartu Keluarga.</p>
-                
-                <span class="req-label">Persyaratan:</span>
-                <ul class="req-list">
-                    <li><i class="fa-regular fa-circle-check"></i> Pengantar RT/RW</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Kartu Keluarga Asli</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Kartu Keluarga</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Buku Nikah</li>
-                    <li><i class="fa-regular fa-circle-check"></i> FC Data Pendukung Perubahan-perubahan data (Ijazah dan Akte Kelahiran)</li>
-                </ul>
-            </div>
+            @endforelse
+            {{-- Selesai Loop --}}
 
         </div>
     </main>

@@ -3,315 +3,277 @@
 @section('title', 'Layanan Permintaan Data - Kelurahan Citangkil')
 
 @section('content')
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* --- CSS Reset & Global --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #333; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #333; overflow-x: hidden; }
 
-        /* --- Header Section --- */
-        .header { background-color: #00856F; color: white; padding: 40px 20px 60px 20px; }
-        .header-container { width: 95%; max-width: none; margin: 0 auto; }
-        .back-link { display: inline-flex; align-items: center; color: white; text-decoration: none; font-size: 14px; margin-bottom: 20px; cursor: pointer; }
-        .back-link i { margin-right: 8px; }
-        .header h1 { font-size: 32px; font-weight: 600; margin-bottom: 15px; }
-        .header p { font-size: 16px; opacity: 0.9; line-height: 1.5; max-width: 600px; }
+        /* --- HEADER SECTION --- */
+        .hero {
+            background-color: #F79433; 
+            color: white;
+            padding: 40px 5%;
+            padding-bottom: 80px;
+        }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .back-link {
+            text-decoration: none; color: white; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-bottom: 25px; font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .hero h1 { font-size: 36px; font-weight: 600; margin-bottom: 15px; }
+        .hero p { font-size: 16px; max-width: 600px; opacity: 0.9; line-height: 1.5; }
 
-        /* --- Main Content Section --- */
-        .main-content { width: 95%; max-width: none; margin: 0 auto; padding: 40px 20px 0 20px; }
-        .section-title { text-align: center; margin-bottom: 40px; }
-        .section-title h2 { color: #00856F; font-size: 24px; margin-bottom: 10px; }
-        .section-title p { color: #666; font-size: 14px; }
-
-        /* --- CARD STYLE (Layanan) --- */
-        .service-card {
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
+        /* --- MAIN CONTAINER --- */
+        .container {
+            max-width: 1200px; margin: 0 auto; padding: 0 20px;
+            margin-top: -40px; padding-bottom: 80px;
         }
 
-        /* --- THEME COLORS --- */
-        /* Hijau (WhatsApp) */
-        .theme-green { background-color: #F0FDF9; }
-        .theme-green .icon-box { background-color: #009688; }
-        .theme-green h3 { color: #00856F; }
-        .theme-green .step-number { background-color: #C8E6C9; color: #2E7D32; }
+        /* --- SECTION TITLE --- */
+        .section-header { text-align: center; margin-top: 60px; margin-bottom: 40px; }
+        .section-header h2 { color: #D84E25; font-size: 28px; font-weight: 600; margin-bottom: 15px; }
+        .section-header p { color: #666; max-width: 600px; margin: 0 auto; }
 
-        /* Biru (Offline) */
-        .theme-blue { background-color: #F0F8FF; }
-        .theme-blue .icon-box { background-color: #1877F2; }
-        .theme-blue h3 { color: #1877F2; }
-        .theme-blue .step-number { background-color: #D1E9FF; color: #1877F2; }
+        /* --- CARD STYLES --- */
+        .method-card {
+            background-color: #FFF9EF; border-radius: 20px; padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 50px;
+        }
+        .method-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .icon-box {
+            background-color: #F03E1A; width: 60px; height: 60px; border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 24px; flex-shrink: 0;
+        }
+        .icon-box.google-icon { background-color: #E65100; } /* Style khusus Google */
 
-        /* Ungu (Website) */
-        .theme-purple { background-color: #FDF2FF; }
-        .theme-purple .icon-box { background-color: #A020F0; }
-        .theme-purple h3 { color: #A020F0; }
-        .theme-purple .step-number { background-color: #F3E5F5; color: #A020F0; }
-
-        /* --- Common Elements --- */
-        .method-header { display: flex; align-items: center; margin-bottom: 30px; }
-        .icon-box { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; margin-right: 15px; }
-        .method-info h3 { font-size: 20px; margin-bottom: 4px; }
+        .method-info h3 { color: #D84E25; font-size: 22px; margin-bottom: 5px; font-weight: 700; }
         .method-info p { color: #666; font-size: 14px; }
 
-        /* --- Steps Grid --- */
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-        }
+        /* --- GRID STEPS --- */
+        .steps-grid { display: grid; gap: 20px; }
+        .cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .cols-5 { grid-template-columns: repeat(5, 1fr); }
+
         .step-item {
-            background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            height: 100%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            background-color: white; padding: 25px; border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; align-items: flex-start; height: 100%;
         }
         .step-number {
-            width: 35px; height: 35px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px; margin-bottom: 20px;
+            background-color: #FFECCB; color: #E67E22;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 14px; margin-bottom: 15px;
         }
-        .step-item h4 { font-size: 15px; color: #333; margin-bottom: 8px; font-weight: 600; }
-        .step-item p { font-size: 13px; color: #666; line-height: 1.5; }
-        .step-link { color: inherit; text-decoration: underline; word-break: break-all; font-weight: 600; }
+        .step-number.yellow { background-color: #FFF5CC; color: #D9A404; } /* Style khusus nomor Google */
 
-        /* --- CTA Box (Google Form) --- */
-        .cta-box {
-            background-color: white; border-radius: 12px; padding: 30px; margin-top: 30px;
-            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        .step-item h4 { font-size: 15px; margin-bottom: 8px; color: #333; font-weight: 600; }
+        .step-item p { font-size: 13px; color: #666; line-height: 1.5; width: 100%; }
+        .step-item p a { color: #F79433; text-decoration: underline; word-break: break-all; font-weight: 500; }
+
+        /* --- CTA BOX (Google Form) --- */
+        .cta-container {
+            background-color: white; border-radius: 15px; padding: 30px; margin-top: 30px;
+            text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
-        .cta-box h4 { margin-bottom: 15px; font-weight: 500; font-size: 16px; }
-        .btn-purple {
-            background-color: #A020F0; color: white; text-decoration: none; padding: 12px 30px;
-            border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; transition: background 0.3s;
+        .cta-container h4 { margin-bottom: 15px; color: #333; font-weight: 600; }
+        .btn-google {
+            display: inline-flex; align-items: center; gap: 10px;
+            background-color: #E65100; color: white; text-decoration: none;
+            padding: 12px 40px; border-radius: 8px; font-weight: 600;
+            transition: background 0.3s; margin-bottom: 10px;
         }
-        .btn-purple:hover { background-color: #8a1bc9; }
-        .btn-purple i { margin-right: 8px; }
-        .cta-caption { margin-top: 15px; font-size: 12px; color: #888; }
+        .btn-google:hover { background-color: #C44200; }
+        .cta-note { font-size: 13px; color: #888; }
 
-
-        /* --- INFO SECTION (Bagian Baru Paling Bawah) --- */
-        .info-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
+        /* --- INFO SECTION --- */
+        .info-section-wrapper { margin-top: 60px; border-top: 1px solid #eee; padding-top: 40px; }
+        .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
         .info-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            background-color: white; border: 1px solid #f0f0f0; padding: 25px;
+            border-radius: 16px; display: flex; flex-direction: column; transition: transform 0.2s;
         }
+        .info-card:hover { transform: translateY(-5px); border-color: #F79433; }
+        .info-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .info-header i { font-size: 20px; margin-right: 12px; color: #F79433; }
+        .info-header h4 { font-size: 16px; font-weight: 600; color: #333; }
+        .info-content p { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 5px; }
 
-        .info-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .cols-4, .cols-5 { grid-template-columns: repeat(2, 1fr); }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
-        .info-header i {
-            font-size: 22px;
-            margin-right: 12px;
-        }
-
-        .info-header h4 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .info-content p {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
-
-        /* Warna Khusus untuk Header Info */
-        .text-green { color: #00856F; }
-        .text-blue { color: #1877F2; }
-        .text-purple { color: #A020F0; }
-
-        /* --- Responsive --- */
-        @media (max-width: 768px) {
-            .header h1 { font-size: 24px; }
-            .service-card { padding: 20px; }
-            .steps-grid, .info-section { grid-template-columns: 1fr; }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 28px; }
+            .cols-4, .cols-5, .info-grid { grid-template-columns: 1fr; }
+            .method-card { padding: 25px; }
+            .method-header { flex-direction: column; text-align: center; }
+            .container { padding: 0 15px; }
         }
     </style>
 
-    <header class="header">
+    <header class="hero">
         <div class="header-container">
-            <a href="/layanan" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Layanan</a>
+            <a href="{{ url('/layanan') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Kembali ke Layanan
+            </a>
             <h1>Layanan Permintaan Data</h1>
-            <p>Ajukan permintaan data dan informasi kelurahan dengan mudah melalui berbagai channel yang tersedia</p>
+            <p>Ajukan permintaan data dan informasi kelurahan dengan mudah melalui berbagai channel yang tersedia.</p>
         </div>
     </header>
 
-    <main class="main-content">
+    <main class="container">
         
-        <section class="section-title">
+        <section class="section-header">
             <h2>Pilih Cara Permintaan Data</h2>
-            <p>Kami menyediakan 3 cara untuk memudahkan Anda dalam mengajukan permintaan data kelurahan</p>
+            <p>Kami menyediakan berbagai cara untuk memudahkan Anda dalam mengajukan permintaan data</p>
         </section>
 
-        <section class="service-card theme-green">
-            <div class="method-header">
-                <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
-                <div class="method-info">
-                    <h3>Online (WhatsApp)</h3>
-                    <p>Ajukan permintaan data melalui WhatsApp</p>
-                </div>
-            </div>
-            <div class="steps-grid">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <h4>Siapkan Data</h4>
-                    <p>Nama, alamat, dan jenis data yang dibutuhkan</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <h4>Hubungi WhatsApp</h4>
-                    <p><a href="#" class="step-link" style="color: #00856F;">wa.me/62878...</a></p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <h4>Tunggu Konfirmasi</h4>
-                    <p>Petugas akan memberikan instruksi lebih lanjut</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <h4>Ambil Data</h4>
-                    <p>Data dikirimkan atau diambil langsung sesuai instruksi</p>
-                </div>
-            </div>
-        </section>
+        {{-- 
+            1. LOOPING DARI DATABASE 
+            (Untuk WhatsApp, Offline, dll yang diinput dari Admin)
+        --}}
+        @foreach($layananData as $layanan)
+            @php
+                // Logika Icon & Judul dinamis sederhana
+                $iconClass = 'fas fa-clipboard-list'; // Default
+                $subTitle = 'Ikuti langkah-langkah berikut';
 
-        <section class="service-card theme-blue">
-            <div class="method-header">
-                <div class="icon-box"><i class="fas fa-building"></i></div>
-                <div class="method-info">
-                    <h3>Offline (Datang Langsung)</h3>
-                    <p>Kunjungi kantor kelurahan secara langsung</p>
-                </div>
-            </div>
-            <div class="steps-grid">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <h4>Siapkan Dokumen</h4>
-                    <p>KTP, surat permohonan, dan informasi data yang dibutuhkan</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <h4>Kunjungi Kantor</h4>
-                    <p>Buka Senin – Jumat<br>08:00 – 15:30 WIB</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <h4>Sampaikan Permintaan</h4>
-                    <p>Berikan data yang diperlukan kepada petugas</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <h4>Tunggu Proses</h4>
-                    <p>Petugas akan mengolah data</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">5</div>
-                    <h4>Ambil Data</h4>
-                    <p>Ambil data pada waktu yang ditentukan</p>
-                </div>
-            </div>
-        </section>
+                if (stripos($layanan->nama_layanan, 'WhatsApp') !== false) {
+                    $iconClass = 'fab fa-whatsapp';
+                    $subTitle = 'Ajukan permintaan data melalui WhatsApp';
+                } elseif (stripos($layanan->nama_layanan, 'Offline') !== false || stripos($layanan->nama_layanan, 'Langsung') !== false) {
+                    $iconClass = 'fas fa-building';
+                    $subTitle = 'Kunjungi kantor kelurahan secara langsung';
+                }
+                
+                // Menghitung kolom grid
+                $gridClass = count($layanan->persyaratan) >= 5 ? 'cols-5' : 'cols-4';
+            @endphp
 
-        <section class="service-card theme-purple">
+            {{-- Filter: Jangan tampilkan "Website/Google" dari DB jika user tidak sengaja menginputnya, 
+                 karena kita sudah punya card statis di bawah. Opsional. --}}
+            @if(stripos($layanan->nama_layanan, 'Google') === false && stripos($layanan->nama_layanan, 'Website') === false)
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="icon-box"><i class="{{ $iconClass }}"></i></div>
+                    <div class="method-info">
+                        <h3>{{ $layanan->nama_layanan }}</h3>
+                        <p>{{ $subTitle }}</p>
+                    </div>
+                </div>
+
+                <div class="steps-grid {{ $gridClass }}">
+                    @foreach($layanan->persyaratan as $index => $syarat)
+                        <div class="step-item">
+                            <div class="step-number">{{ $loop->iteration }}</div>
+                            <h4>Langkah {{ $loop->iteration }}</h4>
+                            <p>{!! $syarat !!}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            
+            @endif
+        @endforeach
+
+
+        {{-- 
+            2. CARD WEBSITE (GOOGLE FORM) - STATIC / HARDCODED 
+            Sesuai permintaan: Bagian ini dibiarkan manual agar desain tombol & warna tetap terjaga.
+        --}}
+        <div class="method-card">
             <div class="method-header">
-                <div class="icon-box"><i class="fas fa-globe"></i></div>
+                <div class="icon-box google-icon"><i class="fas fa-globe"></i></div>
                 <div class="method-info">
                     <h3>Website (Google Form)</h3>
                     <p>Isi formulir permintaan data secara online</p>
                 </div>
             </div>
-            <div class="steps-grid">
+
+            <div class="steps-grid cols-4">
                 <div class="step-item">
-                    <div class="step-number">1</div>
+                    <div class="step-number yellow">1</div>
                     <h4>Siapkan Dokumen</h4>
                     <p>Nama, alamat, dan jenis data yang dibutuhkan</p>
                 </div>
                 <div class="step-item">
-                    <div class="step-number">2</div>
-                    <h4>Isikan Form</h4>
+                    <div class="step-number yellow">2</div>
+                    <h4>Isikan Google Form</h4>
                     <p>Lengkapi formulir permintaan data secara online</p>
                 </div>
                 <div class="step-item">
-                    <div class="step-number">3</div>
+                    <div class="step-number yellow">3</div>
                     <h4>Tunggu Proses</h4>
                     <p>Petugas akan mengolah data</p>
                 </div>
                 <div class="step-item">
-                    <div class="step-number">4</div>
+                    <div class="step-number yellow">4</div>
                     <h4>Terima Data</h4>
                     <p>Terima data pada waktu yang ditentukan</p>
                 </div>
             </div>
-            <div class="cta-box">
+
+            <div class="cta-container">
                 <h4>Formulir Permintaan Data</h4>
-                <a href="#" class="btn-purple"><i class="fas fa-globe"></i> Isi Google Form</a>
-                <p class="cta-caption">Klik tombol di atas untuk mengisi formulir permintaan data</p>
+                {{-- Masukkan Link Google Form Anda di href --}}
+                <a href="https://forms.google.com/..." target="_blank" class="btn-google">
+                    <i class="fas fa-file-alt"></i> Isi Google Form
+                </a>
+                <p class="cta-note">Klik tombol di atas untuk mengisi formulir permintaan data</p>
             </div>
-        </section>
+        </div>
+        {{-- END CARD STATIC --}}
 
-        <section class="info-section">
-            
-            <div class="info-card">
-                <div class="info-header">
-                    <i class="fas fa-map-marker-alt text-green"></i>
-                    <h4>Lokasi Kantor</h4>
+
+        {{-- INFO SECTION --}}
+        <div class="info-section-wrapper">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-header">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Lokasi Kantor</h4>
+                    </div>
+                    <div class="info-content">
+                        <p><strong>Kantor Kelurahan Citangkil</strong></p>
+                        <p>Jl. Raya Citangkil No. 123</p>
+                        <p>Kota Cilegon, Banten 42441</p>
+                    </div>
                 </div>
-                <div class="info-content">
-                    <p><strong>Kantor Kelurahan Citangkil</strong></p>
-                    <p>Jl. Raya Citangkil No. 123</p>
-                    <p>Kota Cilegon, Banten 42441</p>
+
+                <div class="info-card">
+                    <div class="info-header">
+                        <i class="far fa-clock"></i>
+                        <h4>Jam Pelayanan</h4>
+                    </div>
+                    <div class="info-content">
+                        <p>Senin – Jumat</p>
+                        <p>08:00 – 15:30 WIB</p>
+                        <p style="color: #999; font-size: 13px; margin-top: 5px;">(Tutup pada hari libur nasional)</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-header">
+                        <i class="fas fa-headset"></i>
+                        <h4>Kontak</h4>
+                    </div>
+                    <div class="info-content">
+                        <p>Telepon: (0254) 123-4567</p>
+                        <p>WhatsApp: +62 878-5351-6685</p>
+                        <p>Email: admin@citangkil.go.id</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="info-card">
-                <div class="info-header">
-                    <i class="far fa-clock text-blue"></i>
-                    <h4>Jam Pelayanan</h4>
-                </div>
-                <div class="info-content">
-                    <p>Senin – Jumat</p>
-                    <p>08:00 – 15:30 WIB</p>
-                    <p style="color: #888; font-size: 13px; margin-top: 5px;">(Tutup pada hari libur nasional)</p>
-                </div>
-            </div>
-
-            <div class="info-card">
-                <div class="info-header">
-                    <i class="fas fa-phone-alt text-purple"></i>
-                    <h4>Kontak</h4>
-                </div>
-                <div class="info-content">
-                    <p>Telepon: (0254) 123-4567</p>
-                    <p>WhatsApp: +62 878-5351-6685</p>
-                    <p>Email: kelurahan@citangkil.go.id</p>
-                </div>
-            </div>
-
-        </section>
+        </div>
 
     </main>
 @endsection

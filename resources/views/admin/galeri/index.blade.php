@@ -8,21 +8,9 @@
     * { box-sizing: border-box; }
     body { background-color: #fcfcfc; min-height: 100vh; }
     :root {
-        --sidebar-bg: #005740;     
-        --sidebar-active: #0b755b; 
         --header-height: 80px;
-        --sidebar-width: 260px;
         --text-dark: #333;
         --primary-green: #008C6E;
-    }
-
-    /* --- 2. SIDEBAR --- */
-    .sidebar {
-        background: var(--sidebar-bg) !important;
-    }
-    .sidebar ul li a:hover, 
-    .sidebar ul li a.active { 
-        background: var(--sidebar-active) !important; 
     }
 
     /* --- 3. MAIN CONTENT --- */

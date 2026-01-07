@@ -6,21 +6,9 @@
 <style>
     /* --- 1. RESET & GLOBAL --- */
     :root {
-        --sidebar-bg: #005740;     
-        --sidebar-active: #0b755b; 
         --header-height: 80px;
-        --sidebar-width: 260px;
         --text-dark: #333;
         --primary-green: #008C6E;
-    }
-
-    /* --- 2. SIDEBAR --- */
-    .sidebar {
-        background: var(--sidebar-bg) !important;
-    }
-    .sidebar ul li a:hover, 
-    .sidebar ul li a.active { 
-        background: var(--sidebar-active) !important; 
     }
 
     /* --- 3. MAIN CONTENT --- */
@@ -52,28 +40,264 @@
     .header-text p { 
         font-size: 14px; 
         color: #666; 
-    }
-    
-    .btn-edit-data {
-        background-color: #009669; 
-        color: white; 
-        padding: 10px 20px; 
-        border-radius: 8px;
-        text-decoration: none; 
-        display: flex; 
-        align-items: center; 
-        gap: 8px; 
-        font-size: 14px; 
-        font-weight: 500;
-        transition: 0.3s;
-        border: none;
-        cursor: pointer;
-    }
-    .btn-edit-data:hover { 
-        background-color: #007d57; 
-        color: white;
+        margin: 0; 
     }
 
+    /* E. Tabel Data Penduduk */
+    .table-container {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        border: 1px solid #eee;
+        margin-bottom: 30px;
+    }
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .btn-tambah {
+        background: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+    .btn-tambah:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+    .table-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+    }
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .search-input {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        width: 250px;
+    }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .data-table th {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #e9ecef;
+        font-size: 14px;
+    }
+    .data-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f1f3f4;
+        font-size: 14px;
+        color: #555;
+    }
+    .data-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+    .badge-status {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .badge-menikah {
+        background: #d4edda;
+        color: #155724;
+    }
+    .badge-belum {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+    .btn-action {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+    .btn-edit {
+        background: #007bff;
+        color: white;
+    }
+    .btn-edit:hover {
+        background: #0056b3;
+    }
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+    .btn-delete:hover {
+        background: #c82333;
+    }
+    
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.0.5);
+        animation: fadeIn 0.3s;
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 0;
+        border: 1px solid #888;
+        border-radius: 12px;
+        width: 500px;
+        max-width: 90%;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s;
+    }
+    .modal-header {
+        background: linear-gradient(135deg, #F6903A, #E57A2A);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    .modal-close:hover {
+        background: rgba(255,255,255,0.2);
+    }
+    .form-group {
+        margin-bottom: 20px;
+        padding: 0 25px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #F6903A;
+        box-shadow: 0 0 0 3px rgba(246, 144, 58, 0.1);
+    }
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 20px 25px;
+        background: #f8f9fa;
+        border-radius: 0 0 12px 12px;
+        margin: 0;
+    }
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+    .btn-cancel:hover {
+        background: #5a6268;
+    }
+    .btn-submit {
+        background: #F6903A;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
+    }
+    .btn-submit:hover {
+        background: #E57A2A;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .header-text p { 
+        font-size: 14px; 
+        color: #666; 
+    }
+    
     /* B. Statistik Cards (4 Kotak Warna-warni) */
     .stats-grid {
         display: grid;
@@ -226,9 +450,6 @@
             <h3>Data Kependudukan</h3>
             <p>Kelola data statistik penduduk kelurahan</p>
         </div>
-        <button class="btn-edit-data">
-            <i class='bx bx-edit'></i> Edit Data
-        </button>
     </div>
 
     <div class="stats-grid">
@@ -296,6 +517,159 @@
             </div>
         </div>
     </div>
+
+    <!-- Tabel Data Penduduk -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">Data Penduduk</h3>
+            <div class="header-actions">
+                <button class="btn-tambah" onclick="tambahPenduduk()">
+                    <i class='bx bx-plus-circle'></i> Tambah Penduduk
+                </button>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Cari nama penduduk...">
+                    <button class="btn-edit-data">
+                        <i class='bx bx-search'></i> Cari
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Status</th>
+                    <th>RW</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data['penduduk'] as $penduduk)
+                <tr>
+                    <td>{{ $penduduk['no'] }}</td>
+                    <td>{{ $penduduk['nama'] }}</td>
+                    <td>{{ $penduduk['jenis_kelamin'] }}</td>
+                    <td>
+                        <span class="badge-status {{ $penduduk['status'] == 'Menikah' ? 'badge-menikah' : 'badge-belum' }}">
+                            {{ $penduduk['status'] }}
+                        </span>
+                    </td>
+                    <td>{{ $penduduk['rw'] }}</td>
+                    <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit" onclick="editPenduduk({{ $penduduk['id'] }})">
+                                    <i class='bx bx-edit'></i> Edit
+                                </button>
+                                <button class="btn-action btn-delete" onclick="deletePenduduk({{ $penduduk['id'] }}, '{{ $penduduk['nama'] }}')">
+                                    <i class='bx bx-trash'></i> Delete
+                                </button>
+                            </div>
+                        </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Edit Penduduk -->
+<div id="editPendudukModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Penduduk</h3>
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+        </div>
+        <form id="formEditPenduduk" onsubmit="return updatePenduduk(event)">
+            @csrf
+            <input type="hidden" id="editPendudukId" name="id">
+            <div class="form-group">
+                <label for="editNama">Nama Lengkap</label>
+                <input type="text" id="editNama" name="nama" required>
+            </div>
+            <div class="form-group">
+                <label for="editJenisKelamin">Jenis Kelamin</label>
+                <select id="editJenisKelamin" name="jenis_kelamin" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editStatus">Status Pernikahan</label>
+                <select id="editStatus" name="status" required>
+                    <option value="">-- Pilih Status --</option>
+                    <option value="Menikah">Menikah</option>
+                    <option value="Belum Menikah">Belum Menikah</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editRw">RW</label>
+                <select id="editRw" name="rw" required>
+                    <option value="">-- Pilih RW --</option>
+                    @for($i = 1; $i <= 10; $i++)
+                        <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">RW {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                    @endfor
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">Batal</button>
+                <button type="submit" class="btn-submit">
+                    <i class='bx bx-save'></i> Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Tambah Penduduk -->
+<div id="tambahPendudukModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Tambah Penduduk Baru</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <form id="formTambahPenduduk" onsubmit="return submitPenduduk(event)">
+            @csrf
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" name="nama" required>
+            </div>
+            <div class="form-group">
+                <label for="jenis_kelamin">Jenis Kelamin</label>
+                <select id="jenis_kelamin" name="jenis_kelamin" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="status">Status Pernikahan</label>
+                <select id="status" name="status" required>
+                    <option value="">-- Pilih Status --</option>
+                    <option value="Menikah">Menikah</option>
+                    <option value="Belum Menikah">Belum Menikah</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rw">RW</label>
+                <select id="rw" name="rw" required>
+                    <option value="">-- Pilih RW --</option>
+                    @for($i = 1; $i <= 10; $i++)
+                        <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">RW {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                    @endfor
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
+                <button type="submit" class="btn-submit">
+                    <i class='bx bx-save'></i> Simpan
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 @push('scripts')
@@ -303,6 +677,234 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize any required JavaScript components
     });
+
+    function tambahPenduduk() {
+        // Tampilkan modal tambah penduduk
+        document.getElementById('tambahPendudukModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        // Sembunyikan modal
+        document.getElementById('tambahPendudukModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset form
+        document.getElementById('formTambahPenduduk').reset();
+    }
+
+    function submitPenduduk(event) {
+        event.preventDefault();
+        
+        const form = document.getElementById('formTambahPenduduk');
+        const formData = new FormData(form);
+        
+        // Tampilkan loading
+        const submitBtn = form.querySelector('.btn-submit');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Menyimpan...';
+        submitBtn.disabled = true;
+        
+        // Kirim data ke server
+        fetch('/admin/data-kelurahan/store', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showNotification('Data penduduk berhasil ditambahkan!', 'success');
+                closeModal();
+                // Reload halaman untuk melihat data terbaru
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showNotification(data.message || 'Terjadi kesalahan saat menyimpan data', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
+        })
+        .finally(() => {
+            // Kembalikan button ke state semula
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    }
+
+    function closeEditModal() {
+        // Sembunyikan modal edit
+        document.getElementById('editPendudukModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset form
+        document.getElementById('formEditPenduduk').reset();
+    }
+
+    function editPenduduk(id) {
+        // Ambil data penduduk berdasarkan ID database
+        const pendudukData = @json($data['penduduk']);
+        const penduduk = pendudukData.find(p => p.id === id);
+        
+        if (penduduk) {
+            // Isi form dengan data yang ada
+            document.getElementById('editNama').value = penduduk.nama;
+            document.getElementById('editJenisKelamin').value = penduduk.jenis_kelamin;
+            document.getElementById('editStatus').value = penduduk.status;
+            document.getElementById('editRw').value = penduduk.rw;
+            
+            // Tampilkan modal edit
+            document.getElementById('editPendudukModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Simpan ID untuk update
+            document.getElementById('editPendudukId').value = penduduk.id;
+        } else {
+            showNotification('Data penduduk tidak ditemukan', 'error');
+        }
+    }
+
+    function updatePenduduk(event) {
+        event.preventDefault();
+        
+        const form = document.getElementById('formEditPenduduk');
+        const id = document.getElementById('editPendudukId').value;
+        
+        // Ambil data form sebagai object
+        const formData = {
+            _method: 'PUT',
+            _token: form.querySelector('input[name="_token"]').value,
+            nama: form.querySelector('#editNama').value,
+            jenis_kelamin: form.querySelector('#editJenisKelamin').value,
+            status: form.querySelector('#editStatus').value,
+            rw: form.querySelector('#editRw').value
+        };
+        
+        // Tampilkan loading
+        const submitBtn = form.querySelector('.btn-submit');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Mengupdate...';
+        submitBtn.disabled = true;
+        
+        // Kirim data ke server sebagai JSON
+        fetch(`/admin/data-kelurahan/update/${id}`, {
+            method: 'PUT',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showNotification('Data penduduk berhasil diupdate!', 'success');
+                closeEditModal();
+                // Reload halaman untuk melihat data terbaru
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showNotification(data.message || 'Terjadi kesalahan saat mengupdate data', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
+        })
+        .finally(() => {
+            // Kembalikan button ke state semula
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    }
+
+    // Update window onclick untuk handle kedua modal
+    window.onclick = function(event) {
+        const tambahModal = document.getElementById('tambahPendudukModal');
+        const editModal = document.getElementById('editPendudukModal');
+        
+        if (event.target === tambahModal) {
+            closeModal();
+        } else if (event.target === editModal) {
+            closeEditModal();
+        }
+    }
+
+    function deletePenduduk(id, nama) {
+        if (confirm('Apakah Anda yakin ingin menghapus data penduduk "' + nama + '"?')) {
+            // Kirim request delete ke server
+            fetch(`/admin/data-kelurahan/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Hapus baris dari tabel dengan animasi
+                    const row = document.querySelector(`tr:nth-child(${id + 1})`);
+                    if (row) {
+                        row.style.transition = 'opacity 0.3s';
+                        row.style.opacity = '0';
+                        setTimeout(() => row.remove(), 300);
+                    }
+                    
+                    // Tampilkan notifikasi
+                    showNotification('Data penduduk berhasil dihapus', 'success');
+                    
+                    // Reload halaman setelah 1.5 detik untuk update statistik
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification(data.message || 'Terjadi kesalahan saat menghapus data', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
+            });
+        }
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        const bgColor = type === 'success' ? '#28a745' : '#dc3545';
+        
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px;
+            background-color: ${bgColor}; color: white;
+            padding: 12px 20px; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000; font-family: 'Poppins', sans-serif; font-size: 14px;
+            animation: slideInRight 0.3s ease;
+        `;
+        notification.textContent = message;
+        
+        const style = document.createElement('style');
+        style.textContent = `@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
+        document.head.appendChild(style);
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.3s ease';
+            setTimeout(() => { notification.remove(); style.remove(); }, 300);
+        }, 3000);
+    }
 </script>
 @endpush
 @endsection

@@ -6,7 +6,7 @@
     <style>
         /* Reset & Base Styles */
         :root {
-            --primary-green: #009688;
+            --primary-green: #F6903A;
             --light-green-bg: #e0f2f1;
             --text-color: #333;
             --text-muted: #666;
@@ -238,7 +238,7 @@
                 </div>
                 <div class="card-body">
                     <p>Total Penduduk</p>
-                    <h2>25,340</h2>
+                    <h2>{{ number_format($totalPenduduk, 0, ',', '.') }}</h2>
                 </div>
             </div>
 
@@ -251,7 +251,7 @@
                 </div>
                 <div class="card-body">
                     <p>Jumlah Penduduk Pria</p>
-                    <h2>13,200</h2>
+                    <h2>{{ number_format($lakiLaki, 0, ',', '.') }}</h2>
                 </div>
             </div>
 
@@ -264,7 +264,7 @@
                 </div>
                 <div class="card-body">
                     <p>Jumlah Penduduk Wanita</p>
-                    <h2>12,140</h2>
+                    <h2>{{ number_format($perempuan, 0, ',', '.') }}</h2>
                 </div>
             </div>
         </section>
@@ -286,11 +286,11 @@
                 </div>
                 <div class="pie-legend">
                     <div>
-                        <h3>13,200</h3>
+                        <h3>{{ number_format($lakiLaki, 0, ',', '.') }}</h3>
                         <span>Laki-laki</span>
                     </div>
                     <div>
-                        <h3>12,140</h3>
+                        <h3>{{ number_format($perempuan, 0, ',', '.') }}</h3>
                         <span>Perempuan</span>
                     </div>
                 </div>
@@ -342,11 +342,11 @@
             new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: ['RW 01', 'RW 02', 'RW 03', 'RW 04', 'RW 05', 'RW 06', 'RW 07', 'RW 08'],
+                    labels: @json($rwLabels),
                     datasets: [
                         {
                             label: 'Laki-laki',
-                            data: [1100, 1250, 1000, 1350, 1150, 1100, 950, 1250],
+                            data: @json($rwLakiData),
                             backgroundColor: colorBlue,
                             borderRadius: 4,
                             barPercentage: 0.7,
@@ -354,7 +354,7 @@
                         },
                         {
                             label: 'Perempuan',
-                            data: [1000, 1100, 950, 1150, 1050, 1000, 850, 1050],
+                            data: @json($rwPerempuanData),
                             backgroundColor: colorPink,
                             borderRadius: 4,
                             barPercentage: 0.7,
@@ -391,7 +391,7 @@
                 data: {
                     labels: ['Laki-laki', 'Perempuan'],
                     datasets: [{
-                        data: [52, 48],
+                        data: [{{ $lakiLaki }}, {{ $perempuan }}],
                         backgroundColor: [colorBlue, colorPink],
                         borderWidth: 0
                     }]
@@ -417,9 +417,9 @@
             new Chart(ctxPieRW, {
                 type: 'pie',
                 data: {
-                    labels: ['RW 01', 'RW 02', 'RW 03', 'RW 04', 'RW 05', 'RW 06', 'RW 07', 'RW 08'],
+                    labels: @json($rwPieLabels),
                     datasets: [{
-                        data: [12, 13, 11, 14, 13, 12, 10, 13],
+                        data: @json($rwPieData),
                         backgroundColor: colorPiePalette,
                         borderWidth: 1,
                         borderColor: '#fff'

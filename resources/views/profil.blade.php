@@ -16,7 +16,7 @@
 
         /* --- HEADER SECTION --- */
         .header-section {
-            background-color: #009688;
+            background-color: #F6903A;
             color: white;
             padding: 60px 0 120px 0;
         }
@@ -35,6 +35,22 @@
             padding: 40px;
             margin-bottom: 40px;
             max-width: none;
+        }
+
+        /* --- IMAGE BOARD STYLING --- */
+        .image-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .image-board {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            object-fit: cover;
         }
 
         /* --- TYPOGRAPHY UTILS --- */
@@ -179,47 +195,47 @@
     <main class="container main-content">
         
         <div class="card">
-            <h2 class="profile-title">Kelurahan Citangkil</h2>
+            <h2 class="profile-title">{{ $profilKelurahan->nama_kelurahan ?? 'Kelurahan Citangkil' }}</h2>
             <div class="info-list">
                 <div class="info-row">
                     <div class="label">Nama Kelurahan</div>
                     <div class="separator">:</div>
-                    <div class="value">Citangkil</div>
+                    <div class="value">{{ $profilKelurahan->nama_kelurahan ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Tahun Pembentukan</div>
                     <div class="separator">:</div>
-                    <div class="value">2003</div>
+                    <div class="value">{{ $profilKelurahan->tahun_pembukaan ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Dasar Hukum Pembentukan</div>
                     <div class="separator">:</div>
-                    <div class="value">Perda Nomor 12 Tahun 2003</div>
+                    <div class="value">{{ $profilKelurahan->dasar_hukum_pembentukan ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Nomor Kode Wilayah</div>
                     <div class="separator">:</div>
-                    <div class="value">3672081007</div>
+                    <div class="value">{{ $profilKelurahan->nomor_kode_wilayah ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Nomor Kode Pos</div>
                     <div class="separator">:</div>
-                    <div class="value">42441</div>
+                    <div class="value">{{ $profilKelurahan->nomor_kode_pos ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Kecamatan</div>
                     <div class="separator">:</div>
-                    <div class="value">Citangkil</div>
+                    <div class="value">{{ $profilKelurahan->kecamatan ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Kabupaten/Kota</div>
                     <div class="separator">:</div>
-                    <div class="value">Cilegon</div>
+                    <div class="value">{{ $profilKelurahan->kabupaten_kota ?? '-' }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Provinsi</div>
                     <div class="separator">:</div>
-                    <div class="value">Banten</div>
+                    <div class="value">{{ $profilKelurahan->provinsi ?? '-' }}</div>
                 </div>
             </div>
         </div>
@@ -240,7 +256,7 @@
                     <h3 class="vm-title text-green">Visi</h3>
                 </div>
                 <div class="vm-content visi-text">
-                    "Terwujudnya Kelurahan Citangkil yang Maju, Sejahtera, dan Bermartabat melalui Pelayanan Prima dan Pemberdayaan Masyarakat yang Berkelanjutan"
+                    "{{ $profilKelurahan->visi ?? 'Belum ada visi' }}"
                 </div>
             </div>
 
@@ -253,10 +269,13 @@
                 </div>
                 <div class="vm-content">
                     <ul class="misi-list">
-                        <li>Meningkatkan kualitas pelayanan publik yang cepat, akurat, dan transparan</li>
-                        <li>Memberdayakan masyarakat melalui program-program pembangunan berkelanjutan</li>
-                        <li>Menciptakan lingkungan yang bersih, sehat, dan asri</li>
-                        <li>Meningkatkan partisipasi masyarakat dalam pembangunan daerah</li>
+                        @if($profilKelurahan->misi && count($profilKelurahan->misi) > 0)
+                            @foreach($profilKelurahan->misi as $misi)
+                                <li>{{ $misi }}</li>
+                            @endforeach
+                        @else
+                            <li>Belum ada misi</li>
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -309,46 +328,66 @@
                     <div class="direction-box bg-blue">U</div>
                     <div class="boundary-info">
                         <h4>Sebelah Utara</h4>
-                        <p>Kelurahan Ramanuju Kec. Purwakarta</p>
+                        <p>{{ $profilKelurahan->wilayah_utara ?? '-' }}</p>
                     </div>
                 </div>
                 <div class="boundary-item bg-orange-light">
                     <div class="direction-box bg-orange">S</div>
                     <div class="boundary-info">
                         <h4>Sebelah Selatan</h4>
-                        <p>Kelurahan Taman Baru Kec. Citangkil</p>
+                        <p>{{ $profilKelurahan->wilayah_selatan ?? '-' }}</p>
                     </div>
                 </div>
                 <div class="boundary-item bg-purple-light">
                     <div class="direction-box bg-purple">B</div>
                     <div class="boundary-info">
                         <h4>Sebelah Barat</h4>
-                        <p>Kelurahan Kebonsari Kec. Citangkil</p>
+                        <p>{{ $profilKelurahan->wilayah_barat ?? '-' }}</p>
                     </div>
                 </div>
                 <div class="boundary-item bg-green-light">
                     <div class="direction-box bg-green">T</div>
                     <div class="boundary-info">
                         <h4>Sebelah Timur</h4>
-                        <p>Kelurahan Masigit Kec. Purwakarta</p>
+                        <p>{{ $profilKelurahan->wilayah_timur ?? '-' }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <h2 class="section-title-center">MONOGRAFI KELURAHAN CITANGKIL</h2>
-        <div class="card">
-            <div class="image-container">
-                <img src="https://placehold.co/900x500?text=Foto+Papan+Monografi" alt="Papan Monografi" class="image-board">
+        @if($monografis->count() > 0)
+            @foreach($monografis as $monografi)
+            <div class="card">
+                <div class="image-container">
+                    <img src="{{ $monografi->gambar_mono_url }}" alt="Papan Monografi" class="image-board">
+                </div>
             </div>
-        </div>
+            @endforeach
+        @else
+            <div class="card">
+                <div class="image-container">
+                    <img src="https://placehold.co/900x500?text=Belum+Ada+Data+Monografi" alt="Belum Ada Data" class="image-board">
+                </div>
+            </div>
+        @endif
 
         <h2 class="section-title-center normal-case">Struktur Organisasi</h2>
-        <div class="card">
-            <div class="image-container">
-                <img src="https://placehold.co/900x500?text=Foto+Struktur+Organisasi" alt="Struktur Organisasi" class="image-board">
+        @if($monografis->count() > 0)
+            @foreach($monografis as $monografi)
+            <div class="card">
+                <div class="image-container">
+                    <img src="{{ $monografi->gambar_struktur_url }}" alt="Struktur Organisasi" class="image-board">
+                </div>
             </div>
-        </div>
+            @endforeach
+        @else
+            <div class="card">
+                <div class="image-container">
+                    <img src="https://placehold.co/900x500?text=Belum+Ada+Data+Struktur" alt="Belum Ada Data" class="image-board">
+                </div>
+            </div>
+        @endif
 
     </main>
 @endsection
