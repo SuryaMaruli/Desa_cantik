@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             GaleriSeeder::class,
             DesaCantikSeeder::class,
             PrestasiSeeder::class,
+            LayananSeeder::class,
         ]);
     }
 }

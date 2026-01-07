@@ -114,6 +114,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/data-lurah/api', [\App\Http\Controllers\Admin\DataLurahController::class, 'getData'])->name('data-lurah.api');
     Route::post('/data-lurah/update', [\App\Http\Controllers\Admin\DataLurahController::class, 'update'])->name('data-lurah.update');
     
+    // Layanan
+    Route::get('/layanan', [\App\Http\Controllers\Admin\LayananController::class, 'index'])->name('layanan.index');
+    Route::post('/layanan', [\App\Http\Controllers\Admin\LayananController::class, 'store'])->name('layanan.store');
+    Route::put('/layanan/{id}', [\App\Http\Controllers\Admin\LayananController::class, 'update'])->name('layanan.update');
+    Route::delete('/layanan/{id}', [\App\Http\Controllers\Admin\LayananController::class, 'destroy'])->name('layanan.destroy');
+    
     // Berita
     Route::resource('berita', \App\Http\Controllers\Admin\BeritaController::class);
     Route::post('/berita/{berita}/toggle-publish', [\App\Http\Controllers\Admin\BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
