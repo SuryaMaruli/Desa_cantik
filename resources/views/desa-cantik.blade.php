@@ -28,7 +28,7 @@
 
         /* Header Hijau */
         .main-header {
-            background-color: #00897B;
+            background-color: #F6903A;
             color: white;
             padding-top: 60px;
             padding-bottom: 80px;
@@ -55,12 +55,16 @@
         /* Judul Section */
         .section-title {
             text-align: center;
-            color: #00897B; /* Warna Hijau Teal */
+            color: #F6903A; /* Warna Hijau Teal */
             font-size: 1.8rem;
-            font-weight: 500;
-            margin-top: 70px;
+            font-weight: 600;
+            text-transform: uppercase;
             margin-bottom: 40px;
-            text-transform: capitalize;
+            letter-spacing: 1px;
+        }
+
+        .section-title.metadata {
+            color: #C8461F; /* Warna oranye/merah bata */
         }
 
         /* --- KARTU DESKRIPSI UTAMA --- */
@@ -73,7 +77,7 @@
         }
 
         .main-card h2 {
-            color: #00897B;
+            color: #c75310ff;
             font-size: 1.8rem;
             font-weight: 400;
             margin-bottom: 25px;
@@ -196,8 +200,163 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #BDBDBD;
-            font-size: 3rem;
+            border-radius: 8px;
+        }
+
+        .gallery-img-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-card:hover .gallery-img {
+            transform: scale(1.05);
+        }
+
+        /* Metadata Statistik Cards */
+        .cards-wrapper {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-cream {
+            background-color: #FFFCF5;
+        }
+
+        .card-pink {
+            background-color: #FFF5F4;
+        }
+
+        .card .icon-box {
+            background-color: #ffffff;
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .card .icon-box svg {
+            width: 32px;
+            height: 32px;
+            color: #C8461F;
+        }
+
+        .card h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Output Desa Cantik Section */
+        .main-title {
+            text-align: center;
+            color: #c84e30;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        .grid-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .grid-wrapper .card {
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .grid-wrapper .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .bg-cream {
+            background-color: #fffef5;
+            border: 1px solid #fcf7e6;
+        }
+
+        .bg-pink {
+            background-color: #fffafa;
+            border: 1px solid #fcf0f0;
+        }
+
+        .grid-wrapper .icon-box {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .grid-wrapper .icon-box i {
+            color: #c84e30;
+            font-size: 20px;
+        }
+
+        .grid-wrapper .card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2c2c2c;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .grid-wrapper .card p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
         }
 
         .gallery-content {
@@ -229,6 +388,16 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
+
+            /* Output Desa Cantik Responsive */
+            .grid-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
         }
     </style>
 
@@ -245,121 +414,107 @@
             
             <div class="main-card">
                 <h2>Tentang Program Desa Cantik</h2>
-                <p>Desa Cinta Statistik, atau yang dikenal dengan Desa Cantik, adalah sebuah program yang bertujuan untuk meningkatkan kemampuan aparat desa dalam mengelola dan memanfaatkan data agar perencanaan pembangunan desa lebih tepat sasaran. Saat ini, desa-desa telah dibekali dengan berbagai aplikasi pendataan seperti SDGs Desa, Prodeskel (Profil Desa dan Kelurahan), dan SIKS-NG (Sistem Informasi Kesejahteraan Sosial Next Generation).</p>
-                <p>Namun, kualitas dan kapasitas sumber daya manusia di pemerintahan desa dalam hal pengelolaan dan literasi data masih tergolong rendah. Badan Pusat Statistik (BPS) sebagai lembaga yang membina statistik memiliki peranan penting dalam meningkatkan pengelolaan, pemanfaatan, dan literasi data di tingkat desa.</p>
-                <p>Oleh karena itu, program Desa Cantik diluncurkan dengan tujuan untuk meningkatkan literasi data di kalangan seluruh aparat desa.</p>
+                @if($tentang)
+                    {!! $tentang->deskripsi !!}
+                @else
+                    <p>Desa Cinta Statistik, atau yang dikenal dengan Desa Cantik, adalah sebuah program yang bertujuan untuk meningkatkan kemampuan aparat desa dalam mengelola dan memanfaatkan data agar perencanaan pembangunan desa lebih tepat sasaran. Saat ini, desa-desa telah dibekali dengan berbagai aplikasi pendataan seperti SDGs Desa, Prodeskel (Profil Desa dan Kelurahan), dan SIKS-NG (Sistem Informasi Kesejahteraan Sosial Next Generation).</p>
+                    <p>Namun, kualitas dan kapasitas sumber daya manusia di pemerintahan desa dalam hal pengelolaan dan literasi data masih tergolong rendah. Badan Pusat Statistik (BPS) sebagai lembaga yang membina statistik memiliki peranan penting dalam meningkatkan pengelolaan, pemanfaatan, dan literasi data di tingkat desa.</p>
+                    <p>Oleh karena itu, program Desa Cantik diluncurkan dengan tujuan untuk meningkatkan literasi data di kalangan seluruh aparat desa.</p>
+                @endif
             </div>
 
-
-            <h2 class="section-title">METADATA STATISTIK</h2>
-            <div class="grid-3">
-                <div class="info-card card-theme-green">
-                    <div class="icon-box"><i class="fas fa-database"></i></div>
-                    <h3>Meta Data Kegiatan</h3>
-                    <p>Dokumentasi dan pencatatan seluruh kegiatan updating data kependudukan</p>
+            <h2 class="section-title metadata">Metadata Statistik</h2>
+            <div class="cards-wrapper">
+                @forelse($metadata as $item)
+                <div class="card {{ $loop->index % 2 == 0 ? 'card-cream' : 'card-pink' }}">
+                    <div class="icon-box">
+                        @if($item->gambar)
+                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama_metadata }}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 8px;">
+                        @else
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                            </svg>
+                        @endif
+                    </div>
+                    <h3>{{ $item->nama_metadata }}</h3>
+                    <p>{{ $item->deskripsi }}</p>
                 </div>
-                <div class="info-card card-theme-blue">
-                    <div class="icon-box"><i class="far fa-file-alt"></i></div>
-                    <h3>Meta Data Variabel</h3>
-                    <p>Definisi dan klasifikasi variabel-variabel yang digunakan dalam pendataan</p>
+                @empty
+                <div class="card card-cream">
+                    <div class="icon-box">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                        </svg>
+                    </div>
+                    <h3>Belum Ada Data</h3>
+                    <p>Metadata statistik belum tersedia</p>
                 </div>
-                <div class="info-card card-theme-purple">
-                    <div class="icon-box"><i class="far fa-chart-bar"></i></div>
-                    <h3>Meta Data Indikator</h3>
-                    <p>Indikator-indikator statistik untuk mengukur kualitas data kependudukan</p>
-                </div>
+                @endforelse
             </div>
-
-
-            <h2 class="section-title">Output Desa Cantik</h2>
-            <div class="grid-2">
-                <div class="info-card card-theme-green">
-                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                    <h3>SISTEM UPDATING DATA KEPENDUDUKAN</h3>
-                    <p>Kuesioner Updating Data Kependudukan</p>
+            
+            <h1 class="main-title">Output Desa Cantik</h1>
+            <div class="grid-wrapper">
+                @forelse($outputPrograms as $index => $program)
+                <div class="card {{ $loop->index % 2 == 0 ? 'bg-cream' : 'bg-pink' }}">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-{{ $loop->index % 3 == 0 ? 'clipboard-list' : ($loop->index % 3 == 1 ? 'database' : 'book-open') }}"></i>
+                    </div>
+                    <h3>{{ $program->judul_program }}</h3>
+                    <p>{{ $program->deskripsi_program }}</p>
                 </div>
-                <div class="info-card card-theme-blue">
-                    <div class="icon-box"><i class="fas fa-server"></i></div>
-                    <h3>MEDIA PENGELOLAAN DATA KEPENDUDUKAN</h3>
-                    <p>Website Kelurahan Citangkil</p>
+                @empty
+                <div class="card bg-cream">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                    <h3>Belum Ada Data</h3>
+                    <p>Output program Desa Cantik belum tersedia</p>
                 </div>
-                <div class="info-card card-theme-green">
-                    <div class="icon-box"><i class="fas fa-book-open"></i></div>
-                    <h3>PENINGKATAN KAPABILITAS & LITERASI STATISTIK</h3>
-                    <p>Booklet Kelurahan Citangkil</p>
-                </div>
-                <div class="info-card card-theme-purple">
-                    <div class="icon-box"><i class="fas fa-passport"></i></div>
-                    <h3>SEGMENTASI DEMOGRAFIS KELUARGA</h3>
-                    <p>Buku Segmentasi Demografis Keluarga Kelurahan Citangkil</p>
-                </div>
+                @endforelse
             </div>
             
             <h2 class="section-title">Galeri Kegiatan</h2>
             <div class="grid-3">
+                @forelse($galeri as $item)
+                <div class="gallery-card">
+                    @if($item->foto)
+                    <div class="gallery-img-container">
+                        <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->judul_foto }}" class="gallery-img">
+                    </div>
+                    @else
+                    <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
+                    @endif
+                    <div class="gallery-content">
+                        <div class="gallery-title">{{ $item->judul_foto }}</div>
+                        <div class="gallery-subtitle">{{ is_string($item->tanggal_kegiatan) ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->format('d M Y') : $item->tanggal_kegiatan->format('d M Y') }}</div>
+                    </div>
+                </div>
+                @empty
                 <div class="gallery-card">
                     <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
                     <div class="gallery-content">
-                        <div class="gallery-title">Kegiatan Program Desa Cantik</div>
-                        <div class="gallery-subtitle">Kelurahan Citangkil 2024</div>
+                        <div class="gallery-title">Belum ada kegiatan</div>
+                        <div class="gallery-subtitle">Kegiatan akan segera ditampilkan</div>
                     </div>
                 </div>
-                <div class="gallery-card">
-                    <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
-                    <div class="gallery-content">
-                        <div class="gallery-title">Kegiatan Program Desa Cantik</div>
-                        <div class="gallery-subtitle">Kelurahan Citangkil 2024</div>
-                    </div>
-                </div>
-                <div class="gallery-card">
-                    <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
-                    <div class="gallery-content">
-                        <div class="gallery-title">Kegiatan Program Desa Cantik</div>
-                        <div class="gallery-subtitle">Kelurahan Citangkil 2024</div>
-                    </div>
-                </div>
-                 <div class="gallery-card">
-                    <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
-                    <div class="gallery-content">
-                        <div class="gallery-title">Kegiatan Program Desa Cantik</div>
-                        <div class="gallery-subtitle">Kelurahan Citangkil 2024</div>
-                    </div>
-                </div>
-                <div class="gallery-card">
-                    <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
-                    <div class="gallery-content">
-                        <div class="gallery-title">Kegiatan Program Desa Cantik</div>
-                        <div class="gallery-subtitle">Kelurahan Citangkil 2024</div>
-                    </div>
-                </div>
-                <div class="gallery-card">
-                    <div class="gallery-img-placeholder"><i class="far fa-image"></i></div>
-                    <div class="gallery-content">
-                        <div class="gallery-title">Kegiatan Program Desa Cantik</div>
-                        <div class="gallery-subtitle">Kelurahan Citangkil 2024</div>
-                    </div>
-                </div>
+                @endforelse
             </div>
 
             <h2 class="section-title">Prestasi & Penghargaan</h2>
             <div class="grid-3">
+                @forelse($prestasi as $item)
                 <div class="info-card card-theme-orange">
                     <div class="icon-box"><i class="fas fa-medal"></i></div>
-                    <p class="achievement-year">2023</p>
-                    <p>Juara 1 Desa Cantik Tingkat Kota Cilegon</p>
+                    <p class="achievement-year">{{ $item->tahun }}</p>
+                    <p>{{ $item->judul }}</p>
                 </div>
-                
+                @empty
                 <div class="info-card card-theme-orange">
                     <div class="icon-box"><i class="fas fa-medal"></i></div>
-                    <p class="achievement-year">2023</p>
-                    <p>Penghargaan Lingkungan Terbersih</p>
+                    <p class="achievement-year">-</p>
+                    <p>Belum ada prestasi</p>
                 </div>
-
-                <div class="info-card card-theme-orange">
-                    <div class="icon-box"><i class="fas fa-medal"></i></div>
-                    <p class="achievement-year">2024</p>
-                    <p>Kelurahan Terbaik Program Penghijauan</p>
-                </div>
+                @endforelse
             </div>
 
         </div> </main>

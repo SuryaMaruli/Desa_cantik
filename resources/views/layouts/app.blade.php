@@ -342,7 +342,7 @@
             <li><a href="/layanan">Layanan</a></li>
             <li><a href="/data">Data</a></li>
             <li><a href="/desa-cantik">Desa Cantik</a></li>
-            <li><a href="/berita">Berita dan Informasi</a></li>
+            <li><a href="">Berita dan Informasi</a></li>
         </ul>
     </nav>
 

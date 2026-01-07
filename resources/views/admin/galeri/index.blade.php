@@ -125,6 +125,42 @@
         justify-content: space-between; 
         align-items: center; 
         margin-top: auto;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .card-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .btn-edit, .btn-delete {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    
+    .btn-edit {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .btn-edit:hover {
+        background: #bbdefb;
+        color: #1565c0;
+    }
+    
+    .btn-delete {
+        background: #ffebee;
+        color: #d32f2f;
+    }
+    
+    .btn-delete:hover {
+        background: #ffcdd2;
+        color: #c62828;
     }
     
     .date-text { 
@@ -168,6 +204,35 @@
 
 @section('content')
 <div class="home-content">
+    <!-- Session Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+            <i class='bx bx-check-circle me-2'></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            <i class='bx bx-error-circle me-2'></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+            <i class='bx bx-error me-2'></i>
+            <strong>Perhatian!</strong> Mohon perbaiki kesalahan berikut:
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div class="gallery-header-card">
         <div class="header-text">
             <h3>Galeri Foto</h3>
@@ -179,19 +244,126 @@
     </div>
 
     <div class="gallery-grid">
-        @foreach($galeri as $item)
+        @forelse($galeri as $item)
         <div class="gallery-card">
             <div class="image-placeholder">
-                <img src="{{ $item['gambar'] }}" alt="{{ $item['judul'] }}">
+                <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->judul_foto }}">
             </div>
-            <div class="card-title">{{ $item['judul'] }}</div>
+            <div class="card-title">{{ $item->judul_foto }}</div>
+            @if($item->deskripsi)
+            <div class="card-description text-muted small mb-2">{{ Str::limit($item->deskripsi, 80) }}</div>
+            @endif
             <div class="card-footer">
-                <span class="tag-badge tag-{{ $item['kategori'] }}">{{ $item['kategori_label'] }}</span>
-                <span class="date-text">{{ $item['tanggal'] }}</span>
+                <div class="card-info">
+                    <span class="tag-badge tag-{{ $item->kategori }}">{{ ucfirst($item->kategori) }}</span>
+                    <span class="date-text">{{ is_string($item->tanggal_kegiatan) ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->format('d M Y') : $item->tanggal_kegiatan->format('d M Y') }}</span>
+                </div>
+                <div class="card-actions">
+                    <button type="button" class="btn-edit" data-bs-toggle="modal" data-bs-target="#editFotoModal{{ $item->id_galeri }}" title="Edit Foto">
+                        <i class='bx bx-edit'></i>
+                    </button>
+                    <form action="{{ route('admin.galeri.destroy', $item->id_galeri) }}" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-delete" onclick="return confirm('Apakah Anda yakin ingin menghapus foto ini?')" title="Hapus Foto">
+                            <i class='bx bx-trash'></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-        @endforeach
+        @empty
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class='bx bx-image display-1 text-muted'></i>
+                <h4 class="text-muted mt-3">Belum ada foto</h4>
+                <p class="text-muted">Mulai dengan menambahkan foto pertama Anda</p>
+            </div>
+        </div>
+        @endforelse
     </div>
+    
+    <!-- Edit Modals -->
+    @foreach($galeri as $item)
+    <!-- Modal Edit Foto -->
+    <div class="modal fade" id="editFotoModal{{ $item->id_galeri }}" tabindex="-1" aria-labelledby="editFotoModalLabel{{ $item->id_galeri }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="editFotoModalLabel{{ $item->id_galeri }}">
+                        <i class='bx bx-edit me-2'></i>Edit Foto
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('admin.galeri.update', $item->id_galeri) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="edit_judul_foto_{{ $item->id_galeri }}" class="form-label fw-medium">Judul Foto <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg" id="edit_judul_foto_{{ $item->id_galeri }}" name="judul_foto" value="{{ $item->judul_foto }}" required>
+                                    <div class="form-text">Masukkan judul yang deskriptif untuk foto Anda</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="edit_deskripsi_{{ $item->id_galeri }}" class="form-label fw-medium">Deskripsi (Opsional)</label>
+                                    <textarea class="form-control" id="edit_deskripsi_{{ $item->id_galeri }}" name="deskripsi" rows="3" placeholder="Tambahkan deskripsi singkat tentang foto ini">{{ $item->deskripsi ?? '' }}</textarea>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="edit_kategori_{{ $item->id_galeri }}" class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="edit_kategori_{{ $item->id_galeri }}" name="kategori" required>
+                                                <option value="" disabled>Pilih Kategori</option>
+                                                <option value="kesehatan" {{ $item->kategori == 'kesehatan' ? 'selected' : '' }}>Kesehatan</option>
+                                                <option value="sosial" {{ $item->kategori == 'sosial' ? 'selected' : '' }}>Sosial</option>
+                                                <option value="lingkungan" {{ $item->kategori == 'lingkungan' ? 'selected' : '' }}>Lingkungan</option>
+                                                <option value="ekonomi" {{ $item->kategori == 'ekonomi' ? 'selected' : '' }}>Ekonomi</option>
+                                                <option value="budaya" {{ $item->kategori == 'budaya' ? 'selected' : '' }}>Budaya</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="edit_tanggal_kegiatan_{{ $item->id_galeri }}" class="form-label fw-medium">Tanggal Kegiatan</label>
+                                            <input type="date" class="form-control" id="edit_tanggal_kegiatan_{{ $item->id_galeri }}" name="tanggal_kegiatan" value="{{ is_string($item->tanggal_kegiatan) ? \Carbon\Carbon::parse($item->tanggal_kegiatan)->format('Y-m-d') : $item->tanggal_kegiatan->format('Y-m-d') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="upload-area p-4 border rounded-3 text-center">
+                                    <div id="editImagePreview{{ $item->id_galeri }}" class="mb-3" style="min-height: 150px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px;">
+                                        <img src="{{ asset('storage/' . $item->foto) }}" class="img-fluid rounded" alt="Current image" style="max-height: 150px; object-fit: cover;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="edit_foto_{{ $item->id_galeri }}" class="btn btn-outline-primary w-100">
+                                            <i class='bx bx-upload me-2'></i>Ganti Gambar
+                                            <input type="file" class="d-none" id="edit_foto_{{ $item->id_galeri }}" name="foto" accept="image/*">
+                                        </label>
+                                        <div class="form-text text-center mt-2">Format: JPG, PNG, atau GIF (Maks. 5MB)<br>Kosongkan jika tidak ingin mengubah foto</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 bg-light">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <i class='bx bx-x me-1'></i> Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class='bx bx-save me-1'></i> Update Foto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
 
 <!-- Modal Tambah Foto -->
@@ -204,14 +376,15 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formTambahFoto" enctype="multipart/form-data">
+            <form action="{{ route('admin.galeri.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="mb-3">
-                                <label for="judul" class="form-label fw-medium">Judul Foto <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg" id="judul" name="judul" placeholder="Contoh: Kegiatan Vaksinasi 2024" required>
+                                <label for="judul_foto" class="form-label fw-medium">Judul Foto <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" id="judul_foto" name="judul_foto" placeholder="Contoh: Kegiatan Vaksinasi 2024" required>
                                 <div class="form-text">Masukkan judul yang deskriptif untuk foto Anda</div>
                             </div>
                             
@@ -236,8 +409,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="tanggal" class="form-label fw-medium">Tanggal Kegiatan</label>
-                                        <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}">
+                                        <label for="tanggal_kegiatan" class="form-label fw-medium">Tanggal Kegiatan</label>
+                                        <input type="date" class="form-control" id="tanggal_kegiatan" name="tanggal_kegiatan" value="{{ date('Y-m-d') }}">
                                     </div>
                                 </div>
                             </div>
@@ -252,9 +425,9 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="gambar" class="btn btn-outline-primary w-100">
+                                    <label for="foto" class="btn btn-outline-primary w-100">
                                         <i class='bx bx-upload me-2'></i>Pilih Gambar
-                                        <input type="file" class="d-none" id="gambar" name="gambar" accept="image/*" required>
+                                        <input type="file" class="d-none" id="foto" name="foto" accept="image/*" required>
                                     </label>
                                     <div class="form-text text-center mt-2">Format: JPG, PNG, atau GIF (Maks. 5MB)</div>
                                 </div>
@@ -278,17 +451,8 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi tooltip
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-
-        // Inisialisasi modal
-        var tambahFotoModal = new bootstrap.Modal(document.getElementById('tambahFotoModal'));
-        
-        // Preview gambar yang diunggah
-        document.getElementById('gambar').addEventListener('change', function(e) {
+        // Preview gambar yang diunggah untuk form tambah
+        document.getElementById('foto').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -300,54 +464,39 @@
             }
         });
 
-        // Handle form submission
-        document.getElementById('formTambahFoto').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Show loading state
-            const submitBtn = document.querySelector('#formTambahFoto button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...';
-            
-            // Simulate API call (ganti dengan kode AJAX sebenarnya)
-            setTimeout(() => {
-                // Reset form
-                this.reset();
-                document.getElementById('imagePreview').innerHTML = '';
-                
-                // Show success message
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-success alert-dismissible fade show';
-                alertDiv.role = 'alert';
-                alertDiv.innerHTML = `
-                    <strong>Berhasil!</strong> Foto baru berhasil ditambahkan.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                `;
-                document.querySelector('.home-content').insertBefore(alertDiv, document.querySelector('.gallery-header-card'));
-                
-                // Hide modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('tambahFotoModal'));
-                modal.hide();
-                
-                // Reset button state
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-                
-                // Auto-hide alert after 5 seconds
-                setTimeout(() => {
-                    alertDiv.classList.remove('show');
-                    setTimeout(() => alertDiv.remove(), 150);
-                }, 5000);
-                
-            }, 1500);
+        // Preview gambar untuk form edit
+        @foreach($galeri as $item)
+        document.getElementById('edit_foto_{{ $item->id_galeri }}').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editImagePreview{{ $item->id_galeri }}').innerHTML = 
+                        `<img src="${e.target.result}" class="img-fluid rounded" alt="Preview" style="max-height: 150px; object-fit: cover;">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        @endforeach
+
+        // Reset form ketika modal ditutup
+        document.getElementById('tambahFotoModal').addEventListener('hidden.bs.modal', function () {
+            document.querySelector('#tambahFotoModal form').reset();
+            document.getElementById('imagePreview').innerHTML = `
+                <div class="text-center">
+                    <i class='bx bx-image-add display-4 text-muted mb-2'></i>
+                    <p class="mb-0 text-muted">Pratinjau gambar akan muncul di sini</p>
+                </div>
+            `;
         });
 
-        // Reset form when modal is closed
-        document.getElementById('tambahFotoModal').addEventListener('hidden.bs.modal', function () {
-            document.getElementById('formTambahFoto').reset();
-            document.getElementById('imagePreview').innerHTML = '';
+        // Reset form edit ketika modal ditutup
+        @foreach($galeri as $item)
+        document.getElementById('editFotoModal{{ $item->id_galeri }}').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('editImagePreview{{ $item->id_galeri }}').innerHTML = 
+                `<img src="{{ asset('storage/' . $item->foto) }}" class="img-fluid rounded" alt="Current image" style="max-height: 150px; object-fit: cover;">`;
         });
+        @endforeach
     });
 </script>
 @endpush

@@ -341,6 +341,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.prestasi.index') }}" class="{{ request()->is('admin/prestasi*') ? 'active' : '' }}">
+                    <i class='bx bx-trophy'></i>
+                    <span class="links_name">Prestasi</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.data-lurah.index') }}" class="{{ request()->is('admin/data-lurah*') ? 'active' : '' }}">
                     <i class='bx bx-user'></i>
                     <span class="links_name">Data Lurah</span>

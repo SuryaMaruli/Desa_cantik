@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DataKelurahanController;
 use App\Models\Berita;
 
+// Public Berita Routes
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,12 +45,14 @@ Route::get('/data', function () {
 });
 
 Route::get('/desa-cantik', function () {
-    return view('desa-cantik');
+    $galeri = \App\Models\Galeri::latest()->take(6)->get();
+    $tentang = \App\Models\TentangDesa::first();
+    $metadata = \App\Models\MetadataStatistik::all();
+    $outputPrograms = \App\Models\OutputProgram::all();
+    $prestasi = \App\Models\Prestasi::latest()->get();
+    return view('desa-cantik', compact('galeri', 'tentang', 'metadata', 'outputPrograms', 'prestasi'));
 });
 
-Route::get('/berita', function () {
-    return view('berita');
-});
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -74,7 +78,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/data-kelurahan', [DataKelurahanController::class, 'index'])->name('data-kelurahan.index');
     
     // Galeri
-    Route::get('/galeri', [\App\Http\Controllers\Admin\GaleriController::class, 'index'])->name('galeri.index');
+    Route::resource('galeri', \App\Http\Controllers\Admin\GaleriController::class);
+    
+    // Debug route
+    Route::get('/galeri-debug', function() {
+        return 'Debug route working - ' . now();
+    });
     
     // Layanan
     Route::get('/layanan', [\App\Http\Controllers\Admin\LayananController::class, 'index'])->name('layanan.index');
@@ -84,6 +93,21 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     
     // Desa Cantik
     Route::get('/desa-cantik', [\App\Http\Controllers\Admin\DesaCantikController::class, 'index'])->name('desa-cantik.index');
+    Route::post('/desa-cantik/tentang', [\App\Http\Controllers\Admin\DesaCantikController::class, 'updateTentang'])->name('desa-cantik.update-tentang');
+    Route::post('/desa-cantik/metadata', [\App\Http\Controllers\Admin\DesaCantikController::class, 'storeMetadata'])->name('desa-cantik.store-metadata');
+    Route::post('/desa-cantik/metadata/{id}', [\App\Http\Controllers\Admin\DesaCantikController::class, 'updateMetadata'])->name('desa-cantik.update-metadata');
+    Route::delete('/desa-cantik/metadata/{id}', [\App\Http\Controllers\Admin\DesaCantikController::class, 'deleteMetadata'])->name('desa-cantik.delete-metadata');
+    Route::post('/desa-cantik/output', [\App\Http\Controllers\Admin\DesaCantikController::class, 'storeOutput'])->name('desa-cantik.store-output');
+    Route::post('/desa-cantik/output/{id}', [\App\Http\Controllers\Admin\DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output');
+    Route::delete('/desa-cantik/output/{id}', [\App\Http\Controllers\Admin\DesaCantikController::class, 'deleteOutput'])->name('desa-cantik.delete-output');
+    
+    // Prestasi
+    Route::get('/prestasi', [\App\Http\Controllers\Admin\PrestasiController::class, 'index'])->name('prestasi.index');
+    Route::get('/prestasi/create', [\App\Http\Controllers\Admin\PrestasiController::class, 'create'])->name('prestasi.create');
+    Route::post('/prestasi', [\App\Http\Controllers\Admin\PrestasiController::class, 'store'])->name('prestasi.store');
+    Route::get('/prestasi/{id}/edit', [\App\Http\Controllers\Admin\PrestasiController::class, 'edit'])->name('prestasi.edit');
+    Route::put('/prestasi/{id}', [\App\Http\Controllers\Admin\PrestasiController::class, 'update'])->name('prestasi.update');
+    Route::delete('/prestasi/{id}', [\App\Http\Controllers\Admin\PrestasiController::class, 'destroy'])->name('prestasi.destroy');
     
     // Data Lurah
     Route::get('/data-lurah', [\App\Http\Controllers\Admin\DataLurahController::class, 'index'])->name('data-lurah.index');
