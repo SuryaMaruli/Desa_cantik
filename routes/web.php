@@ -113,6 +113,11 @@ Route::get('/desa-cantik', function () {
     return view('desa-cantik', compact('galeri', 'tentang', 'metadata', 'outputPrograms', 'prestasi'));
 });
 
+Route::get('/desa-cantik/output/{id}', function ($id) {
+    $program = OutputProgram::findOrFail($id);
+    return view('desa-cantik-detail', compact('program'));
+});
+
 Route::get('/kontak', function () {
     return view('kontak');
 });

@@ -357,6 +357,28 @@
             font-size: 14px;
             color: #666;
             line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .detail-btn {
+            display: inline-block;
+            background-color: #F6903A;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .detail-btn:hover {
+            background-color: #e57d2b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(246, 144, 58, 0.3);
         }
 
         .gallery-content {
@@ -461,6 +483,9 @@
                     </div>
                     <h3>{{ $program->judul_program }}</h3>
                     <p>{{ $program->deskripsi_program }}</p>
+                    <a href="/desa-cantik/output/{{ $program->id_program }}" class="detail-btn">
+                        Lihat Detail
+                    </a>
                 </div>
                 @empty
                 <div class="card bg-cream">
