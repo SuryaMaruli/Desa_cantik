@@ -327,14 +327,12 @@
         
         <div class="nav-tabs-wrapper">
             <ul class="nav-tabs">
-                <li class="nav-item active">Semua</li>
-                <li class="nav-item">Prestasi</li>
-                <li class="nav-item">Kesehatan</li>
-                <li class="nav-item">Sosial</li>
-                <li class="nav-item">Lingkungan</li>
-                <li class="nav-item">Ekonomi</li>
-                <li class="nav-item">Program</li>
-                <li class="nav-item">Kegiatan</li>
+                <li class="nav-item {{ !$kategori || $kategori === 'Semua' ? 'active' : '' }}" onclick="filterKategori('Semua')">Semua</li>
+                @if($kategoriList && $kategoriList->count() > 0)
+                    @foreach($kategoriList as $kat)
+                        <li class="nav-item {{ $kategori === $kat ? 'active' : '' }}" onclick="filterKategori('{{ $kat }}')">{{ $kat }}</li>
+                    @endforeach
+                @endif
             </ul>
         </div>
 
@@ -434,4 +432,16 @@
             </div>
         @endif
     </div>
+
+    <script>
+        function filterKategori(kategori) {
+            const url = new URL(window.location);
+            if (kategori === 'Semua') {
+                url.searchParams.delete('kategori');
+            } else {
+                url.searchParams.set('kategori', kategori);
+            }
+            window.location.href = url.toString();
+        }
+    </script>
 @endsection

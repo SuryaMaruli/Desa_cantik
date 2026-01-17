@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\MonografiController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BerandaController;
 
 // --- MODELS IMPORT (Untuk Public Routes) ---
 use App\Models\Layanan; 
@@ -123,8 +125,24 @@ Route::get('/kontak', function () {
 });
 
 Route::get('/berita', function () {
-    $berita = Berita::where('is_published', true)->orderBy('tanggal_publikasi', 'desc')->get();
-    return view('berita', compact('berita'));
+    $kategori = request('kategori');
+    $query = Berita::where('is_published', true)->orderBy('tanggal_publikasi', 'desc');
+    
+    if ($kategori && $kategori !== 'Semua') {
+        $query->where('kategori', $kategori);
+    }
+    
+    $berita = $query->get();
+    
+    // Ambil kategori unik dari database
+    $kategoriList = Berita::where('is_published', true)
+        ->whereNotNull('kategori')
+        ->distinct()
+        ->pluck('kategori')
+        ->sort()
+        ->values();
+    
+    return view('berita', compact('berita', 'kategori', 'kategoriList'));
 });
 
 Route::get('/berita/{id}', function ($id) {
@@ -154,6 +172,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     
     // --- DASHBOARD ---
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // --- BERANDA ---
+    Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda.index');
+    Route::post('/beranda', [BerandaController::class, 'store'])->name('beranda.store');
+    Route::put('/beranda/{id}', [BerandaController::class, 'update'])->name('beranda.update');
     
     // --- MONOGRAFI (Sesuai perbaikan sebelumnya) ---
     // PENTING: Struktur ini mendukung fitur AJAX Edit & Delete
@@ -198,6 +221,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/data-lurah', [DataLurahController::class, 'index'])->name('data-lurah.index');
     Route::get('/data-lurah/api', [DataLurahController::class, 'getData'])->name('data-lurah.api');
     Route::post('/data-lurah/update', [DataLurahController::class, 'update'])->name('data-lurah.update');
+    
+    // --- ADMIN ---
+    Route::resource('admin', AdminController::class)->except(['show']); // Resource mencakup: index, create, store, edit, update, destroy
     
     // --- LAYANAN ---
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');

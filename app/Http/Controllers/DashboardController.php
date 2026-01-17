@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DataLurah;
+use App\Models\Beranda;
 
 class DashboardController extends Controller
 {
@@ -15,6 +16,7 @@ class DashboardController extends Controller
     public function index()
     {
         $dataLurah = DataLurah::first();
-        return view('dashboard.index', compact('dataLurah'));
+        $beranda = Beranda::first();
+        return view('dashboard.index', compact('dataLurah', 'beranda'));
     }
 }

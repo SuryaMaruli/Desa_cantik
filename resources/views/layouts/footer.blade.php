@@ -192,11 +192,11 @@
                     </li>
                     <li class="footer-list align-center">
                         <i class="fas fa-phone-alt footer-icon"></i>
-                        <span>(0254) 123-4567</span>
+                        <span>{{ App\Models\Beranda::first()?->no_hp ?? '(0254) 123-4567' }}</span>
                     </li>
                     <li class="footer-list align-center">
                         <i class="fas fa-envelope footer-icon"></i>
-                        <a href="mailto:kelurahan@citangkil.go.id" class="footer-link white-hover">kelurahan@citangkil.go.id</a>
+                        <a href="mailto:{{ App\Models\Beranda::first()?->email ?? 'kelurahan@citangkil.go.id' }}" class="footer-link white-hover">{{ App\Models\Beranda::first()?->email ?? 'kelurahan@citangkil.go.id' }}</a>
                     </li>
                 </ul>
             </div>

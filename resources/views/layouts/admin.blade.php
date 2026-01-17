@@ -306,6 +306,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.beranda.index') }}" class="{{ request()->is('admin/beranda*') ? 'active' : '' }}">
+                    <i class='bx bx-home'></i>
+                    <span class="links_name">Beranda</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.berita.index') }}" class="{{ request()->is('admin/berita*') ? 'active' : '' }}">
                     <i class='bx bx-news'></i>
                     <span class="links_name">Berita & Informasi</span>
@@ -357,6 +363,12 @@
                 <a href="{{ route('admin.data-lurah.index') }}" class="{{ request()->is('admin/data-lurah*') ? 'active' : '' }}">
                     <i class='bx bx-user'></i>
                     <span class="links_name">Data Lurah</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.admin.index') }}" class="{{ request()->is('admin/admin*') ? 'active' : '' }}">
+                    <i class='bx bx-user-plus'></i>
+                    <span class="links_name">Kelola Admin</span>
                 </a>
             </li>
             <li>

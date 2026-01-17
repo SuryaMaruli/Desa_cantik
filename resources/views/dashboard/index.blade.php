@@ -15,8 +15,43 @@
             color: #ffffff;
             text-align: center;
             position: relative;
-            padding-top: 100px;
+            overflow: hidden;
+            padding-top: 60px;
             padding-bottom: 220px;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{{ $beranda->gambar_header ? asset("storage/" . $beranda->gambar_header) : "https://images.unsplash.com/photo-1486312338219-ce68d2C6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .logo-container {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 3;
+        }
+        .logo-container img {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 50%;
+            background: white;
+            padding: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            border: 3px solid white;
+            position: relative;
+            z-index: 3;
         }
         .icon-circle {
             background: #ffffff; width: 85px; height: 85px; border-radius: 50%;
@@ -30,7 +65,7 @@
         .contacts { display: flex; justify-content: center; gap: 40px; font-weight: 300; }
         .contacts div { display: flex; align-items: center; gap: 10px; }
         
-        .wave-container { position: absolute; bottom: -1px; left: 0; width: 100%; overflow: hidden; line-height: 0; }
+        .wave-container { position: absolute; bottom: -1px; left: 0; width: 100%; overflow: hidden; line-height: 0; z-index: 4; }
         .wave-container svg { position: relative; display: block; width: calc(100% + 1.3px); height: 160px; }
         .wave-fill { fill: #ffffff; }
 
@@ -39,9 +74,9 @@
             padding: 0 20px 80px 20px; 
             max-width: 1200px; 
             margin: 0 auto; 
-            margin-top: -50px; 
+            margin-top: -20px; 
             position: relative; 
-            z-index: 2; 
+            z-index: 5;
         }
         .section-header { text-align: center; margin-bottom: 50px; }
         .section-header h2 { color: #e65100; font-size: 2rem; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
@@ -193,16 +228,20 @@
     </style>
 
     <div class="hero-section">
-        <div class="icon-circle"><i class="fas fa-map-marker-alt"></i></div>
-        <h1>Kelurahan Citangkil</h1>
-        <div class="description">
-            <span>Dapori Pembuasan Desa Cantik oleh RPS Kota Cilegon</span>
-            <span>Mitra Mobular Kelurahan Citangkil</span>
-            <span>Kecamatan Citangkil, Kota Cilegon</span>
-        </div>
-        <div class="contacts">
-            <div><i class="fas fa-phone-alt"></i> (0254) 123-4567</div>
-            <div><i class="far fa-envelope"></i> kelurahan@citangkil.go.id</div>
+        <div class="hero-content">
+            @if($beranda && $beranda->logo)
+                <div class="logo-container">
+                    <img src="{{ asset('storage/' . $beranda->logo) }}" alt="{{ $beranda->nama_kelurahan ?? 'Logo Kelurahan' }}">
+                </div>
+            @endif
+            <h1>{{ $beranda->nama_kelurahan ?? 'Kelurahan Citangkil' }}</h1>
+            <div class="description">
+                <span>{{ $beranda->deskripsi ?? 'Dapori Pembuasan Desa Cantik oleh RPS Kota Cilegon' }}</span>
+            </div>
+            <div class="contacts">
+                <div><i class="fas fa-phone-alt"></i> {{ $beranda->no_hp ?? '(0254) 123-4567' }}</div>
+                <div><i class="far fa-envelope"></i> {{ $beranda->email ?? 'kelurahan@citangkil.go.id' }}</div>
+            </div>
         </div>
         <div class="wave-container">
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none">

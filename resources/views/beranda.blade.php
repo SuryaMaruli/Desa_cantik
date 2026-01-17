@@ -6,8 +6,17 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="container">
-            <h1>Selamat Datang di Kelurahan Citangkil</h1>
-            <p class="lead">Melayani dengan hati untuk kesejahteraan masyarakat yang lebih baik</p>
+            @php
+                $beranda = App\Models\Beranda::first();
+            @endphp
+            @if($beranda && $beranda->logo)
+                <div class="text-center mb-4">
+                    <img src="{{ asset('storage/' . $beranda->logo) }}" alt="{{ $beranda->nama_kelurahan ?? 'Logo Kelurahan' }}" 
+                         style="max-width: 100px; max-height: 100px; border-radius: 50%; background: white; padding: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.25); border: 3px solid white; position: relative; z-index: 2;">
+                </div>
+            @endif
+            <h1>{{ $beranda->nama_kelurahan ?? 'Selamat Datang di Kelurahan Citangkil' }}</h1>
+            <p class="lead">{{ $beranda->deskripsi ?? 'Melayani dengan hati untuk kesejahteraan masyarakat yang lebih baik' }}</p>
             <div class="mt-4">
                 <a href="/layanan" class="btn btn-primary btn-lg me-3">Lihat Layanan</a>
                 <a href="/kontak" class="btn btn-outline-light btn-lg">Hubungi Kami</a>
@@ -30,7 +39,11 @@
                     </ul>
                 </div>
                 <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1486312338219-ce68d2C6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded" alt="About Us">
+                    @if($beranda && $beranda->gambar_header)
+                        <img src="{{ asset('storage/' . $beranda->gambar_header) }}" class="img-fluid rounded" alt="Gambar Header">
+                    @else
+                        <img src="https://images.unsplash.com/photo-1486312338219-ce68d2C6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded" alt="About Us">
+                    @endif
                 </div>
             </div>
         </div>

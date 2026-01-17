@@ -29,14 +29,14 @@
                                 <div class="contact-item">
                                     <i class="bi bi-telephone text-success" style="font-size: 2rem;"></i>
                                     <h5 class="mt-3">Telepon</h5>
-                                    <p>(0251) 123456<br>0812-3456-7890</p>
+                                    <p>{{ App\Models\Beranda::first()?->no_hp ?? '(0251) 123456' }}</p>
                                 </div>
                             </div>
                             <div class="col-md-4 text-center mb-4">
                                 <div class="contact-item">
                                     <i class="bi bi-envelope text-success" style="font-size: 2rem;"></i>
                                     <h5 class="mt-3">Email</h5>
-                                    <p>info@citangkil.go.id<br>admin@citangkil.go.id</p>
+                                    <p>{{ App\Models\Beranda::first()?->email ?? 'info@citangkil.go.id' }}</p>
                                 </div>
                             </div>
                         </div>

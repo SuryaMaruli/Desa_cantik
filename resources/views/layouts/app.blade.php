@@ -324,15 +324,25 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="brand-section">
-            <div class="logo-circle">
-                <div class="icon-location">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
+            @php
+                $beranda = App\Models\Beranda::first();
+            @endphp
+            @if($beranda && $beranda->logo)
+                <div style="width: 45px; height: 45px; border-radius: 50%; overflow: hidden; border: 2px solid #F89039;">
+                    <img src="{{ asset('storage/' . $beranda->logo) }}" alt="{{ $beranda->nama_kelurahan ?? 'Logo Kelurahan' }}" 
+                         style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-            </div>
+            @else
+                <div class="logo-circle">
+                    <div class="icon-location">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </div>
+                </div>
+            @endif
             <div class="brand-text">
-                <span class="brand-title">Kelurahan Citangkil</span>
+                <span class="brand-title">{{ $beranda->nama_kelurahan ?? 'Kelurahan Citangkil' }}</span>
                 <span class="brand-subtitle">Kec. Citangkil, Kota Cilegon</span>
             </div>
         </div>
