@@ -116,10 +116,7 @@ Route::get('/desa-cantik', function () {
     return view('desa-cantik', compact('galeri', 'tentang', 'metadata', 'outputPrograms', 'prestasi'));
 });
 
-Route::get('/desa-cantik/output/{id}', function ($id) {
-    $program = OutputProgram::findOrFail($id);
-    return view('desa-cantik-detail', compact('program'));
-});
+Route::get('/desa-cantik/output/{id}', [DesaCantikController::class, 'showOutput'])->name('desa-cantik.show-output');
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -183,11 +180,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
     
-    // --- MONOGRAFI (Sesuai perbaikan sebelumnya) ---
-    // PENTING: Struktur ini mendukung fitur AJAX Edit & Delete
+    // --- MONOGRAFI ---
     Route::get('/monografi', [MonografiController::class, 'index'])->name('monografi.index');
     Route::post('/monografi', [MonografiController::class, 'store'])->name('monografi.store');
-    Route::get('/monografi/{id}/edit', [MonografiController::class, 'edit'])->name('monografi.edit'); // JSON untuk Modal
+    Route::get('/monografi/{id}/edit', [MonografiController::class, 'edit'])->name('monografi.edit');
     Route::put('/monografi/{id}', [MonografiController::class, 'update'])->name('monografi.update');
     Route::delete('/monografi/{id}', [MonografiController::class, 'destroy'])->name('monografi.destroy');
 
@@ -210,25 +206,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     
     // Desa Cantik: Metadata
     Route::post('/desa-cantik/metadata', [DesaCantikController::class, 'storeMetadata'])->name('desa-cantik.store-metadata');
-    Route::post('/desa-cantik/metadata/{id}', [DesaCantikController::class, 'updateMetadata'])->name('desa-cantik.update-metadata');
+    Route::put('/desa-cantik/metadata/{id}', [DesaCantikController::class, 'updateMetadata'])->name('desa-cantik.update-metadata'); // Perbaikan: PUT
     Route::delete('/desa-cantik/metadata/{id}', [DesaCantikController::class, 'deleteMetadata'])->name('desa-cantik.delete-metadata');
     
     // Desa Cantik: Output
     Route::post('/desa-cantik/output', [DesaCantikController::class, 'storeOutput'])->name('desa-cantik.store-output');
-    Route::post('/desa-cantik/output/{id}', [DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output');
+    Route::put('/desa-cantik/output/{id}', [DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output'); // Perbaikan: PUT
     Route::delete('/desa-cantik/output/{id}', [DesaCantikController::class, 'deleteOutput'])->name('desa-cantik.delete-output');
     
     // --- PRESTASI ---
     Route::resource('prestasi', PrestasiController::class)->except(['show']); 
-    // (Resource sudah mencakup: index, create, store, edit, update, destroy)
-
+    
     // --- DATA LURAH ---
     Route::get('/data-lurah', [DataLurahController::class, 'index'])->name('data-lurah.index');
     Route::get('/data-lurah/api', [DataLurahController::class, 'getData'])->name('data-lurah.api');
     Route::post('/data-lurah/update', [DataLurahController::class, 'update'])->name('data-lurah.update');
     
     // --- ADMIN ---
-    Route::resource('admin', AdminController::class)->except(['show']); // Resource mencakup: index, create, store, edit, update, destroy
+    Route::resource('admin', AdminController::class)->except(['show']); 
     
     // --- LAYANAN ---
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
@@ -237,7 +232,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::delete('/layanan/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
     
     // --- BERITA ---
-    Route::resource('berita', BeritaController::class); // Resource sudah mencakup index, store, update, destroy
+    Route::resource('berita', BeritaController::class); 
     Route::post('/berita/{berita}/toggle-publish', [BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
     Route::get('/berita/{berita}/edit-data', [BeritaController::class, 'getEditData'])->name('berita.edit-data');
     

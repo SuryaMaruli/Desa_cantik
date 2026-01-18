@@ -160,17 +160,47 @@
         </div>
         
         <div class="article-image">
-            <i class="fa-solid fa-clipboard-list" style="font-size: 4rem; color: #F6903A;"></i>
+            @if($program->gambar)
+                <img src="{{ asset('storage/' . $program->gambar) }}" alt="{{ $program->judul_program }}" style="width: 100%; height: 100%; object-fit: cover;">
+            @else
+                <i class="fa-solid fa-clipboard-list" style="font-size: 4rem; color: #F6903A;"></i>
+            @endif
         </div>
         
         <div class="article-content">
             <h2>Deskripsi Program</h2>
-            <p>{{ $program->deskripsi_program }}</p>
+            <p>{!! nl2br(e($program->deskripsi_program)) !!}</p>
             
-            <h2>Informasi Tambahan</h2>
-            <p>Program ini merupakan bagian dari inisiatif Desa Cantik yang bertujuan untuk meningkatkan kemampuan aparat desa dalam mengelola dan memanfaatkan data agar perencanaan pembangunan desa lebih tepat sasaran.</p>
+            @if($program->informasi_tambahan)
+                <h2>Informasi Tambahan</h2>
+                <p>{!! nl2br(e($program->informasi_tambahan)) !!}</p>
+            @endif
             
-            <p>Untuk informasi lebih lanjut mengenai program ini, dapat menghubungi Kantor Kelurahan Citangkil atau melalui layanan pengaduan masyarakat yang telah tersedia.</p>
         </div>
+        
+        {{-- Related Programs --}}
+        @php
+            $relatedPrograms = \App\Models\OutputProgram::where('id_program', '!=', $program->id_program)
+                ->inRandomOrder()
+                ->take(3)
+                ->get();
+        @endphp
+
+        @if($relatedPrograms->count() > 0)
+            <div style="margin-top: 60px;">
+                <h2 style="text-align: center; color: #F6903A; font-size: 1.8rem; font-weight: 600; margin-bottom: 30px;">Program Lainnya</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    @foreach($relatedPrograms as $related)
+                        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <h4 style="color: #333; font-size: 1.1rem; font-weight: 600; margin-bottom: 10px;">{{ $related->judul_program }}</h4>
+                            <p style="color: #666; font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;">{{ Str::limit($related->deskripsi_program, 100) }}</p>
+                            <a href="{{ url('/desa-cantik/output/' . $related->id_program) }}" style="color: #F6903A; text-decoration: none; font-weight: 500; font-size: 0.9rem;">
+                                Lihat Detail →
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 @endsection

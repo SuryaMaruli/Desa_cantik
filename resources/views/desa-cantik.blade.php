@@ -450,13 +450,9 @@
                 @forelse($metadata as $item)
                 <div class="card {{ $loop->index % 2 == 0 ? 'card-cream' : 'card-pink' }}">
                     <div class="icon-box">
-                        @if($item->gambar)
-                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama_metadata }}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 8px;">
-                        @else
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                            </svg>
-                        @endif
+                        <div style="width: 32px; height: 32px; background-color: #F6903A; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
+                            {{ $loop->index + 1 }}
+                        </div>
                     </div>
                     <h3>{{ $item->nama_metadata }}</h3>
                     <p>{{ $item->deskripsi }}</p>
@@ -464,9 +460,9 @@
                 @empty
                 <div class="card card-cream">
                     <div class="icon-box">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
-                        </svg>
+                        <div style="width: 32px; height: 32px; background-color: #ccc; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
+                            -
+                        </div>
                     </div>
                     <h3>Belum Ada Data</h3>
                     <p>Metadata statistik belum tersedia</p>

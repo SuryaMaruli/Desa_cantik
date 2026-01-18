@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\TentangDesa;
 use App\Models\MetadataStatistik;
 use App\Models\OutputProgram;
+use Illuminate\Support\Facades\Storage; // WAJIB ADA
 
 class DesaCantikController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $tentang = TentangDesa::first();
@@ -22,14 +20,10 @@ class DesaCantikController extends Controller
         return view('admin.desa-cantik.index', compact('tentang', 'metadata', 'outputPrograms'));
     }
 
-    /**
-     * Update Tentang Desa
-     */
+    // Update Tentang (Deskripsi)
     public function updateTentang(Request $request)
     {
-        $request->validate([
-            'deskripsi' => 'required|string',
-        ]);
+        $request->validate(['deskripsi' => 'required|string']);
 
         $tentang = TentangDesa::first();
         if ($tentang) {
@@ -38,92 +32,115 @@ class DesaCantikController extends Controller
             TentangDesa::create(['deskripsi' => $request->deskripsi]);
         }
 
-        return redirect()->back()->with('success', 'Tentang Program Desa Cantik berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Deskripsi berhasil diperbarui!');
     }
 
-    /**
-     * Update Metadata Statistik
-     */
-    public function updateMetadata(Request $request, $id)
-    {
-        $request->validate([
-            'nama_metadata' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'gambar' => 'nullable|string|max:255',
-        ]);
+    // --- METADATA STATISTIK ---
 
-        $metadata = MetadataStatistik::findOrFail($id);
-        $metadata->update($request->all());
-
-        return redirect()->back()->with('success', 'Metadata Statistik berhasil diperbarui!');
-    }
-
-    /**
-     * Update Output Program
-     */
-    public function updateOutput(Request $request, $id)
-    {
-        $request->validate([
-            'judul_program' => 'required|string|max:255',
-            'deskripsi_program' => 'required|string',
-        ]);
-
-        $output = OutputProgram::findOrFail($id);
-        $output->update($request->all());
-
-        return redirect()->back()->with('success', 'Output Program berhasil diperbarui!');
-    }
-
-    /**
-     * Store new Output Program
-     */
-    public function storeOutput(Request $request)
-    {
-        $request->validate([
-            'judul_program' => 'required|string|max:255',
-            'deskripsi_program' => 'required|string',
-        ]);
-
-        OutputProgram::create($request->all());
-
-        return redirect()->back()->with('success', 'Output Program baru berhasil ditambahkan!');
-    }
-
-    /**
-     * Store new Metadata
-     */
     public function storeMetadata(Request $request)
     {
         $request->validate([
             'nama_metadata' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'gambar' => 'nullable|string|max:255',
         ]);
 
         MetadataStatistik::create($request->all());
-
-        return redirect()->back()->with('success', 'Metadata baru berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Metadata berhasil ditambahkan!');
     }
 
-    /**
-     * Delete Metadata
-     */
+    public function updateMetadata(Request $request, $id)
+    {
+        $request->validate([
+            'nama_metadata' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+        ]);
+
+        $metadata = MetadataStatistik::findOrFail($id);
+        $metadata->update($request->all());
+
+        return redirect()->back()->with('success', 'Metadata berhasil diperbarui!');
+    }
+
     public function deleteMetadata($id)
     {
         $metadata = MetadataStatistik::findOrFail($id);
         $metadata->delete();
-
-        return redirect()->back()->with('success', 'Metadata Statistik berhasil dihapus!');
+        return redirect()->back()->with('success', 'Metadata berhasil dihapus!');
     }
 
-    /**
-     * Delete Output Program
-     */
+    // --- OUTPUT PROGRAM ---
+
+    public function storeOutput(Request $request)
+    {
+        $request->validate([
+            'judul_program' => 'required|string|max:255',
+            'deskripsi_program' => 'required|string',
+            'informasi_tambahan' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $data = $request->except('gambar');
+
+        // Upload Gambar Baru
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan ke folder public agar bisa diakses via web
+            $file->storeAs('public', $filename);
+            $data['gambar'] = $filename;
+        }
+
+        OutputProgram::create($data);
+        return redirect()->back()->with('success', 'Output Program berhasil ditambahkan!');
+    }
+
+    public function updateOutput(Request $request, $id)
+    {
+        $request->validate([
+            'judul_program' => 'required|string|max:255',
+            'deskripsi_program' => 'required|string',
+            'informasi_tambahan' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $output = OutputProgram::findOrFail($id);
+        $data = $request->except('gambar');
+
+        // Handle Ganti Gambar
+        if ($request->hasFile('gambar')) {
+            // 1. Hapus gambar lama jika ada
+            if ($output->gambar && Storage::exists('public/' . $output->gambar)) {
+                Storage::delete('public/' . $output->gambar);
+            }
+
+            // 2. Upload gambar baru
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public', $filename);
+            $data['gambar'] = $filename;
+        }
+
+        $output->update($data);
+        return redirect()->back()->with('success', 'Output Program berhasil diperbarui!');
+    }
+
     public function deleteOutput($id)
     {
         $output = OutputProgram::findOrFail($id);
-        $output->delete();
+        
+        // Hapus file fisik gambar
+        if ($output->gambar && Storage::exists('public/' . $output->gambar)) {
+            Storage::delete('public/' . $output->gambar);
+        }
 
+        $output->delete();
         return redirect()->back()->with('success', 'Output Program berhasil dihapus!');
+    }
+
+    // --- PUBLIC PAGES ---
+    public function showOutput($id)
+    {
+        $program = OutputProgram::findOrFail($id);
+        return view('desa-cantik-detail', compact('program'));
     }
 }

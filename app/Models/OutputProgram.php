@@ -11,6 +11,8 @@ class OutputProgram extends Model
     protected $fillable = [
         'judul_program',
         'deskripsi_program',
+        'informasi_tambahan',
+        'gambar',
     ];
     
     protected $table = 'output_program';
