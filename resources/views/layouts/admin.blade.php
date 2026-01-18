@@ -372,6 +372,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.profil.edit') }}" class="{{ request()->is('admin/profil*') ? 'active' : '' }}">
+                    <i class='bx bx-user'></i>
+                    <span class="links_name">Profil Saya</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.pengaturan.index') }}" class="{{ request()->is('admin/pengaturan*') ? 'active' : '' }}">
                     <i class='bx bx-cog'></i>
                     <span class="links_name">Pengaturan</span>
@@ -413,15 +419,9 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{{ route('admin.profil.edit') }}">
                         <i class='bx bx-user'></i>
                         <span>Profil Saya</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="#">
-                        <i class='bx bx-cog'></i>
-                        <span>Pengaturan</span>
                     </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>

@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BerandaController;
+use App\Http\Controllers\Admin\ProfilController;
 
 // --- MODELS IMPORT (Untuk Public Routes) ---
 use App\Models\Layanan; 
@@ -43,7 +44,7 @@ use App\Models\Monografi;
 
 Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-Route::get('/profil', function () {
+Route::get('/profil-kelurahan', function () {
     $profilKelurahan = ProfilKelurahan::first();
     $monografis = Monografi::latest()->get();
     return view('profil', compact('profilKelurahan', 'monografis'));
@@ -177,6 +178,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda.index');
     Route::post('/beranda', [BerandaController::class, 'store'])->name('beranda.store');
     Route::put('/beranda/{id}', [BerandaController::class, 'update'])->name('beranda.update');
+    
+    // --- PROFIL ---
+    Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
+    Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
     
     // --- MONOGRAFI (Sesuai perbaikan sebelumnya) ---
     // PENTING: Struktur ini mendukung fitur AJAX Edit & Delete
