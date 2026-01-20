@@ -55,6 +55,20 @@
                         <i class="fas fa-database meta-icon"></i>
                         <h3>{{ $item->nama_metadata }}</h3>
                         <p>{{ $item->deskripsi }}</p>
+                        @if($item->file_pdf)
+                            <div class="mt-2">
+                                <a href="{{ url('/storage/' . $item->file_pdf) }}" target="_blank" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-file-pdf"></i> Lihat PDF
+                                </a>
+                            </div>
+                        @endif
+                        @if($item->link)
+                            <div class="mt-1">
+                                <a href="{{ $item->link }}" target="_blank" class="btn btn-sm btn-secondary">
+                                    <i class="fas fa-external-link-alt"></i> Link Eksternal
+                                </a>
+                            </div>
+                        @endif
                     </div>
                     @empty
                     <div class="meta-item"><p>Belum ada data metadata.</p></div>
@@ -133,6 +147,20 @@
                             <div class="text-center mb-2"><i class="fas fa-database fa-2x"></i></div>
                             <input type="text" name="nama_metadata" class="form-input card-input mb-2" value="{{ $item->nama_metadata }}">
                             <textarea name="deskripsi" class="form-input card-input mb-2" rows="3">{{ $item->deskripsi }}</textarea>
+                            
+                            {{-- File PDF --}}
+                            @if($item->file_pdf)
+                                <div class="mb-2">
+                                    <small class="text-muted d-block mb-1">PDF saat ini:</small>
+                                    <a href="{{ url('/storage/' . $item->file_pdf) }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </a>
+                                </div>
+                            @endif
+                            <input type="file" name="file_pdf" class="form-input card-input mb-2" accept=".pdf">
+                            
+                            {{-- Link --}}
+                            <input type="url" name="link" class="form-input card-input mb-2" placeholder="Link eksternal (opsional)" value="{{ $item->link ?? '' }}">
                         </form>
                         
                         {{-- Form Delete (Terpisah agar tidak ikut ke submit "Simpan Semua") --}}
@@ -193,11 +221,13 @@
 {{-- Ini trik agar tidak ada syntax error JS karena Blade --}}
 <template id="tpl-metadata-new">
     <div class="meta-item new-item" style="border: 2px dashed #00A86B;">
-        <form action="{{ route('admin.desa-cantik.store-metadata') }}" method="POST">
+        <form action="{{ route('admin.desa-cantik.store-metadata') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <h4 class="text-center text-success mb-2">Item Baru</h4>
             <input type="text" name="nama_metadata" class="form-input card-input mb-2" placeholder="Nama Metadata" required>
             <textarea name="deskripsi" class="form-input card-input mb-2" placeholder="Deskripsi" required rows="3"></textarea>
+            <input type="file" name="file_pdf" class="form-input card-input mb-2" accept=".pdf">
+            <input type="url" name="link" class="form-input card-input mb-2" placeholder="Link eksternal (opsional)">
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-save w-100">Simpan</button>
                 <button type="button" class="btn btn-secondary" onclick="this.closest('.meta-item').remove()">Batal</button>
@@ -233,12 +263,15 @@
     .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
     h1 { font-size: 20px; font-weight: bold; margin: 0; }
     h2 { font-size: 18px; font-weight: 600; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-    .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 5px; font-size: 14px; }
+    .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 5px; font-size: 14px; text-decoration: none; }
     .btn-edit { background: #10B981; }
     .btn-save { background: #3B82F6; }
     .btn-delete { background: #EF4444; }
     .btn-secondary { background: #6B7280; }
     .btn-add { background: #10B981; width: 100%; justify-content: center; padding: 10px; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-primary { background: #3B82F6; }
+    .btn-outline-primary { background: transparent; border: 1px solid #3B82F6; color: #3B82F6; }
     
     .form-input, .form-textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
     .card-input { background: #f9fafb; }

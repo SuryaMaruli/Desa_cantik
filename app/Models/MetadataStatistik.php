@@ -12,6 +12,8 @@ class MetadataStatistik extends Model
         'nama_metadata',
         'deskripsi',
         'gambar',
+        'file_pdf',
+        'link',
     ];
     
     protected $table = 'metadata_statistik';

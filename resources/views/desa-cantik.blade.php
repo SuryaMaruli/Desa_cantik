@@ -381,6 +381,24 @@
             box-shadow: 0 4px 8px rgba(246, 144, 58, 0.3);
         }
 
+        /* Metadata Links Hover Effects */
+        .pdf-preview-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #ced4da !important;
+        }
+
+        .pdf-preview-link:hover .pdf-thumbnail {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+        }
+
+        .link-external:hover {
+            background-color: #d1e7ff !important;
+            border-color: #99ccff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,102,204,0.2);
+        }
+
         .gallery-content {
             padding: 20px;
             flex-grow: 1;
@@ -456,6 +474,41 @@
                     </div>
                     <h3>{{ $item->nama_metadata }}</h3>
                     <p>{{ $item->deskripsi }}</p>
+                    
+                    {{-- Preview PDF dan Link --}}
+                    <div class="metadata-links" style="margin-top: 20px;">
+                        @if($item->file_pdf)
+                            <div class="pdf-preview" style="margin-bottom: 12px;">
+                                <a href="{{ url('/storage/' . $item->file_pdf) }}" target="_blank" class="pdf-preview-link" style="display: block; text-decoration: none; border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6; transition: all 0.3s ease;">
+                                    <div class="pdf-thumbnail" style="width: 100%; height: 120px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center; position: relative;">
+                                        <div style="text-align: center;">
+                                            <i class="fas fa-file-pdf" style="color: #dc3545; font-size: 32px; margin-bottom: 8px;"></i>
+                                            <div style="font-size: 12px; color: #6c757d; font-weight: 500;">PDF Document</div>
+                                        </div>
+                                        <div style="position: absolute; top: 8px; right: 8px; background: rgba(220, 53, 69, 0.1); padding: 4px 8px; border-radius: 4px;">
+                                            <i class="fas fa-expand" style="color: #dc3545; font-size: 12px;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="pdf-info" style="padding: 10px; background: white;">
+                                        <div style="font-size: 13px; color: #495057; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                                            <i class="fas fa-eye" style="font-size: 12px; color: #6c757d;"></i>
+                                            Klik untuk melihat PDF
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        @endif
+                        
+                        @if($item->link)
+                            <div class="external-link">
+                                <a href="{{ $item->link }}" target="_blank" class="link-external" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background-color: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 6px; text-decoration: none; color: #0066cc; font-size: 14px; transition: all 0.2s ease;">
+                                    <i class="fas fa-link" style="font-size: 16px;"></i>
+                                    <span>Link Eksternal</span>
+                                    <i class="fas fa-external-link-alt" style="font-size: 12px; color: #0066cc; margin-left: auto;"></i>
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
                 @empty
                 <div class="card card-cream">

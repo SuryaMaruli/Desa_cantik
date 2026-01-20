@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\DataLurahController;
 use App\Http\Controllers\Admin\MonografiController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\BeritaController;
-use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\InformasiPublikController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BerandaController;
 use App\Http\Controllers\Admin\ProfilController;
@@ -26,6 +26,7 @@ use App\Models\Berita;
 use App\Models\Galeri;
 use App\Models\TentangDesa;
 use App\Models\MetadataStatistik;
+use App\Models\InformasiPublik;
 use App\Models\OutputProgram;
 use App\Models\Prestasi;
 use App\Models\Penduduk;
@@ -37,6 +38,64 @@ use App\Models\Monografi;
 | Web Routes
 |--------------------------------------------------------------------------
 */
+
+Route::get('/storage/{path}', function ($path) {
+    // Decode URL-encoded characters (handle %20 for spaces, etc.)
+    $path = urldecode($path);
+    
+    // Debug: Log the request
+    \Log::info("Storage access attempt: " . $path);
+    \Log::info("Original path: " . request()->path());
+    
+    // Security check - prevent directory traversal
+    if (str_contains($path, '..') || str_starts_with($path, '/')) {
+        \Log::warning("Security violation attempt: " . $path);
+        abort(403, 'Access denied');
+    }
+    
+    $fullPath = storage_path('app/public/' . $path);
+    \Log::info("Full path: " . $fullPath);
+    \Log::info("File exists: " . (file_exists($fullPath) ? 'YES' : 'NO'));
+    
+    if (!file_exists($fullPath)) {
+        \Log::warning("File not found: " . $fullPath);
+        abort(404, 'File not found');
+    }
+    
+    // Check if it's actually a file
+    if (!is_file($fullPath)) {
+        \Log::warning("Not a file: " . $fullPath);
+        abort(403, 'Not a file');
+    }
+    
+    $fileInfo = pathinfo($fullPath);
+    $extension = strtolower($fileInfo['extension'] ?? '');
+    
+    // Set proper headers based on file type
+    $headers = [];
+    
+    switch ($extension) {
+        case 'pdf':
+            $headers['Content-Type'] = 'application/pdf';
+            $headers['Content-Disposition'] = 'inline; filename="' . basename($fullPath) . '"';
+            break;
+        case 'jpg':
+        case 'jpeg':
+            $headers['Content-Type'] = 'image/jpeg';
+            break;
+        case 'png':
+            $headers['Content-Type'] = 'image/png';
+            break;
+        case 'gif':
+            $headers['Content-Type'] = 'image/gif';
+            break;
+        default:
+            $headers['Content-Type'] = 'application/octet-stream';
+    }
+    
+    \Log::info("Serving file: " . $fullPath);
+    return response()->file($fullPath, $headers);
+})->where('path', '.*')->name('storage.file');
 
 // =========================================================================
 // 1. PUBLIC ROUTES (Frontend)
@@ -117,6 +176,11 @@ Route::get('/desa-cantik', function () {
 });
 
 Route::get('/desa-cantik/output/{id}', [DesaCantikController::class, 'showOutput'])->name('desa-cantik.show-output');
+
+Route::get('/informasi-publik/{id}', function ($id) {
+    $informasi = InformasiPublik::findOrFail($id);
+    return view('informasi-publik-detail', compact('informasi'));
+})->name('informasi-publik.detail');
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -213,6 +277,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/desa-cantik/output', [DesaCantikController::class, 'storeOutput'])->name('desa-cantik.store-output');
     Route::put('/desa-cantik/output/{id}', [DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output'); // Perbaikan: PUT
     Route::delete('/desa-cantik/output/{id}', [DesaCantikController::class, 'deleteOutput'])->name('desa-cantik.delete-output');
+    
+    // --- INFORMASI PUBLIK ---
+    Route::get('/informasi-publik', [InformasiPublikController::class, 'index'])->name('informasi-publik.index');
+    Route::get('/informasi-publik/create', [InformasiPublikController::class, 'create'])->name('informasi-publik.create');
+    Route::post('/informasi-publik', [InformasiPublikController::class, 'store'])->name('informasi-publik.store');
+    Route::get('/informasi-publik/{id}/edit', [InformasiPublikController::class, 'edit'])->name('informasi-publik.edit');
+    Route::put('/informasi-publik/{id}', [InformasiPublikController::class, 'update'])->name('informasi-publik.update');
+    Route::delete('/informasi-publik/{id}', [InformasiPublikController::class, 'destroy'])->name('informasi-publik.destroy');
     
     // --- PRESTASI ---
     Route::resource('prestasi', PrestasiController::class)->except(['show']); 

@@ -198,7 +198,8 @@
             color: white; 
             border-radius: 16px; 
             display: flex; align-items: center; justify-content: center; 
-            font-size: 24px; 
+            font-size: 28px; 
+            font-weight: bold;
             margin-bottom: 25px; 
         }
         
@@ -326,30 +327,39 @@
             <h2>INFORMASI PUBLIK</h2>
         </div>
         <div class="info-grid">
+            @forelse($informasiPubliks ?? \App\Models\InformasiPublik::all() as $index => $item)
             <div class="info-card">
-                <div class="info-icon"><i class="far fa-building"></i></div>
+                <div class="info-icon">{{ $index + 1 }}</div>
+                <h4>{{ $item->judul }}</h4>
+                <p>{{ $item->sub_deskripsi }}</p>
+                <a href="{{ route('informasi-publik.detail', $item->id) }}" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
+            </div>
+            @empty
+            <div class="info-card">
+                <div class="info-icon">1</div>
                 <h4>Lembaga Kemasyarakatan</h4>
                 <p>Informasi lengkap tentang lembaga-lembaga yang ada di Kelurahan Citangkil.</p>
                 <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="info-card">
-                <div class="info-icon"><i class="fas fa-users"></i></div>
+                <div class="info-icon">2</div>
                 <h4>Lembaga Pemberdayaan Masyarakat</h4>
                 <p>Program pemberdayaan untuk meningkatkan kesejahteraan masyarakat.</p>
                 <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="info-card">
-                <div class="info-icon"><i class="far fa-calendar-alt"></i></div>
+                <div class="info-icon">3</div>
                 <h4>Agenda & Kegiatan</h4>
                 <p>Jadwal kegiatan dan acara yang akan dilaksanakan di kelurahan.</p>
                 <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="info-card">
-                <div class="info-icon"><i class="far fa-file-alt"></i></div>
+                <div class="info-icon">4</div>
                 <h4>Dokumen Publik</h4>
                 <p>Akses dokumen dan peraturan yang dapat diakses oleh masyarakat.</p>
                 <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
             </div>
+            @endforelse
         </div>
     </section>
 @endsection

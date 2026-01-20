@@ -42,9 +42,22 @@ class DesaCantikController extends Controller
         $request->validate([
             'nama_metadata' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'file_pdf' => 'nullable|file|mimes:pdf|max:5120',
+            'link' => 'nullable|url|max:255',
         ]);
 
-        MetadataStatistik::create($request->all());
+        $data = $request->except('file_pdf');
+
+        // Upload PDF jika ada
+        if ($request->hasFile('file_pdf')) {
+            $file = $request->file('file_pdf');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan ke folder khusus pdf_metadata
+            $file->storeAs('pdf_metadata', $filename, 'public');
+            $data['file_pdf'] = 'pdf_metadata/' . $filename;
+        }
+
+        MetadataStatistik::create($data);
         return redirect()->back()->with('success', 'Metadata berhasil ditambahkan!');
     }
 
@@ -53,17 +66,41 @@ class DesaCantikController extends Controller
         $request->validate([
             'nama_metadata' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'file_pdf' => 'nullable|file|mimes:pdf|max:5120',
+            'link' => 'nullable|url|max:255',
         ]);
 
         $metadata = MetadataStatistik::findOrFail($id);
-        $metadata->update($request->all());
+        $data = $request->except('file_pdf');
 
+        // Handle upload PDF baru
+        if ($request->hasFile('file_pdf')) {
+            // Hapus PDF lama jika ada
+            if ($metadata->file_pdf && Storage::exists('public/' . $metadata->file_pdf)) {
+                Storage::delete('public/' . $metadata->file_pdf);
+            }
+
+            // Upload PDF baru
+            $file = $request->file('file_pdf');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan ke folder khusus pdf_metadata
+            $file->storeAs('pdf_metadata', $filename, 'public');
+            $data['file_pdf'] = 'pdf_metadata/' . $filename;
+        }
+
+        $metadata->update($data);
         return redirect()->back()->with('success', 'Metadata berhasil diperbarui!');
     }
 
     public function deleteMetadata($id)
     {
         $metadata = MetadataStatistik::findOrFail($id);
+        
+        // Hapus file PDF jika ada
+        if ($metadata->file_pdf && Storage::exists('public/' . $metadata->file_pdf)) {
+            Storage::delete('public/' . $metadata->file_pdf);
+        }
+        
         $metadata->delete();
         return redirect()->back()->with('success', 'Metadata berhasil dihapus!');
     }
