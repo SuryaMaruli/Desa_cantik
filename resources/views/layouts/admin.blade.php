@@ -527,302 +527,279 @@
     
     <!-- Custom Scripts -->
     <script>
-        // Toggle Sidebar
-        document.getElementById('sidebarToggle').addEventListener('click', function(e) {
-            e.preventDefault();
-            const sidebar = document.getElementById('sidebar');
-            const icon = this.querySelector('i');
-            
-            sidebar.classList.toggle('active');
-            
-            // Toggle icon between menu and x
-            if (icon.classList.contains('bx-menu')) {
-                icon.classList.remove('bx-menu');
-                icon.classList.add('bx-x');
-            } else {
-                icon.classList.remove('bx-x');
-                icon.classList.add('bx-menu');
-            }
-        });
+    // Toggle Sidebar
+    document.getElementById('sidebarToggle').addEventListener('click', function(e) {
+        e.preventDefault();
+        const sidebar = document.getElementById('sidebar');
+        const icon = this.querySelector('i');
+        
+        sidebar.classList.toggle('active');
+        
+        // Toggle icon between menu and x
+        if (icon.classList.contains('bx-menu')) {
+            icon.classList.remove('bx-menu');
+            icon.classList.add('bx-x');
+        } else {
+            icon.classList.remove('bx-x');
+            icon.classList.add('bx-menu');
+        }
+    });
 
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(event.target) && 
+            !sidebarToggle.contains(event.target) &&
+            sidebar.classList.contains('active')) {
             
-            if (window.innerWidth <= 768 && 
-                !sidebar.contains(event.target) && 
-                !sidebarToggle.contains(event.target) &&
-                sidebar.classList.contains('active')) {
-                
-                sidebar.classList.remove('active');
-                const icon = sidebarToggle.querySelector('i');
-                icon.classList.remove('bx-x');
-                icon.classList.add('bx-menu');
-            }
-        });
-
-        // Add active class to current menu item based on URL
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.nav-list a');
-            
-            navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-            
-            // Close sidebar by default on mobile
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('active');
-            }
-        });
-
-        // Handle window resize
-        function handleResize() {
-            const sidebar = document.getElementById('sidebar');
-            const mainHeader = document.querySelector('.main-header');
-            const mainContent = document.querySelector('.main-content');
-            const sidebarToggle = document.getElementById('sidebarToggle');
+            sidebar.classList.remove('active');
             const icon = sidebarToggle.querySelector('i');
-            
-            if (window.innerWidth > 768) {
-                // Desktop view
-                sidebar.style.left = '0';
-                mainHeader.style.left = 'var(--sidebar-width)';
-                mainContent.style.marginLeft = 'var(--sidebar-width)';
-                
-                // Reset icon
-                icon.classList.remove('bx-x');
-                icon.classList.add('bx-menu');
-                sidebar.classList.remove('active');
-            } else {
-                // Mobile view
-                if (!sidebar.classList.contains('active')) {
-                    sidebar.style.left = 'calc(-1 * var(--sidebar-width))';
-                    mainHeader.style.left = '0';
-                    mainContent.style.marginLeft = '0';
-                } else {
-                    sidebar.style.left = '0';
-                    mainHeader.style.left = '0';
-                    mainContent.style.marginLeft = '0';
-                }
-            }
+            icon.classList.remove('bx-x');
+            icon.classList.add('bx-menu');
         }
+    });
 
-        // Data Lurah Functions
-        // Load data lurah dari localStorage saat page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDataLurah();
-        });
-
-        // Fungsi untuk membuka modal Data Lurah
-        function openDataLurahModal() {
-            const modal = new bootstrap.Modal(document.getElementById('dataLurahModal'));
-            modal.show();
-        }
-
-        // Fungsi untuk menyimpan data lurah ke localStorage
-        function simpanDataLurah() {
-            const dataLurah = {
-                namaLurah: document.getElementById('namaLurah').value,
-                nipLurah: document.getElementById('nipLurah').value,
-                pangkatLurah: document.getElementById('pangkatLurah').value,
-                golonganLurah: document.getElementById('golonganLurah').value,
-                jabatanLurah: document.getElementById('jabatanLurah').value,
-                sambutanLurah: document.getElementById('sambutanLurah').value,
-                updatedAt: new Date().toISOString()
-            };
-            
-            // Simpan ke localStorage
-            localStorage.setItem('dataLurah', JSON.stringify(dataLurah));
-            
-            // Tampilkan notifikasi sukses
-            showNotification('Data lurah berhasil disimpan!', 'success');
-            
-            // Tutup modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('dataLurahModal'));
-            modal.hide();
-        }
-
-        // Fungsi untuk load data lurah dari localStorage
-        function loadDataLurah() {
-            const savedData = localStorage.getItem('dataLurah');
-            
-            if (savedData) {
-                const dataLurah = JSON.parse(savedData);
-                
-                // Isi form dengan data yang tersimpan
-                document.getElementById('namaLurah').value = dataLurah.namaLurah || 'M. ALI WAHIDI, S.Sos.M.Si';
-                document.getElementById('nipLurah').value = dataLurah.nipLurah || '196512311985031023';
-                document.getElementById('pangkatLurah').value = dataLurah.pangkatLurah || 'Pembina Tingkat I';
-                document.getElementById('golonganLurah').value = dataLurah.golonganLurah || 'IV/b';
-                document.getElementById('jabatanLurah').value = dataLurah.jabatanLurah || 'Lurah Citangkil';
-                document.getElementById('sambutanLurah').value = dataLurah.sambutanLurah || 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.';
-                
-                // Load foto jika ada
-                if (dataLurah.fotoLurah) {
-                    showFotoPreview(dataLurah.fotoLurah);
-                }
-            }
-        }
-
-        // Fungsi untuk preview foto
-        function showFotoPreview(imageSrc) {
-            const previewDiv = document.getElementById('fotoPreview');
-            const previewImage = document.getElementById('previewImage');
-            
-            previewImage.src = imageSrc;
-            previewDiv.style.display = 'block';
-        }
-
-        // Fungsi untuk menghapus foto
-        function removeFoto() {
-            const previewDiv = document.getElementById('fotoPreview');
-            const fileInput = document.getElementById('fotoLurah');
-            
-            previewDiv.style.display = 'none';
-            fileInput.value = '';
-        }
-
-        // Event listener untuk file input
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('fotoLurah');
-            if (fileInput) {
-                fileInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            showFotoPreview(e.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+    // Add active class to current menu item based on URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-list a');
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
             }
         });
-
-        // Fungsi untuk menampilkan notifikasi
-        function showNotification(message, type = 'info') {
-            // Buat elemen notifikasi
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            
-            // Tambahkan ke body
-            document.body.appendChild(notification);
-            
-            // Auto remove setelah 5 detik
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 5000);
+        
+        // Close sidebar by default on mobile
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('active');
         }
+    });
 
-        // Fungsi untuk export data lurah (backup)
-        function exportDataLurah() {
-            const savedData = localStorage.getItem('dataLurah');
+    // Handle window resize
+    function handleResize() {
+        const sidebar = document.getElementById('sidebar');
+        const mainHeader = document.querySelector('.main-header');
+        const mainContent = document.querySelector('.main-content');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const icon = sidebarToggle.querySelector('i');
+        
+        if (window.innerWidth > 768) {
+            // Desktop view
+            sidebar.style.left = '0';
+            mainHeader.style.left = 'var(--sidebar-width)';
+            mainContent.style.marginLeft = 'var(--sidebar-width)';
             
-            if (savedData) {
-                const dataLurah = JSON.parse(savedData);
-                const dataStr = JSON.stringify(dataLurah, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                
-                const exportFileDefaultName = 'data_lurah_' + new Date().toISOString().slice(0,10) + '.json';
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
-                
-                showNotification('Data lurah berhasil di-export!', 'success');
-            } else {
-                showNotification('Tidak ada data lurah untuk di-export!', 'warning');
-            }
-        }
-
-        // Fungsi untuk import data lurah
-        function importDataLurah(event) {
-            const file = event.target.files[0];
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        
-                        // Validasi data
-                        if (importedData.namaLurah) {
-                            localStorage.setItem('dataLurah', JSON.stringify(importedData));
-                            loadDataLurah();
-                            showNotification('Data lurah berhasil di-import!', 'success');
-                        } else {
-                            showNotification('Format file tidak valid!', 'danger');
-                        }
-                    } catch (error) {
-                        showNotification('Gagal membaca file. Pastikan format JSON benar!', 'danger');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-                
-                // Reset icon to menu
-                if (icon.classList.contains('bx-x')) {
-                    icon.classList.remove('bx-x');
-                    icon.classList.add('bx-menu');
-                }
-            } else {
-                // Mobile view
-                sidebar.style.left = '-100%';
+            // Reset icon
+            icon.classList.remove('bx-x');
+            icon.classList.add('bx-menu');
+            sidebar.classList.remove('active');
+        } else {
+            // Mobile view
+            if (!sidebar.classList.contains('active')) {
+                sidebar.style.left = 'calc(-1 * var(--sidebar-width))';
                 mainHeader.style.left = '0';
                 mainContent.style.marginLeft = '0';
-                
-                // Close sidebar if open
-                if (sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                    if (icon.classList.contains('bx-x')) {
-                        icon.classList.remove('bx-x');
-                        icon.classList.add('bx-menu');
+            } else {
+                sidebar.style.left = '0';
+                mainHeader.style.left = '0';
+                mainContent.style.marginLeft = '0';
+            }
+        }
+    }
+
+    // Data Lurah Functions
+    // Load data lurah dari localStorage saat page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadDataLurah();
+    });
+
+    // Fungsi untuk membuka modal Data Lurah
+    function openDataLurahModal() {
+        const modal = new bootstrap.Modal(document.getElementById('dataLurahModal'));
+        modal.show();
+    }
+
+    // Fungsi untuk menyimpan data lurah ke localStorage
+    function simpanDataLurah() {
+        const dataLurah = {
+            namaLurah: document.getElementById('namaLurah').value,
+            nipLurah: document.getElementById('nipLurah').value,
+            pangkatLurah: document.getElementById('pangkatLurah').value,
+            golonganLurah: document.getElementById('golonganLurah').value,
+            jabatanLurah: document.getElementById('jabatanLurah').value,
+            sambutanLurah: document.getElementById('sambutanLurah').value,
+            updatedAt: new Date().toISOString()
+        };
+        
+        // Simpan ke localStorage
+        localStorage.setItem('dataLurah', JSON.stringify(dataLurah));
+        
+        // Tampilkan notifikasi sukses
+        showNotification('Data lurah berhasil disimpan!', 'success');
+        
+        // Tutup modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('dataLurahModal'));
+        modal.hide();
+    }
+
+    // Fungsi untuk load data lurah dari localStorage
+    function loadDataLurah() {
+        const savedData = localStorage.getItem('dataLurah');
+        
+        if (savedData) {
+            const dataLurah = JSON.parse(savedData);
+            
+            // Isi form dengan data yang tersimpan
+            document.getElementById('namaLurah').value = dataLurah.namaLurah || 'M. ALI WAHIDI, S.Sos.M.Si';
+            document.getElementById('nipLurah').value = dataLurah.nipLurah || '196512311985031023';
+            document.getElementById('pangkatLurah').value = dataLurah.pangkatLurah || 'Pembina Tingkat I';
+            document.getElementById('golonganLurah').value = dataLurah.golonganLurah || 'IV/b';
+            document.getElementById('jabatanLurah').value = dataLurah.jabatanLurah || 'Lurah Citangkil';
+            document.getElementById('sambutanLurah').value = dataLurah.sambutanLurah || 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.';
+            
+            // Load foto jika ada
+            if (dataLurah.fotoLurah) {
+                showFotoPreview(dataLurah.fotoLurah);
+            }
+        }
+    }
+
+    // Fungsi untuk preview foto
+    function showFotoPreview(imageSrc) {
+        const previewDiv = document.getElementById('fotoPreview');
+        const previewImage = document.getElementById('previewImage');
+        
+        previewImage.src = imageSrc;
+        previewDiv.style.display = 'block';
+    }
+
+    // Fungsi untuk menghapus foto
+    function removeFoto() {
+        const previewDiv = document.getElementById('fotoPreview');
+        const fileInput = document.getElementById('fotoLurah');
+        
+        previewDiv.style.display = 'none';
+        fileInput.value = '';
+    }
+
+    // Event listener untuk file input
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('fotoLurah');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        showFotoPreview(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+
+    // Fungsi untuk menampilkan notifikasi
+    function showNotification(message, type = 'info') {
+        // Buat elemen notifikasi
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Tambahkan ke body
+        document.body.appendChild(notification);
+        
+        // Auto remove setelah 5 detik
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    // Fungsi untuk export data lurah (backup)
+    function exportDataLurah() {
+        const savedData = localStorage.getItem('dataLurah');
+        
+        if (savedData) {
+            const dataLurah = JSON.parse(savedData);
+            const dataStr = JSON.stringify(dataLurah, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'data_lurah_' + new Date().toISOString().slice(0,10) + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Data lurah berhasil di-export!', 'success');
+        } else {
+            showNotification('Tidak ada data lurah untuk di-export!', 'warning');
+        }
+    }
+
+    // Fungsi untuk import data lurah
+    function importDataLurah(event) {
+        const file = event.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validasi data
+                    if (importedData.namaLurah) {
+                        localStorage.setItem('dataLurah', JSON.stringify(importedData));
+                        loadDataLurah();
+                        showNotification('Data lurah berhasil di-import!', 'success');
+                    } else {
+                        showNotification('Format file tidak valid!', 'danger');
+                    }
+                } catch (error) {
+                    showNotification('Gagal membaca file. Pastikan format JSON benar!', 'danger');
+                }
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    // Initial call
+    handleResize();
+    
+    // Add event listener for window resize with debounce
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(handleResize, 250);
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(event.target)) {
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu && menu.classList.contains('show')) {
+                    const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+                    if (toggle) {
+                        const bsDropdown = new bootstrap.Dropdown(toggle);
+                        bsDropdown.hide();
                     }
                 }
             }
-        }
-
-        // Initial call
-        handleResize();
-        
-        // Add event listener for window resize with debounce
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(handleResize, 250);
         });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdowns = document.querySelectorAll('.dropdown');
-            dropdowns.forEach(dropdown => {
-                if (!dropdown.contains(event.target)) {
-                    const menu = dropdown.querySelector('.dropdown-menu');
-                    if (menu && menu.classList.contains('show')) {
-                        const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
-                        if (toggle) {
-                            const bsDropdown = new bootstrap.Dropdown(toggle);
-                            bsDropdown.hide();
-                        }
-                    }
-                }
-            });
-        });
-    </script>
-    
+    });
+</script>
     @stack('scripts')
 </body>
 </html>

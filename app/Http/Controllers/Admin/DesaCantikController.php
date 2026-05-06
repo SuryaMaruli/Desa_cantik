@@ -123,8 +123,8 @@ class DesaCantikController extends Controller
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
             // Simpan ke folder public agar bisa diakses via web
-            $file->storeAs('public', $filename);
-            $data['gambar'] = $filename;
+            $file->storeAs('output', $filename,'public');
+            $data['gambar'] = 'output/' . $filename;
         }
 
         OutputProgram::create($data);
@@ -146,15 +146,15 @@ class DesaCantikController extends Controller
         // Handle Ganti Gambar
         if ($request->hasFile('gambar')) {
             // 1. Hapus gambar lama jika ada
-            if ($output->gambar && Storage::exists('public/' . $output->gambar)) {
-                Storage::delete('public/' . $output->gambar);
+            if ($output->gambar && Storage::exists($output->gambar)) {
+                Storage::disk('public')->delete($output->gambar);
             }
 
             // 2. Upload gambar baru
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public', $filename);
-            $data['gambar'] = $filename;
+            $file->storeAs('output', $filename, 'public');
+            $data['gambar'] = 'output/' . $filename;
         }
 
         $output->update($data);
@@ -166,8 +166,8 @@ class DesaCantikController extends Controller
         $output = OutputProgram::findOrFail($id);
         
         // Hapus file fisik gambar
-        if ($output->gambar && Storage::exists('public/' . $output->gambar)) {
-            Storage::delete('public/' . $output->gambar);
+        if ($output->gambar && Storage::disk('public')->exists($output->gambar)) {
+            Storage::disk('public')->delete($output->gambar);
         }
 
         $output->delete();

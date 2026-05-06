@@ -310,4 +310,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     
     // --- PENGATURAN ---
     Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+    
 });

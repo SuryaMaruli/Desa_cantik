@@ -261,7 +261,7 @@
                 <div class="icon-box"><i class="far fa-check-circle"></i></div>
                 <h3>Profil Kelurahan</h3>
                 <p>Informasi lengkap tentang sejarah, visi misi, dan struktur organisasi Kelurahan Citangkil.</p>
-                <a href="/profil" class="card-btn">Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                <a href="/profil-kelurahan" class="card-btn">Selengkapnya <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="card">
                 <div class="icon-box"><i class="fas fa-bullseye"></i></div>

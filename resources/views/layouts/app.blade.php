@@ -348,7 +348,7 @@
         </div>
         <ul class="nav-links">
             <li><a href="/">Beranda</a></li>
-            <li><a href="/profil">Profil</a></li>
+            <li><a href="/profil-kelurahan">Profil</a></li>
             <li><a href="/layanan">Layanan</a></li>
             <li><a href="/data">Data</a></li>
             <li><a href="/desa-cantik">Desa Cantik</a></li>

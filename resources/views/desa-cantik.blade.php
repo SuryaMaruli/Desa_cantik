@@ -444,7 +444,7 @@
     <header class="main-header">
         <div class="container">
             <h1>Program Desa Cantik</h1>
-            <p class="subtitle">Dapori Pembuasan Desa Cantik oleh RPS Kota Cilegon - Mitra Modular</p>
+            <p class="subtitle">Output Pembinaan Desa Cantik oleh BPS Kota Cilegon - Mirroring Website</p>
             <p class="subtitle">Kelurahan Citangkil</p>
         </div>
     </header>

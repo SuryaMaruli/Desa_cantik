@@ -2,7 +2,7 @@
     /* --- FOOTER STYLES --- */
     .footer-section {
         background-color: #F89039;
-        color: #d1d5db;
+        color: #f7f7f7;
         font-family: 'Roboto', sans-serif;
         padding: 48px 24px;
     }
@@ -89,7 +89,7 @@
     }
 
     .footer-link {
-        color: #d1d5db;
+        color: #ffffff;
         text-decoration: none;
         transition: all 0.3s ease;
     }
@@ -138,7 +138,7 @@
         justify-content: space-between;
         align-items: center;
         font-size: 0.75rem;
-        color: #9ca3af;
+        color: #ffffff;
     }
 
     @media (min-width: 768px) {
@@ -204,7 +204,7 @@
             <div>
                 <h3 class="footer-subtitle">Tautan Cepat</h3>
                 <ul class="footer-list">
-                    <li><a href="/profil" class="footer-link">Tentang Kami</a></li>
+                    <li><a href="/profil-kelurahan" class="footer-link">Tentang Kami</a></li>
                     <li><a href="/layanan" class="footer-link">Layanan</a></li>
                     <li><a href="/berita" class="footer-link">Berita</a></li>
                     <li><a href="/kontak" class="footer-link">Pengaduan</a></li>

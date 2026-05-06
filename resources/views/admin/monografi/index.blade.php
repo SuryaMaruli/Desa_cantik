@@ -406,7 +406,6 @@
         deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         deleteBtn.disabled = true;
 
-        // Fetch dengan Method Spoofing DELETE
         fetch(`/admin/monografi/${id}`, {
             method: 'POST', 
             headers: {

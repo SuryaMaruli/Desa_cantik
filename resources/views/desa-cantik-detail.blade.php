@@ -172,10 +172,15 @@
             <p>{!! nl2br(e($program->deskripsi_program)) !!}</p>
             
             @if($program->informasi_tambahan)
-                <h2>Informasi Tambahan</h2>
-                <p>{!! nl2br(e($program->informasi_tambahan)) !!}</p>
+                <h2>Akses di Sini 👇👇</h2>
+                <div class="additional-info">
+                    <i class="fas fa-external-link-alt me-1"></i> <a href="{{ str_starts_with($program->informasi_tambahan, 'http') ? $program->informasi_tambahan : 'https://' . $program->informasi_tambahan }}" 
+                    target="_blank" 
+                    class="text-primary text-decoration-underline">
+                        {{ $program->informasi_tambahan }}
+                    </a>
+                </div>
             @endif
-            
         </div>
         
         {{-- Related Programs --}}
