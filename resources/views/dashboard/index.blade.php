@@ -26,7 +26,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('{{ $beranda->gambar_header ? asset("storage/" . $beranda->gambar_header) : "https://images.unsplash.com/photo-1486312338219-ce68d2C6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" }}');
+            background-image: url('{{ $beranda?->gambar_header ? asset("storage/".$beranda->gambar_header) : "https://images.unsplash.com/photo-1486312338219-ce68d2C6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
