@@ -7,8 +7,10 @@
     <div class="news-toolbar">
         <div class="toolbar-container">
             <div class="search-box">
-                <i class='bx bx-search'></i>
-                <input type="text" placeholder="Cari admin..." id="searchAdmin">
+                <span class="search-icon-wrap">
+                    <i class='bx bx-search'></i>
+                </span>
+                <input type="text" placeholder="Cari nama atau email admin..." id="searchAdmin">
             </div>
             <a href="{{ route('admin.admin.create') }}" class="btn-add-news">
                 <i class='bx bx-plus'></i> Tambah Admin
@@ -55,11 +57,11 @@
                         <div class="news-meta-row">
                             <span class="meta-item">
                                 <i class='bx bx-calendar'></i> 
-                                {{ $admin->created_at->format('d M Y') }}
+                                {{ optional($admin->created_at)->format('d M Y') ?? '-' }}
                             </span>
                             <span class="meta-item">
                                 <i class='bx bx-time-five'></i> 
-                                {{ $admin->updated_at->diffForHumans() }}
+                                {{ optional($admin->updated_at)->diffForHumans() ?? '-' }}
                             </span>
                             @if($admin->id === auth()->id())
                                 <span class="badge-status status-active">
@@ -129,6 +131,120 @@
 </div>
 
 <style>
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 320px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #ffffff 0%, #fff8f2 100%);
+    border: 1px solid #f3d2b7;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(217, 107, 24, 0.08);
+    transition: all 0.25s ease;
+}
+
+.search-box:hover {
+    border-color: #e7b489;
+    box-shadow: 0 8px 20px rgba(217, 107, 24, 0.14);
+}
+
+.search-box:focus-within {
+    border-color: #d96b18;
+    box-shadow: 0 0 0 4px rgba(217, 107, 24, 0.15), 0 10px 24px rgba(217, 107, 24, 0.2);
+    transform: translateY(-1px);
+}
+
+.search-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ffeede 0%, #ffd6b5 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #c85e0f;
+    flex-shrink: 0;
+}
+
+.search-icon-wrap i {
+    font-size: 18px;
+}
+
+.search-box input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #3d3d3d;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.search-box input::placeholder {
+    color: #a78a73;
+    font-weight: 400;
+}
+
+.btn-add-news {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: #d96b18 !important;
+    border: 1px solid #f1c7a3;
+    border-radius: 10px;
+    padding: 9px 16px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+}
+
+.btn-add-news:hover {
+    background: #fff7f1;
+    border-color: #e5a36d;
+    color: #bf5a0f !important;
+    box-shadow: 0 4px 12px rgba(217, 107, 24, 0.14);
+}
+
+.btn-add-news:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(217, 107, 24, 0.12);
+}
+
+.btn-add-news i {
+    font-size: 17px;
+}
+
+.btn-action.btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(246, 144, 58, 0.25);
+    background: linear-gradient(135deg, #fff9f4 0%, #ffefdF 100%);
+    color: #d96b18 !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(229, 122, 42, 0.12);
+    transition: all 0.25s ease;
+}
+
+.btn-action.btn-edit:hover {
+    background: linear-gradient(135deg, #ffeede 0%, #ffe2c6 100%);
+    color: #c85e0f !important;
+    border-color: rgba(229, 122, 42, 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(229, 122, 42, 0.2);
+}
+
+.btn-action.btn-edit i {
+    font-size: 16px;
+}
+
 .admin-avatar {
     width: 60px;
     height: 60px;
@@ -248,14 +364,46 @@
     margin-bottom: 15px;
 }
 
+.btn-action.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(220, 53, 69, 0.28);
+    background: linear-gradient(135deg, #fff6f7 0%, #ffe9ec 100%);
+    color: #c12f3f !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.1);
+    transition: all 0.25s ease;
+}
+
+.btn-action.btn-delete:hover {
+    background: linear-gradient(135deg, #ffeef1 0%, #ffd9df 100%);
+    color: #a92332 !important;
+    border-color: rgba(200, 35, 51, 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(200, 35, 51, 0.16);
+}
+
+.btn-action.btn-delete i {
+    font-size: 16px;
+}
+
 .btn-danger {
     background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
     border: none;
     padding: 8px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.22);
+    transition: all 0.2s ease;
 }
 
 .btn-danger:hover {
     background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 14px rgba(200, 35, 51, 0.28);
 }
 
 .btn-secondary {

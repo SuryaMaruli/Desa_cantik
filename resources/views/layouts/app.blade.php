@@ -20,6 +20,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #ffffff;
+            padding-top: 80px;
         }
 
         /* --- Header Hijau --- */
@@ -113,12 +114,18 @@
 
         /* Container utama Navbar */
         .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: white;
             padding: 15px 40px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            z-index: 1000;
         }
 
         /* Bagian Kiri: Logo dan Teks */
@@ -171,11 +178,19 @@
             font-size: 15px;
             font-weight: 500;
             transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* Efek saat mouse diarahkan ke menu (Hover) */
         .nav-links li a:hover {
             color: #F89039;
+        }
+
+        .login-icon-link i {
+            font-size: 18px;
+            line-height: 1;
         }
 
         /* Membuat icon lokasi sederhana dengan CSS/SVG */
@@ -317,6 +332,42 @@
             background: #F89039;
             transform: translateY(-3px);
         }
+
+        .back-to-top-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            padding: 24px;
+            position: relative;
+            z-index: 20;
+            background: #ffffff;
+        }
+
+        #backToTopBtn {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 50%;
+            background-color: #F89039;
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            z-index: 21;
+        }
+
+        #backToTopBtn:hover {
+            background-color: #e27e2e;
+            transform: translateY(-2px);
+        }
+
+        #backToTopBtn i {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
     </style>
     @stack('styles')
 </head>
@@ -347,21 +398,62 @@
             </div>
         </div>
         <ul class="nav-links">
-            <li><a href="/">Beranda</a></li>
+            <li><a href="{{ route('home') }}">Beranda</a></li>
             <li><a href="/profil-kelurahan">Profil</a></li>
             <li><a href="/layanan">Layanan</a></li>
             <li><a href="/data">Data</a></li>
             <li><a href="/desa-cantik">Desa Cantik</a></li>
             <li><a href="/berita">Berita dan Informasi</a></li>
+
+            @guest
+                <li>
+                    <a href="{{ route('login') }}" class="login-icon-link" aria-label="Login" title="Login">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </a>
+                </li>
+            @endguest
+
+            @auth
+                <li>
+                    <a href="{{ route('admin.dashboard') }}" title="Dashboard Admin">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" style="border:none;background:none;padding:0;color:#555;font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            @endauth
         </ul>
     </nav>
 
     @yield('content')
 
+    <div class="back-to-top-wrapper">
+        <button id="backToTopBtn" aria-label="Kembali ke atas" title="Kembali ke atas">
+            <i class="bi bi-arrow-up"></i>
+        </button>
+    </div>
+
     <!-- Footer -->
     @include('layouts.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        if (backToTopBtn) {
+            backToTopBtn.addEventListener('click', function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+    </script>
     @stack('scripts')
 </body>
 </html>

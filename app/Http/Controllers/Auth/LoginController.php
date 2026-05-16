@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 
@@ -17,26 +18,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        // Create dummy user if not exists
-        $this->createDummyUser();
-        
         return view('auth.login');
-    }
-
-    /**
-     * Create a dummy user for testing
-     */
-    private function createDummyUser()
-    {
-        // Check if dummy user already exists
-        if (!User::where('email', 'admin@citangkil.id')->exists()) {
-            User::create([
-                'name' => 'Admin Citangkil',
-                'email' => 'admin@citangkil.id',
-                'password' => bcrypt('password123'),
-                'role' => 'admin'
-            ]);
-        }
     }
 
     /**
@@ -53,17 +35,39 @@ class LoginController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Check for dummy user credentials
-        if ($credentials['email'] === 'admin@citangkil.id') {
-            $this->createDummyUser();
-        }
 
-        // Attempt to log the user in
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
-            $request->session()->regenerate();
+        $user = User::where('email', $credentials['email'])->first();
 
-            return redirect()->intended(route('admin.dashboard'))
-                           ->with('success', 'Login berhasil! Selamat datang kembali, ' . Auth::user()->name);
+        if ($user) {
+            $storedPassword = (string) $user->password;
+            $plainInput = (string) $credentials['password'];
+
+            // Deteksi apakah password tersimpan adalah hash valid
+            $passwordInfo = password_get_info($storedPassword);
+            $isHashed = !empty($passwordInfo['algo']);
+
+            $isValid = false;
+
+            if ($isHashed) {
+                // Password sudah hash (bcrypt/argon), verifikasi normal
+                $isValid = Hash::check($plainInput, $storedPassword);
+            } else {
+                // Password plaintext di DB: cocokkan langsung lalu upgrade ke bcrypt
+                $isValid = hash_equals($storedPassword, $plainInput);
+
+                if ($isValid) {
+                    $user->password = Hash::make($plainInput);
+                    $user->save();
+                }
+            }
+
+            if ($isValid) {
+                Auth::login($user, $request->filled('remember'));
+                $request->session()->regenerate();
+
+                return redirect()->intended(route('admin.dashboard'))
+                    ->with('success', 'Login berhasil! Selamat datang kembali, ' . Auth::user()->name);
+            }
         }
 
         // If login fails

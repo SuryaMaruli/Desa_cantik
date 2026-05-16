@@ -85,6 +85,10 @@
             <div class="text-center mt-3">
                 <a href="#" class="text-decoration-none">Lupa password?</a>
             </div>
+
+            <div class="mt-3">
+                <a href="/" class="btn btn-outline-secondary w-100">Kembali ke Beranda</a>
+            </div>
         </div>
     </div>
 

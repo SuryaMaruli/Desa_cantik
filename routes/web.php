@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\InformasiPublikController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BerandaController;
 use App\Http\Controllers\Admin\ProfilController;
+use App\Http\Controllers\Admin\PengaturanController;
 
 // --- MODELS IMPORT (Untuk Public Routes) ---
 use App\Models\Layanan; 
