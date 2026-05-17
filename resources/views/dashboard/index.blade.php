@@ -362,4 +362,79 @@
             @endforelse
         </div>
     </section>
+
+    <style>
+        .visit-stats-section {
+            background: #ffffff;
+            padding: 20px 20px 36px;
+        }
+
+        .visit-stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .visit-stats-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 18px;
+        }
+
+        .visit-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 14px;
+        }
+
+        @media (min-width: 768px) {
+            .visit-stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .visit-stat-card {
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff8f2;
+            box-shadow: 0 6px 18px rgba(248, 144, 57, 0.08);
+        }
+
+        .visit-stat-label {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .visit-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #F89039;
+            line-height: 1.2;
+        }
+    </style>
+
+    @php
+        $visitStats = $visitStats ?? ['weekly' => 0, 'monthly' => 0, 'total' => 0];
+    @endphp
+    <section class="visit-stats-section">
+        <div class="visit-stats-container">
+            <h2 class="visit-stats-title">Jumlah Kunjungan Website</h2>
+            <div class="visit-stats-grid">
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Mingguan</p>
+                    <p class="visit-stat-value">{{ number_format($visitStats['weekly'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Bulanan</p>
+                    <p class="visit-stat-value">{{ number_format($visitStats['monthly'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Total</p>
+                    <p class="visit-stat-value">{{ number_format($visitStats['total'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
 @endsection

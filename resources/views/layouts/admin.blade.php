@@ -158,6 +158,19 @@
             min-height: calc(100vh - var(--header-height));
             transition: all 0.3s;
         }
+
+        /* Desktop collapsed state */
+        body.sidebar-collapsed .sidebar {
+            left: calc(-1 * var(--sidebar-width));
+        }
+
+        body.sidebar-collapsed .main-header {
+            left: 0;
+        }
+
+        body.sidebar-collapsed .main-content {
+            margin-left: 0;
+        }
         
         /* Toggle Button */
         #sidebarToggle {
@@ -527,38 +540,46 @@
     
     <!-- Custom Scripts -->
     <script>
-    // Toggle Sidebar
-    document.getElementById('sidebarToggle').addEventListener('click', function(e) {
-        e.preventDefault();
-        const sidebar = document.getElementById('sidebar');
-        const icon = this.querySelector('i');
-        
-        sidebar.classList.toggle('active');
-        
-        // Toggle icon between menu and x
-        if (icon.classList.contains('bx-menu')) {
-            icon.classList.remove('bx-menu');
-            icon.classList.add('bx-x');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarIcon = sidebarToggle.querySelector('i');
+
+    function setSidebarIcon(isOpen) {
+        if (isOpen) {
+            sidebarIcon.classList.remove('bx-menu');
+            sidebarIcon.classList.add('bx-x');
         } else {
-            icon.classList.remove('bx-x');
-            icon.classList.add('bx-menu');
+            sidebarIcon.classList.remove('bx-x');
+            sidebarIcon.classList.add('bx-menu');
+        }
+    }
+
+    // Toggle Sidebar
+    sidebarToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (window.innerWidth > 768) {
+            // Desktop: gunakan class body untuk collapsed state
+            document.body.classList.toggle('sidebar-collapsed');
+            const isSidebarOpen = !document.body.classList.contains('sidebar-collapsed');
+            setSidebarIcon(isSidebarOpen);
+        } else {
+            // Mobile: gunakan class active pada sidebar
+            sidebar.classList.toggle('active');
+            const isSidebarOpen = sidebar.classList.contains('active');
+            setSidebarIcon(isSidebarOpen);
         }
     });
 
     // Close sidebar when clicking outside on mobile
     document.addEventListener('click', function(event) {
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        
-        if (window.innerWidth <= 768 && 
-            !sidebar.contains(event.target) && 
+        if (window.innerWidth <= 768 &&
+            !sidebar.contains(event.target) &&
             !sidebarToggle.contains(event.target) &&
             sidebar.classList.contains('active')) {
-            
+
             sidebar.classList.remove('active');
-            const icon = sidebarToggle.querySelector('i');
-            icon.classList.remove('bx-x');
-            icon.classList.add('bx-menu');
+            setSidebarIcon(false);
         }
     });
 
@@ -581,33 +602,16 @@
 
     // Handle window resize
     function handleResize() {
-        const sidebar = document.getElementById('sidebar');
-        const mainHeader = document.querySelector('.main-header');
-        const mainContent = document.querySelector('.main-content');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const icon = sidebarToggle.querySelector('i');
-        
         if (window.innerWidth > 768) {
-            // Desktop view
-            sidebar.style.left = '0';
-            mainHeader.style.left = 'var(--sidebar-width)';
-            mainContent.style.marginLeft = 'var(--sidebar-width)';
-            
-            // Reset icon
-            icon.classList.remove('bx-x');
-            icon.classList.add('bx-menu');
+            // Desktop view: reset mobile state, icon mengikuti desktop state
             sidebar.classList.remove('active');
+            const isSidebarOpen = !document.body.classList.contains('sidebar-collapsed');
+            setSidebarIcon(isSidebarOpen);
         } else {
-            // Mobile view
-            if (!sidebar.classList.contains('active')) {
-                sidebar.style.left = 'calc(-1 * var(--sidebar-width))';
-                mainHeader.style.left = '0';
-                mainContent.style.marginLeft = '0';
-            } else {
-                sidebar.style.left = '0';
-                mainHeader.style.left = '0';
-                mainContent.style.marginLeft = '0';
-            }
+            // Mobile view: pastikan desktop state tidak mengganggu
+            document.body.classList.remove('sidebar-collapsed');
+            const isSidebarOpen = sidebar.classList.contains('active');
+            setSidebarIcon(isSidebarOpen);
         }
     }
 
