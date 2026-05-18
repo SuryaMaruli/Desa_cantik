@@ -34,11 +34,13 @@
            2. HEADER SECTION (BARU)
            ========================================= */
         .main-header {
-            background: linear-gradient(135deg, #FF7E30 0%, #F35F12 100%); /* Warna Oranye sesuai gambar */
+            background: linear-gradient(135deg, #fff2e8 0%, #ffe7d1 100%);
             width: 100%;
-            padding: 60px 0 80px 0; /* Padding atas bawah */
-            color: white;
-            margin-bottom: -30px; /* Efek overlap sedikit (opsional) atau set margin normal */
+            padding: 42px 0 48px 0;
+            color: #7a3e1d;
+            margin-bottom: 0;
+            margin-top: 28px;
+            border-bottom: 1px solid #f3c8a8;
         }
 
         .header-wrap {
@@ -48,16 +50,24 @@
         }
 
         .header-title {
-            font-size: 38px;
-            font-weight: 600; /* Font agak tipis tapi besar */
-            margin-bottom: 12px;
+            font-size: 34px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0;
+            color: #8a4520;
         }
 
         .header-subtitle {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 400;
-            opacity: 0.9;
-            line-height: 1.5;
+            opacity: 1;
+            line-height: 1.65;
+            max-width: 760px;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: normal;
+            text-wrap: pretty;
+            color: #9a5a33;
         }
 
         /* =========================================
@@ -66,7 +76,7 @@
         .nav-tabs-wrapper {
             position: relative;
             margin-bottom: 40px;
-            margin-top: 100px; /* Jarak dari header */
+            margin-top: 36px;
         }
         
         .nav-tabs {
@@ -111,9 +121,9 @@
            4. HERO SECTION (Berita Utama)
            ========================================= */
         .section-title {
-            color: #D35400; /* Warna teks oranye kecoklatan */
+            color: #1f3b5d;
             font-size: 22px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 20px;
         }
 
@@ -175,9 +185,9 @@
            5. GRID SECTION (Berita Terbaru)
            ========================================= */
         .latest-section-label {
-            color: #D35400;
+            color: #1f3b5d;
             font-size: 22px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 25px;
         }
 
@@ -306,8 +316,16 @@
            7. RESPONSIVE
            ========================================= */
         @media (max-width: 768px) {
-            .main-header { padding: 40px 0; }
+            .main-header {
+                padding: 34px 0 40px 0;
+                margin-top: 20px;
+            }
             .header-title { font-size: 28px; }
+            .header-subtitle {
+                font-size: 15px;
+                line-height: 1.7;
+                max-width: 100%;
+            }
             .hero-card { flex-direction: column; min-height: auto; }
             .hero-image { min-height: 200px; width: 100%; }
             .hero-content { padding: 25px; }
