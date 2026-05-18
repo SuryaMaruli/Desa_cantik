@@ -306,10 +306,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::put('/layanan/{id}', [LayananController::class, 'update'])->name('layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
     
-    // --- BERITA ---
-    Route::resource('berita', BeritaController::class); 
-    Route::post('/berita/{berita}/toggle-publish', [BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
+// --- BERITA ---
+    Route::get('/berita/search', [BeritaController::class, 'search'])->name('berita.search');
+    Route::resource('berita', BeritaController::class)->except(['show']); 
+Route::post('/berita/{berita}/toggle-publish', [BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
+    Route::post('/berita/{berita}/set-utama', [BeritaController::class, 'setUtama'])->name('berita.set-utama');
     Route::get('/berita/{berita}/edit-data', [BeritaController::class, 'getEditData'])->name('berita.edit-data');
+    Route::get('/berita/{berita}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
     
     // --- PENGATURAN ---
     Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');

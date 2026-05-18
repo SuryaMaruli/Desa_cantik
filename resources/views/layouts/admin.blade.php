@@ -312,10 +312,16 @@
         </div>
         
         <ul class="nav-list">
-            <li>
+<li>
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard*') ? 'active' : '' }}">
                     <i class='bx bx-grid-alt'></i>
                     <span class="links_name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+<a href="{{ route('home') }}" class="">
+                    <i class='bx bx-home-alt'></i>
+                    <span class="links_name">Kembali ke Beranda</span>
                 </a>
             </li>
             <li>

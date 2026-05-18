@@ -1,17 +1,23 @@
-# TODO - Implementasi Halaman Kata Sambutan & Admin CRUD
+# TODO - Fitur Pencarian Berita
 
-- [x] Tambah route public halaman `kata-sambutan` di `routes/web.php`
-- [x] Tambah route admin delete konten kata sambutan + foto di `routes/web.php`
-- [x] Tambah method `kataSambutan()` di `DashboardController` untuk render halaman baru
-- [x] Update tombol "Baca Sambutan Lengkap" di `resources/views/dashboard/index.blade.php` agar menuju route baru
-- [x] Buat view baru `resources/views/kata-sambutan.blade.php` menampilkan Foto, Nama, dan kata sambutan lurah
-- [x] Update `DataLurahController`:
-  - [x] Tambah validasi request pada method `update`
-  - [x] Tambah method delete konten kata sambutan + foto (record tetap ada)
-- [x] Update `resources/views/admin/data-lurah/index.blade.php`:
-  - [x] Tambah tombol "Hapus Kata Sambutan"
-  - [x] Tambah JS untuk memanggil endpoint delete
-  - [x] Pastikan tampilan foto utama mengikuti data database
-- [ ] Uji alur:
-  - [ ] Public page kata sambutan tampil benar
-  - [ ] Admin bisa create/update/read/delete (hapus konten sambutan + foto)
+## Plan:
+1. [x] Analisis kode yang ada
+2. [x] Modify `BeritaController.php` - menambahkan logika pencarian di method `index()`
+3. [x] Modify `index.blade.php` - menambahkan form pencarian dan mempertahankan query di pagination
+4. [x] Test functionality
+
+## Step 2: Modify Controller (DONE)
+- Acceptance Criteria: Method index() menerima parameter 'keyword' dari query URL
+- Status: COMPLETE - Method `index()` now accepts `keyword` parameter and searches in `judul` and `konten` fields
+
+## Step 3: Modify View (DONE)
+- Acceptance Criteria:
+  - Input pencarian terhubung dengan controller - DONE
+  - Keyword saat ini ditampilkan - DONE
+  - Tombol untuk清除搜索 (清除搜索) - DONE
+  - Pagination mempertahankan query pencarian - DONE (using `->appends($request->query())`)
+- Status: COMPLETE
+
+## Step 4: Test
+- Acceptance Criteria: Mengakses /admin/berita?keyword=vaksin 显示hanya包含 kata "vaksin" 的新闻
+- Status: COMPLETE
