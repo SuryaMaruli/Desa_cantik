@@ -37,6 +37,16 @@ class DataLurahController extends Controller
      */
     public function update(Request $request)
     {
+        $validated = $request->validate([
+            'namaLurah' => 'nullable|string|max:255',
+            'nipLurah' => 'nullable|string|max:100',
+            'pangkatLurah' => 'nullable|string|max:100',
+            'golonganLurah' => 'nullable|string|max:100',
+            'jabatanLurah' => 'nullable|string|max:150',
+            'sambutanLurah' => 'nullable|string',
+            'fotoLurah' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
         try {
             $dataLurah = DataLurah::first();
             
@@ -44,12 +54,12 @@ class DataLurahController extends Controller
                 $dataLurah = new DataLurah();
             }
 
-            $dataLurah->nama_lurah = $request->namaLurah;
-            $dataLurah->nip = $request->nipLurah;
-            $dataLurah->pangkat = $request->pangkatLurah;
-            $dataLurah->golongan = $request->golonganLurah;
-            $dataLurah->jabatan = $request->jabatanLurah;
-            $dataLurah->sambutan_lurah = $request->sambutanLurah;
+            $dataLurah->nama_lurah = $validated['namaLurah'] ?? null;
+            $dataLurah->nip = $validated['nipLurah'] ?? null;
+            $dataLurah->pangkat = $validated['pangkatLurah'] ?? null;
+            $dataLurah->golongan = $validated['golonganLurah'] ?? null;
+            $dataLurah->jabatan = $validated['jabatanLurah'] ?? null;
+            $dataLurah->sambutan_lurah = $validated['sambutanLurah'] ?? null;
             
             // Handle foto upload
             if ($request->hasFile('fotoLurah')) {
@@ -110,6 +120,44 @@ class DataLurahController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengambil data lurah: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Hapus konten kata sambutan + foto lurah (record tetap ada).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroySambutan()
+    {
+        try {
+            $dataLurah = DataLurah::first();
+
+            if (!$dataLurah) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data lurah tidak ditemukan'
+                ], 404);
+            }
+
+            if ($dataLurah->foto_lurah && file_exists(public_path('storage/foto-lurah/' . $dataLurah->foto_lurah))) {
+                unlink(public_path('storage/foto-lurah/' . $dataLurah->foto_lurah));
+            }
+
+            $dataLurah->foto_lurah = null;
+            $dataLurah->sambutan_lurah = null;
+            $dataLurah->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kata sambutan dan foto lurah berhasil dihapus.',
+                'data' => $dataLurah
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus kata sambutan: ' . $e->getMessage()
             ], 500);
         }
     }

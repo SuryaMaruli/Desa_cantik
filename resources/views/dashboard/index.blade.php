@@ -317,7 +317,7 @@
                     <p>"Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat..."</p>
                     <p>"Kami berkomitmen untuk terus memberikan layanan terbaik, transparan, dan akuntabilitas..."</p>
                 @endif
-                <a href="#sambutan-lengkap" class="btn-sambutan">Baca Sambutan Lengkap</a>
+                <a href="{{ route('kata-sambutan') }}" class="btn-sambutan">Baca Sambutan Lengkap</a>
             </div>
         </div>
     </section>
@@ -413,6 +413,7 @@
             color: #F89039;
             line-height: 1.2;
         }
+
     </style>
 
     @php
@@ -437,4 +438,5 @@
             </div>
         </div>
     </section>
+
 @endsection

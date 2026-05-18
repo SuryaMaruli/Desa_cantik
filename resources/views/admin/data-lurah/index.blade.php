@@ -11,9 +11,14 @@
                 <h1>Manajemen Data Lurah</h1>
                 <p>Kelola informasi dan foto Lurah yang ditampilkan di beranda</p>
             </div>
-            <button class="btn-edit" onclick="openDataLurahModal()">
-                <i class="fa-regular fa-pen-to-square"></i> Edit Data
-            </button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-edit" onclick="openDataLurahModal()">
+                    <i class="fa-regular fa-pen-to-square"></i> Edit Data
+                </button>
+                <button class="btn-edit btn-delete-sambutan" onclick="hapusSambutanLurah()">
+                    <i class="fa-regular fa-trash-can"></i> Hapus Kata Sambutan
+                </button>
+            </div>
         </div>
     </div>
 
@@ -23,14 +28,18 @@
             <div class="card-title">
                 <i class="fa-regular fa-user"></i> Foto Lurah
             </div>
-            <div class="photo-placeholder">
+        <div class="photo-placeholder">
+            @if($dataLurah && $dataLurah->foto_lurah)
+                <img src="{{ asset('storage/foto-lurah/' . $dataLurah->foto_lurah) }}" alt="Foto Lurah" style="max-width: 100%; max-height: 320px; border-radius: 12px; object-fit: cover;">
+            @else
                 <div class="placeholder-content">
                     <div class="user-icon-wrapper">
                         <i class="fa-solid fa-user"></i>
                     </div>
                     <span>Belum ada foto</span>
                 </div>
-            </div>
+            @endif
+        </div>
         </div>
 
         <div class="card info-card">
@@ -157,6 +166,14 @@
 
 .btn-edit:hover {
     background-color: #e04a00;
+}
+
+.btn-delete-sambutan {
+    background-color: #dc3545;
+}
+
+.btn-delete-sambutan:hover {
+    background-color: #bb2d3b;
 }
 
 /* --- Layout Grid (Foto & Info) --- */
@@ -466,11 +483,23 @@ window.simpanDataLurah = function() {
 // Fungsi untuk update foto di halaman display
 function updateFotoDisplay(fotoUrl) {
     const photoPlaceholder = document.querySelector('.photo-placeholder');
-    if (photoPlaceholder) {
+    if (!photoPlaceholder) return;
+
+    if (fotoUrl) {
         photoPlaceholder.innerHTML = `
             <img src="${fotoUrl}" alt="Foto Lurah" style="max-width: 100%; max-height: 320px; border-radius: 12px; object-fit: cover;">
         `;
+        return;
     }
+
+    photoPlaceholder.innerHTML = `
+        <div class="placeholder-content">
+            <div class="user-icon-wrapper">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <span>Belum ada foto</span>
+        </div>
+    `;
 }
 
 // Fungsi untuk membuka modal Data Lurah
@@ -481,6 +510,36 @@ window.openDataLurahModal = function() {
     // Buka modal
     const modal = new bootstrap.Modal(document.getElementById('dataLurahModal'));
     modal.show();
+};
+
+// Fungsi hapus kata sambutan + foto
+window.hapusSambutanLurah = function() {
+    if (!confirm('Yakin ingin menghapus kata sambutan dan foto lurah?')) {
+        return;
+    }
+
+    fetch('{{ route("admin.data-lurah.destroy-sambutan") }}', {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateDisplayWithData(data.data);
+            updateFotoDisplay('');
+            showNotification(data.message || 'Kata sambutan berhasil dihapus!', 'success');
+            loadDataLurahFromDB();
+        } else {
+            showNotification(data.message || 'Gagal menghapus kata sambutan!', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting kata sambutan:', error);
+        showNotification('Terjadi kesalahan saat menghapus data!', 'danger');
+    });
 };
 </script>
 @endpush

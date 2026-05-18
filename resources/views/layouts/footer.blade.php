@@ -57,6 +57,32 @@
         border-radius: 2px;
     }
 
+    .footer-map-wrap {
+        margin-bottom: 12px;
+    }
+
+    .footer-map-wrap iframe {
+        width: 100%;
+        max-width: 260px;
+        height: 140px;
+        border: 0;
+        border-radius: 10px;
+        display: block;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-map-link {
+        display: inline-block;
+        margin-top: 8px;
+        color: #ffffff;
+        font-size: 0.8rem;
+        text-decoration: underline;
+    }
+
+    .footer-map-link:hover {
+        color: #ffe6d1;
+    }
+
     .footer-list {
         list-style: none;
         padding: 0;
@@ -186,6 +212,17 @@
             <div>
                 <h3 class="footer-subtitle">Kontak</h3>
                 <ul class="footer-list">
+                    <li>
+                        <div class="footer-map-wrap">
+                            <iframe
+                                src="https://www.google.com/maps?q=Kantor+Kelurahan+Citangkil,+Cilegon&output=embed"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen
+                                title="Peta Lokasi Kelurahan Citangkil">
+                            </iframe>
+                        </div>
+                    </li>
                     <li class="footer-list flex-item">
                         <i class="fas fa-map-marker-alt footer-icon mt-1"></i>
                         <span>Jl. Raya Citangkil No. 123<br>Kec. Citangkil, Kota Cilegon<br>Banten 42441</span>

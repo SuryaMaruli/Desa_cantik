@@ -103,6 +103,7 @@ Route::get('/storage/{path}', function ($path) {
 // =========================================================================
 
 Route::get('/', [DashboardController::class, 'index'])->name('home');
+Route::get('/kata-sambutan', [DashboardController::class, 'kataSambutan'])->name('kata-sambutan');
 
 Route::get('/profil-kelurahan', function () {
     $profilKelurahan = ProfilKelurahan::first();
@@ -294,6 +295,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/data-lurah', [DataLurahController::class, 'index'])->name('data-lurah.index');
     Route::get('/data-lurah/api', [DataLurahController::class, 'getData'])->name('data-lurah.api');
     Route::post('/data-lurah/update', [DataLurahController::class, 'update'])->name('data-lurah.update');
+    Route::delete('/data-lurah/sambutan', [DataLurahController::class, 'destroySambutan'])->name('data-lurah.destroy-sambutan');
     
     // --- ADMIN ---
     Route::resource('admin', AdminController::class)->except(['show']); 

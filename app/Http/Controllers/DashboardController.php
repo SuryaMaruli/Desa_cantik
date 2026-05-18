@@ -94,4 +94,15 @@ class DashboardController extends Controller
 
         return $response;
     }
+
+    /**
+     * Display kata sambutan page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function kataSambutan()
+    {
+        $dataLurah = DataLurah::first();
+        return view('kata-sambutan', compact('dataLurah'));
+    }
 }
