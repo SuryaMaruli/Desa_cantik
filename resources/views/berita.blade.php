@@ -14,60 +14,57 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        body {
+body {
             background-color: #f9fafb; 
-            /* Padding body dihapus agar header bisa full width */
-            padding: 0; 
+            /* Padding-top 80px untuk mengakomodasi fixed navbar */
+            padding-top: 80px;
+            padding-left: 0;
+            padding-right: 0;
+            padding-bottom: 0;
             margin: 0;
             color: #333;
         }
 
-        /* Container untuk membungkus konten agar rapi di tengah */
+/* Container untuk membungkus konten agar rapi di tengah */
         .container {
-            max-width: 1100px;
+            width: 95%;
+            max-width: none;
             margin: 0 auto;
-            padding: 0 20px; /* Padding kiri kanan */
+            padding: 0 20px;
             padding-bottom: 60px;
         }
 
-        /* =========================================
-           2. HEADER SECTION (BARU)
+/* =========================================
+           2. HEADER SECTION
            ========================================= */
-        .main-header {
-            background: linear-gradient(135deg, #fff2e8 0%, #ffe7d1 100%);
-            width: 100%;
-            padding: 42px 0 48px 0;
-            color: #7a3e1d;
-            margin-bottom: 0;
-            margin-top: 28px;
-            border-bottom: 1px solid #f3c8a8;
+.main-header {
+            background-color: #F6903A;
+            color: white;
+            padding-top: 60px;
+            padding-bottom: 40px;
         }
 
-        .header-wrap {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .header-title {
-            font-size: 34px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            letter-spacing: 0;
-            color: #8a4520;
-        }
-
-        .header-subtitle {
-            font-size: 15px;
+.main-header h1 {
+            font-size: 2.5rem;
             font-weight: 400;
-            opacity: 1;
-            line-height: 1.65;
-            max-width: 760px;
-            white-space: normal;
-            overflow-wrap: anywhere;
-            word-break: normal;
-            text-wrap: pretty;
-            color: #9a5a33;
+            margin-bottom: 15px;
+        }
+
+.main-header .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            font-weight: 300;
+        }
+
+        /* Override container untuk main content */
+        main {
+            padding-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        main .container {
+            max-width: 1100px;
         }
 
         /* =========================================
@@ -312,16 +309,18 @@
         }
         .grid-link:hover { gap: 8px; }
 
-        /* =========================================
+/* =========================================
            7. RESPONSIVE
            ========================================= */
-        @media (max-width: 768px) {
+@media (max-width: 768px) {
             .main-header {
-                padding: 34px 0 40px 0;
-                margin-top: 20px;
+                padding: 20px 20px;
+                margin-top: 0;
             }
-            .header-title { font-size: 28px; }
-            .header-subtitle {
+            .main-header h1 {
+                font-size: 2rem;
+            }
+            .main-header .subtitle {
                 font-size: 15px;
                 line-height: 1.7;
                 max-width: 100%;
@@ -334,14 +333,16 @@
         }
     </style>
 
-    <header class="main-header">
-        <div class="header-wrap">
-            <h1 class="header-title">Berita & Informasi</h1>
-            <p class="header-subtitle">Update terkini seputar kegiatan, pengumuman, dan berita dari Kelurahan Citangkil</p>
+<header class="main-header">
+        <div class="container">
+            <h1>Berita & Informasi</h1>
+            <p class="subtitle">Update terkini seputar kegiatan, pengumuman, dan berita dari Kelurahan Citangkil</p>
+            <p class="subtitle">Kelurahan Citangkil</p>
         </div>
-    </header>
+</header>
 
-    <div class="container">
+<main>
+        <div class="container">
         
         <div class="nav-tabs-wrapper">
             <ul class="nav-tabs">
@@ -449,7 +450,8 @@
                 </p>
             </div>
         @endif
-    </div>
+</div>
+</main>
 
     <script>
         function filterKategori(kategori) {
