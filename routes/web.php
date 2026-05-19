@@ -12,14 +12,15 @@ use App\Http\Controllers\Admin\ProfilKelurahanController;
 use App\Http\Controllers\Admin\DesaCantikController;
 use App\Http\Controllers\Admin\PrestasiController;
 use App\Http\Controllers\Admin\DataLurahController;
-use App\Http\Controllers\Admin\MonografiController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\InformasiPublikController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BerandaController;
 use App\Http\Controllers\Admin\ProfilController;
-use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\MaklumatPelayanananController;
+use App\Http\Controllers\Admin\StrukturOrganisasiController;
+use App\Http\Controllers\Admin\MonografiController;
 
 // --- MODELS IMPORT (Untuk Public Routes) ---
 use App\Models\Layanan; 
@@ -33,74 +34,17 @@ use App\Models\Prestasi;
 use App\Models\Penduduk;
 use App\Models\ProfilKelurahan;
 use App\Models\Monografi;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
 
-Route::get('/storage/{path}', function ($path) {
-    // Decode URL-encoded characters (handle %20 for spaces, etc.)
-    $path = urldecode($path);
-    
-    // Debug: Log the request
-    \Log::info("Storage access attempt: " . $path);
-    \Log::info("Original path: " . request()->path());
-    
-    // Security check - prevent directory traversal
-    if (str_contains($path, '..') || str_starts_with($path, '/')) {
-        \Log::warning("Security violation attempt: " . $path);
-        abort(403, 'Access denied');
-    }
-    
-    $fullPath = storage_path('app/public/' . $path);
-    \Log::info("Full path: " . $fullPath);
-    \Log::info("File exists: " . (file_exists($fullPath) ? 'YES' : 'NO'));
-    
-    if (!file_exists($fullPath)) {
-        \Log::warning("File not found: " . $fullPath);
-        abort(404, 'File not found');
-    }
-    
-    // Check if it's actually a file
-    if (!is_file($fullPath)) {
-        \Log::warning("Not a file: " . $fullPath);
-        abort(403, 'Not a file');
-    }
-    
-    $fileInfo = pathinfo($fullPath);
-    $extension = strtolower($fileInfo['extension'] ?? '');
-    
-    // Set proper headers based on file type
-    $headers = [];
-    
-    switch ($extension) {
-        case 'pdf':
-            $headers['Content-Type'] = 'application/pdf';
-            $headers['Content-Disposition'] = 'inline; filename="' . basename($fullPath) . '"';
-            break;
-        case 'jpg':
-        case 'jpeg':
-            $headers['Content-Type'] = 'image/jpeg';
-            break;
-        case 'png':
-            $headers['Content-Type'] = 'image/png';
-            break;
-        case 'gif':
-            $headers['Content-Type'] = 'image/gif';
-            break;
-        default:
-            $headers['Content-Type'] = 'application/octet-stream';
-    }
-    
-    \Log::info("Serving file: " . $fullPath);
-    return response()->file($fullPath, $headers);
-})->where('path', '.*')->name('storage.file');
-
-// =========================================================================
+//=========================================================================
 // 1. PUBLIC ROUTES (Frontend)
 // =========================================================================
+
+// Storage files are served directly via the storage symlink in public/storage/
 
 Route::get('/', [DashboardController::class, 'index'])->name('home');
 Route::get('/kata-sambutan', [DashboardController::class, 'kataSambutan'])->name('kata-sambutan');
@@ -190,7 +134,19 @@ Route::get('/kontak', function () {
 
 Route::get('/berita', function () {
     $kategori = request('kategori');
+    
+    // Pertama, cari berita utama jika ada
+    $beritaUtama = Berita::where('is_published', true)
+        ->where('is_utama', true)
+        ->first();
+    
+    // Query untuk berita lainnya
     $query = Berita::where('is_published', true)->orderBy('tanggal_publikasi', 'desc');
+    
+    // Exclude berita utama dari query jika ada
+    if ($beritaUtama) {
+        $query->where('id', '!=', $beritaUtama->id);
+    }
     
     if ($kategori && $kategori !== 'Semua') {
         $query->where('kategori', $kategori);
@@ -206,13 +162,22 @@ Route::get('/berita', function () {
         ->sort()
         ->values();
     
-    return view('berita', compact('berita', 'kategori', 'kategoriList'));
+    return view('berita', compact('berita', 'kategori', 'kategoriList', 'beritaUtama'));
 });
 
 Route::get('/berita/{id}', function ($id) {
     $berita = Berita::where('id', $id)->where('is_published', true)->first();
     if (!$berita) abort(404);
     return view('berita-detail', compact('berita'));
+});
+
+// --- TENTANG KAMI ROUTES ---
+Route::get('/maklumat-pelayananan', function () {
+    return view('maklumat-pelayananan');
+});
+
+Route::get('/struktur-organisasi', function () {
+    return view('struktur-organisasi');
 });
 
 
@@ -242,18 +207,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/beranda', [BerandaController::class, 'store'])->name('beranda.store');
     Route::put('/beranda/{id}', [BerandaController::class, 'update'])->name('beranda.update');
     
-    // --- PROFIL ---
+// --- PROFIL ---
     Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
     
-    // --- MONOGRAFI ---
-    Route::get('/monografi', [MonografiController::class, 'index'])->name('monografi.index');
-    Route::post('/monografi', [MonografiController::class, 'store'])->name('monografi.store');
-    Route::get('/monografi/{id}/edit', [MonografiController::class, 'edit'])->name('monografi.edit');
-    Route::put('/monografi/{id}', [MonografiController::class, 'update'])->name('monografi.update');
-    Route::delete('/monografi/{id}', [MonografiController::class, 'destroy'])->name('monografi.destroy');
-
-    // --- DATA KELURAHAN ---
+// --- DATA KELURAHAN ---
     Route::get('/data-kelurahan', [DataKelurahanController::class, 'index'])->name('data-kelurahan.index');
     Route::post('/data-kelurahan/store', [DataKelurahanController::class, 'store'])->name('data-kelurahan.store');
     Route::put('/data-kelurahan/update/{id}', [DataKelurahanController::class, 'update'])->name('data-kelurahan.update');
@@ -314,7 +272,22 @@ Route::post('/berita/{berita}/toggle-publish', [BeritaController::class, 'toggle
     Route::get('/berita/{berita}/edit-data', [BeritaController::class, 'getEditData'])->name('berita.edit-data');
     Route::get('/berita/{berita}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
     
-    // --- PENGATURAN ---
-    Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+// --- MAKLUMAT PELAYANAN ---
+    Route::get('/maklumat-pelayananan', [MaklumatPelayanananController::class, 'index'])->name('maklumat-pelayananan.index');
+    Route::post('/maklumat-pelayananan', [MaklumatPelayanananController::class, 'store'])->name('maklumat-pelayananan.store');
+    Route::put('/maklumat-pelayananan/{id}', [MaklumatPelayanananController::class, 'update'])->name('maklumat-pelayananan.update');
+    Route::delete('/maklumat-pelayananan/{id}', [MaklumatPelayanananController::class, 'destroy'])->name('maklumat-pelayananan.destroy');
+    
+// --- STRUKTUR ORGANISASI ---
+    Route::get('/struktur-organisasi', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
+    Route::post('/struktur-organisasi', [StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
+    Route::put('/struktur-organisasi/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur-organisasi.update');
+    Route::delete('/struktur-organisasi/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
+    
+    // --- MONOGRAFI ---
+    Route::get('/monografi', [MonografiController::class, 'index'])->name('monografi.index');
+    Route::post('/monografi', [MonografiController::class, 'store'])->name('monografi.store');
+    Route::put('/monografi/{id}', [MonografiController::class, 'update'])->name('monografi.update');
+    Route::delete('/monografi/{id}', [MonografiController::class, 'destroy'])->name('monografi.destroy');
     
 });

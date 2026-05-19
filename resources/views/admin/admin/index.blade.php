@@ -33,16 +33,22 @@
             </div>
         @endif
 
-        @if($admins->count() > 0)
+@if($admins->count() > 0)
             @foreach($admins as $admin)
                 <div class="news-list-item">
-                    <div class="admin-avatar">
+                    <div class="admin-avatar" @if($admin->foto_profil && file_exists(public_path('storage/' . $admin->foto_profil))) onclick="previewPhoto('{{ asset('storage/' . $admin->foto_profil) }}', '{{ $admin->name }}')" data-bs-toggle="modal" data-bs-target="#photoPreviewModal" @endif>
                         @if($admin->id === auth()->id())
                             <div class="current-user-badge">
                                 <i class='bx bx-shield-check'></i>
                             </div>
                         @endif
-                        <i class='bx bx-user'></i>
+                        @if($admin->foto_profil && file_exists(public_path('storage/' . $admin->foto_profil)))
+                            <img src="{{ asset('storage/' . $admin->foto_profil) }}" 
+                                 alt="Foto Profil" 
+                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        @else
+                            <i class='bx bx-user'></i>
+                        @endif
                     </div>
                     <div class="news-content-wrapper">
                         <div class="news-header">
@@ -94,6 +100,28 @@
                 <p>Belum ada admin yang terdaftar. Klik "Tambah Admin" untuk membuat admin pertama.</p>
             </div>
         @endif
+    </div>
+</div>
+
+<!-- Photo Preview Modal -->
+<div class="modal fade" id="photoPreviewModal" tabindex="-1" aria-labelledby="photoPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="photoPreviewModalLabel">
+                    <i class='bx bx-user'></i> Foto Profil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="previewPhoto" src="" alt="Foto Profil" style="max-width: 100%; max-height: 70vh; border-radius: 10px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-x'></i> Tutup
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -257,6 +285,17 @@
     font-size: 24px;
     position: relative;
     flex-shrink: 0;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.admin-avatar img {
+    cursor: pointer;
+}
+
+.admin-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(246, 144, 58, 0.4);
 }
 
 .current-user-badge {
@@ -441,6 +480,11 @@
 </style>
 
 <script>
+function previewPhoto(photoUrl, adminName) {
+    document.getElementById('previewPhoto').src = photoUrl;
+    document.getElementById('photoPreviewModalLabel').innerHTML = '<i class="bx bx-user"></i> Foto Profil - ' + adminName;
+}
+
 function deleteAdmin(id, name) {
     document.getElementById('adminName').textContent = name;
     document.getElementById('deleteForm').action = '/admin/admin/' + id;

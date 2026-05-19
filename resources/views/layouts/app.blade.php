@@ -364,9 +364,60 @@
             transform: translateY(-2px);
         }
 
-        #backToTopBtn i {
+#backToTopBtn i {
             font-size: 1.2rem;
             line-height: 1;
+        }
+        
+        /* Dropdown Menu Styles */
+        .nav-links li.dropdown {
+            position: relative;
+        }
+        
+        .nav-links li.dropdown .dropdown-toggle::after {
+            content: '';
+            border: none;
+            font-size: 10px;
+        }
+        
+        .nav-links .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 10px 0;
+            list-style: none;
+            z-index: 1001;
+        }
+        
+        .nav-links .dropdown-menu li {
+            padding: 0;
+        }
+        
+        .nav-links .dropdown-menu li a {
+            display: block;
+            padding: 10px 20px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .nav-links .dropdown-menu li a:hover {
+            background: #f8f9fa;
+            color: #F89039;
+        }
+        
+        .nav-links li.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .nav-links li.dropdown:hover .dropdown-toggle {
+            color: #F89039;
         }
     </style>
     @stack('styles')
@@ -397,9 +448,15 @@
                 <span class="brand-subtitle">Kec. Citangkil, Kota Cilegon</span>
             </div>
         </div>
-        <ul class="nav-links">
+<ul class="nav-links">
             <li><a href="{{ route('home') }}">Beranda</a></li>
-            <li><a href="/profil-kelurahan">Profil</a></li>
+<li class="dropdown">
+                <a href="#" class="dropdown-toggle">Tentang Kami <i class="fas fa-chevron-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/profil-kelurahan">Profil</a></li>
+                    <li><a href="/maklumat-pelayananan">Maklumat Pelayanan</a></li>
+                </ul>
+            </li>
             <li><a href="/layanan">Layanan</a></li>
             <li><a href="/data">Data</a></li>
             <li><a href="/desa-cantik">Desa Cantik</a></li>

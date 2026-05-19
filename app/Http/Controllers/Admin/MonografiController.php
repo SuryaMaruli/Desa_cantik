@@ -9,179 +9,135 @@ use Illuminate\Support\Facades\Storage;
 
 class MonografiController extends Controller
 {
-    // =================================================================
-    // 1. MENAMPILKAN DATA (INDEX)
-    // =================================================================
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        // Mengambil data urut dari terbaru
         $monografis = Monografi::latest()->get();
-        
-        // Memastikan URL gambar siap dipakai di View
-        foreach ($monografis as $item) {
-            // Kita panggil accessor yang sudah dibuat di Model
-            $item->gambar_mono_url = $item->gambar_mono_url;
-            $item->gambar_struktur_url = $item->gambar_struktur_url;
-        }
-
         return view('admin.monografi.index', compact('monografis'));
     }
 
-    // =================================================================
-    // 2. MENYIMPAN DATA BARU (STORE)
-    // =================================================================
+/**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        // Validasi
+        // Check if there's already a photo
+        $existingMonografi = Monografi::first();
+        if ($existingMonografi) {
+            return redirect()->route('admin.monografi.index')
+                ->with('error', 'Hanya dapat menambahkan satu foto! Silakan edit atau hapus foto yang ada terlebih dahulu.');
+        }
+
         $request->validate([
-            'gambar_mono'     => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Max 5MB
-            'gambar_struktur' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         try {
             // Upload File
-            $pathMono = $request->file('gambar_mono')->store('monografi', 'public');
-            $pathStruktur = $request->file('gambar_struktur')->store('monografi', 'public');
+            $file = $request->file('gambar');
+            $path = $file->store('monografi', 'public');
+
+            // Copy to public storage for immediate access
+            $sourcePath = storage_path('app/public/' . $path);
+            $destPath = public_path('storage/' . $path);
+            $destDir = dirname($destPath);
+
+            if (!is_dir($destDir)) {
+                mkdir($destDir, 0755, true);
+            }
+            copy($sourcePath, $destPath);
 
             // Simpan ke Database
-            // Create aman digunakan karena fieldnya jelas
             Monografi::create([
-                'gambar_mono'     => $pathMono,
-                'gambar_struktur' => $pathStruktur,
+                'gambar_mono' => $path,
             ]);
 
-            return response()->json([
-                'success' => true, 
-                'message' => 'Data Monografi berhasil ditambahkan!'
-            ]);
-
+            return redirect()->route('admin.monografi.index')->with('success', 'Gambar Monografi berhasil ditambahkan!');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Gagal menyimpan data: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('admin.monografi.index')->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
 
-    // =================================================================
-    // 3. MENGAMBIL DATA UNTUK EDIT (EDIT)
-    // =================================================================
-    public function edit($id)
-    {
-        // PENTING: Gunakan where('id_monografi', ...) bukan find(...)
-        $monografi = Monografi::where('id_monografi', $id)->first();
-
-        if (!$monografi) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        }
-
-        // Pastikan URL gambar ter-generate
-        $monografi->gambar_mono_url = $monografi->gambar_mono_url;
-        $monografi->gambar_struktur_url = $monografi->gambar_struktur_url;
-
-        return response()->json([
-            'success' => true, 
-            'data' => $monografi
-        ]);
-    }
-
-    // =================================================================
-    // 4. UPDATE DATA (UPDATE) - FIX UTAMA DISINI
-    // =================================================================
+/**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, $id)
     {
-        // 1. Cari data lama untuk keperluan hapus file
-        $monografiLama = Monografi::where('id_monografi', $id)->first();
+        $monografi = Monografi::where('id_monografi', $id)->firstOrFail();
 
-        if (!$monografiLama) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        }
-
-        // 2. Validasi (Nullable karena user mungkin tidak ganti gambar)
         $request->validate([
-            'gambar_mono'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'gambar_struktur' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         try {
-            // Array penampung data yang akan diupdate
-            $dataToUpdate = [];
-
-            // A. Cek Update Gambar Monografi
-            if ($request->hasFile('gambar_mono')) {
-                // Hapus file fisik lama
-                if ($monografiLama->gambar_mono && Storage::disk('public')->exists($monografiLama->gambar_mono)) {
-                    Storage::disk('public')->delete($monografiLama->gambar_mono);
+            // Jika ada file baru, hapus yang lama dan upload yang baru
+            if ($request->hasFile('gambar')) {
+                // Hapus file fisik lama dari kedua lokasi
+                if ($monografi->gambar_mono) {
+                    // Hapus dari storage/app/public/
+                    if (Storage::disk('public')->exists($monografi->gambar_mono)) {
+                        Storage::disk('public')->delete($monografi->gambar_mono);
+                    }
+                    // Hapus dari public/storage/
+                    $oldPublicPath = public_path('storage/' . $monografi->gambar_mono);
+                    if (file_exists($oldPublicPath)) {
+                        unlink($oldPublicPath);
+                    }
                 }
-                // Upload baru & masukkan path ke array update
-                $dataToUpdate['gambar_mono'] = $request->file('gambar_mono')->store('monografi', 'public');
-            }
 
-            // B. Cek Update Gambar Struktur
-            if ($request->hasFile('gambar_struktur')) {
-                // Hapus file fisik lama
-                if ($monografiLama->gambar_struktur && Storage::disk('public')->exists($monografiLama->gambar_struktur)) {
-                    Storage::disk('public')->delete($monografiLama->gambar_struktur);
+                // Upload baru
+                $file = $request->file('gambar');
+                $path = $file->store('monografi', 'public');
+
+                // Copy to public storage for immediate access
+                $sourcePath = storage_path('app/public/' . $path);
+                $destPath = public_path('storage/' . $path);
+                $destDir = dirname($destPath);
+
+                if (!is_dir($destDir)) {
+                    mkdir($destDir, 0755, true);
                 }
-                // Upload baru & masukkan path ke array update
-                $dataToUpdate['gambar_struktur'] = $request->file('gambar_struktur')->store('monografi', 'public');
+                copy($sourcePath, $destPath);
+
+                $monografi->gambar_mono = $path;
+                $monografi->save();
             }
 
-            // C. Eksekusi Update ke Database
-            // Jika ada file yang berubah, kita update database
-            if (!empty($dataToUpdate)) {
-                // PENTING: Gunakan update() pada Query Builder agar tidak mencari kolom 'id'
-                Monografi::where('id_monografi', $id)->update($dataToUpdate);
-            }
-
-            return response()->json([
-                'success' => true, 
-                'message' => 'Data Monografi berhasil diperbarui!'
-            ]);
-
+            return redirect()->route('admin.monografi.index')->with('success', 'Gambar Monografi berhasil diperbarui!');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Gagal update data: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('admin.monografi.index')->with('error', 'Gagal update data: ' . $e->getMessage());
         }
     }
 
-    // =================================================================
-    // 5. HAPUS DATA (DESTROY) - FIX UTAMA DISINI
-    // =================================================================
+/**
+     * Remove the specified resource from storage.
+     */
     public function destroy($id)
     {
-        // 1. Cari data dulu
-        $monografi = Monografi::where('id_monografi', $id)->first();
-
-        if (!$monografi) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
-        }
+        $monografi = Monografi::where('id_monografi', $id)->firstOrFail();
 
         try {
-            // 2. Hapus File Fisik
-            if ($monografi->gambar_mono && Storage::disk('public')->exists($monografi->gambar_mono)) {
-                Storage::disk('public')->delete($monografi->gambar_mono);
+            // Hapus File Fisik dari kedua lokasi
+            if ($monografi->gambar_mono) {
+                // Hapus dari storage/app/public/
+                if (Storage::disk('public')->exists($monografi->gambar_mono)) {
+                    Storage::disk('public')->delete($monografi->gambar_mono);
+                }
+                // Hapus dari public/storage/
+                $oldPublicPath = public_path('storage/' . $monografi->gambar_mono);
+                if (file_exists($oldPublicPath)) {
+                    unlink($oldPublicPath);
+                }
             }
-            if ($monografi->gambar_struktur && Storage::disk('public')->exists($monografi->gambar_struktur)) {
-                Storage::disk('public')->delete($monografi->gambar_struktur);
-            }
 
-            // 3. Hapus Record Database
-            // Gunakan delete() pada Query Builder agar aman dari error ID
-            Monografi::where('id_monografi', $id)->delete();
+            // Hapus Record Database
+            $monografi->delete();
 
-            return response()->json([
-                'success' => true, 
-                'message' => 'Data Monografi berhasil dihapus!'
-            ]);
-
+            return redirect()->route('admin.monografi.index')->with('success', 'Gambar Monografi berhasil dihapus!');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Gagal menghapus data: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('admin.monografi.index')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
     }
 }

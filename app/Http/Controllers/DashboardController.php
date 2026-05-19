@@ -26,7 +26,11 @@ class DashboardController extends Controller
         $now = Carbon::now();
         $weeklyKey = $now->isoFormat('GGGG-[W]WW');
         $monthlyKey = $now->format('Y-m');
+        $dailyKey = $now->format('Y-m-d');
 
+        // =====================================================
+        // 1. UNIQUE VISITORS (Pengunjung Unik) - visitor_uuid 1 tahun
+        // =====================================================
         $visitorUuid = request()->cookie('visitor_uuid');
         $isNewVisitorCookie = false;
 
@@ -35,26 +39,77 @@ class DashboardController extends Controller
             $isNewVisitorCookie = true;
         }
 
-        $totalStat = VisitorStat::firstOrCreate(
-            ['period_type' => 'total', 'period_key' => 'total'],
+        // =====================================================
+        // 2. TOTAL VISITORS (Pengunjung Website) - session_id 30 menit
+        // =====================================================
+        $sessionId = request()->cookie('session_id');
+        $isNewSession = false;
+
+        if (!$sessionId) {
+            $sessionId = (string) Str::uuid();
+            $isNewSession = true;
+        }
+
+        // =====================================================
+        // TRACKING PERIOD TYPES:
+        // - unique_visitor: untuk Pengunjung Unik (visitor_uuid)
+        // - visitor: untuk Pengunjung Website (session_id)
+        // =====================================================
+
+        // --- Unique Visitors (visitor_uuid) ---
+        $uniqueTotalStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'unique_visitor', 'period_key' => 'total'],
             ['count' => 0]
         );
-        $weeklyStat = VisitorStat::firstOrCreate(
-            ['period_type' => 'weekly', 'period_key' => $weeklyKey],
+        $uniqueWeeklyStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'unique_visitor', 'period_key' => $weeklyKey],
             ['count' => 0]
         );
-        $monthlyStat = VisitorStat::firstOrCreate(
-            ['period_type' => 'monthly', 'period_key' => $monthlyKey],
+        $uniqueMonthlyStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'unique_visitor', 'period_key' => $monthlyKey],
+            ['count' => 0]
+        );
+        $uniqueDailyStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'unique_visitor', 'period_key' => $dailyKey],
             ['count' => 0]
         );
 
-        $periods = [
-            ['type' => 'total', 'key' => 'total', 'stat' => $totalStat],
-            ['type' => 'weekly', 'key' => $weeklyKey, 'stat' => $weeklyStat],
-            ['type' => 'monthly', 'key' => $monthlyKey, 'stat' => $monthlyStat],
+        // --- Total Visitors (session_id) ---
+        $visitorTotalStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'visitor', 'period_key' => 'total'],
+            ['count' => 0]
+        );
+        $visitorWeeklyStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'visitor', 'period_key' => $weeklyKey],
+            ['count' => 0]
+        );
+        $visitorMonthlyStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'visitor', 'period_key' => $monthlyKey],
+            ['count' => 0]
+        );
+        $visitorDailyStat = VisitorStat::firstOrCreate(
+            ['period_type' => 'visitor', 'period_key' => $dailyKey],
+            ['count' => 0]
+        );
+
+        // Unique visitor periods
+        $uniquePeriods = [
+            ['type' => 'unique_visitor', 'key' => 'total', 'stat' => $uniqueTotalStat],
+            ['type' => 'unique_visitor', 'key' => $weeklyKey, 'stat' => $uniqueWeeklyStat],
+            ['type' => 'unique_visitor', 'key' => $monthlyKey, 'stat' => $uniqueMonthlyStat],
+            ['type' => 'unique_visitor', 'key' => $dailyKey, 'stat' => $uniqueDailyStat],
         ];
 
-        foreach ($periods as $period) {
+        // Total visitor periods
+        $visitorPeriods = [
+            ['type' => 'visitor', 'key' => 'total', 'stat' => $visitorTotalStat],
+            ['type' => 'visitor', 'key' => $weeklyKey, 'stat' => $visitorWeeklyStat],
+            ['type' => 'visitor', 'key' => $monthlyKey, 'stat' => $visitorMonthlyStat],
+            ['type' => 'visitor', 'key' => $dailyKey, 'stat' => $visitorDailyStat],
+        ];
+
+        // Track unique visitors (visitor_uuid)
+        foreach ($uniquePeriods as $period) {
             $hit = VisitorHit::firstOrCreate(
                 [
                     'visitor_uuid' => $visitorUuid,
@@ -68,10 +123,40 @@ class DashboardController extends Controller
             }
         }
 
+        // Track total visitors (session_id) - always increment for new sessions
+        foreach ($visitorPeriods as $period) {
+            $hit = VisitorHit::firstOrCreate(
+                [
+                    'visitor_uuid' => $sessionId,
+                    'period_type' => $period['type'],
+                    'period_key' => $period['key'],
+                ]
+            );
+
+            if ($hit->wasRecentlyCreated) {
+                $period['stat']->increment('count');
+            }
+        }
+
+        // Unique visitor stats
+        $uniqueStats = [
+            'daily' => $uniqueDailyStat->fresh()->count ?? 0,
+            'weekly' => $uniqueWeeklyStat->fresh()->count ?? 0,
+            'monthly' => $uniqueMonthlyStat->fresh()->count ?? 0,
+            'total' => $uniqueTotalStat->fresh()->count ?? 0,
+        ];
+
+        // Total visitor stats
+        $visitorStats = [
+            'daily' => $visitorDailyStat->fresh()->count ?? 0,
+            'weekly' => $visitorWeeklyStat->fresh()->count ?? 0,
+            'monthly' => $visitorMonthlyStat->fresh()->count ?? 0,
+            'total' => $visitorTotalStat->fresh()->count ?? 0,
+        ];
+
         $visitStats = [
-            'weekly' => $weeklyStat->fresh()->count ?? 0,
-            'monthly' => $monthlyStat->fresh()->count ?? 0,
-            'total' => $totalStat->fresh()->count ?? 0,
+            'unique' => $uniqueStats,
+            'visitor' => $visitorStats,
         ];
 
         $response = response()->view('dashboard.index', compact('dataLurah', 'beranda', 'visitStats'));
@@ -81,7 +166,23 @@ class DashboardController extends Controller
                 new Cookie(
                     'visitor_uuid',
                     $visitorUuid,
-                    now()->addYears(5),
+                    now()->addYear(1), // 1 tahun
+                    '/',
+                    null,
+                    request()->isSecure(),
+                    true,
+                    false,
+                    Cookie::SAMESITE_LAX
+                )
+            );
+        }
+
+        if ($isNewSession) {
+            $response->headers->setCookie(
+                new Cookie(
+                    'session_id',
+                    $sessionId,
+                    now()->addMinutes(30), // 30 menit
                     '/',
                     null,
                     request()->isSecure(),

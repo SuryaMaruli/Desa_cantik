@@ -328,7 +328,10 @@
     .popup-icon.edit { background: #dbeafe; color: #1d4ed8; }
     .popup-icon.unpublish { background: #fef3c7; color: #b45309; }
     .popup-icon.publish { background: #d1fae5; color: #059669; }
-    .popup-icon.delete { background: #fee2e2; color: #dc2626; }
+.popup-icon.delete { background: #fee2e2; color: #dc2626; }
+    .popup-icon.utama { background: #fef3c7; color: #b45309; }
+    .popup-btn-confirm.utama { background: #b45309; }
+    .popup-btn-confirm.utama:hover { background: #92400e; }
     .popup-title {
         font-size: 20px;
         font-weight: 700;

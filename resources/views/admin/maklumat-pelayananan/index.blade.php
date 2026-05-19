@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
-@section('title', 'Monografi')
+@section('title', 'Maklumat Pelayanan')
 
-@section('page-title', 'Monografi')
+@section('page-title', 'Maklumat Pelayanan')
 
 @section('content')
 <style>
@@ -200,10 +200,10 @@
 <div class="header-card">
         <div class="header-content">
             <div class="header-text">
-                <h1>Monografi</h1>
-                <p>Kelola gambar monografi kelurahan</p>
+                <h1>Maklumat Pelayanan</h1>
+                <p>Kelola gambar maklumat pelayanan kelurahan</p>
             </div>
-            @if($monografis->count() == 0)
+            @if($maklumat->count() == 0)
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
                 <i class="fas fa-plus me-2"></i>Tambah Gambar
             </button>
@@ -215,21 +215,21 @@
 
     <div class="table-container">
         <div class="table-header">
-            Daftar Gambar Monografi
+            Daftar Gambar Maklumat Pelayanan
         </div>
 
-@if($monografis->count() > 0)
-            @foreach($monografis as $item)
+        @if($maklumat->count() > 0)
+            @foreach($maklumat as $item)
             <div class="table-row">
                 <div class="row w-100">
                     <div class="col-md-8">
-<img src="{{ url('storage/' . $item->gambar_mono) }}" alt="Monografi" class="image-preview">
+                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="Maklumat Pelayanan" class="image-preview">
                     </div>
 <div class="col-md-4 d-flex align-items-center justify-content-end gap-2">
-                        <button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id_monografi }}">
+                        <button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
                             <i class="fas fa-edit me-1"></i> Edit
                         </button>
-                        <form action="{{ route('admin.monografi.destroy', $item->id_monografi) }}" method="POST" class="d-inline">
+                        <form action="{{ route('admin.maklumat-pelayananan.destroy', $item->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm btn-delete">
@@ -241,26 +241,26 @@
             </div>
 
             <!-- Edit Modal -->
-            <div class="modal fade" id="editModal{{ $item->id_monografi }}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h3>Edit Gambar</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form action="{{ route('admin.monografi.update', $item->id_monografi) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.maklumat-pelayananan.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label class="form-label">Gambar Saat Ini</label>
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $item->gambar_mono) }}" alt="Current" style="max-width: 200px; border-radius: 8px;">
+                                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="Current" style="max-width: 200px; border-radius: 8px;">
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="gambar{{ $item->id_monografi }}" class="form-label">Ganti Gambar (Opsional)</label>
-                                    <input type="file" class="form-control" id="gambar{{ $item->id_monografi }}" name="gambar" accept="image/*">
+                                    <label for="gambar{{ $item->id }}" class="form-label">Ganti Gambar (Opsional)</label>
+                                    <input type="file" class="form-control" id="gambar{{ $item->id }}" name="gambar" accept="image/*">
                                     <p class="text-muted mt-1">Format: JPG, PNG, JPEG, GIF. Max: 4MB</p>
                                 </div>
                             </div>
@@ -276,8 +276,8 @@
 @else
             <div class="empty-state">
                 <i class="fas fa-image"></i>
-                <h3>Informasi Monografi belum ditambahkan</h3>
-                <p>Silakan upload gambar monografi terlebih dahulu.</p>
+                <h3>Informasi Maklumat Pelayanan belum ditambahkan</h3>
+                <p>Silakan upload gambar maklumat pelayanan terlebih dahulu.</p>
             </div>
         @endif
     </div>
@@ -288,10 +288,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Tambah Gambar Monografi</h3>
+                <h3>Tambah Gambar Maklumat Pelayanan</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.monografi.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.maklumat-pelayananan.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 icon: 'info',
                 title: 'Edit Foto',
-                text: 'Anda akan mengedit foto Monografi.',
+                text: 'Anda akan mengedit foto Maklumat Pelayanan.',
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,

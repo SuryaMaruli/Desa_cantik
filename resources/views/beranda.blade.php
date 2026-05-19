@@ -102,15 +102,24 @@
             margin-bottom: 18px;
         }
 
-        .visit-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
+.visit-stats-grid {
+            display: flex;
+            flex-wrap: nowrap;
             gap: 14px;
+            overflow-x: auto;
         }
 
-        @media (min-width: 768px) {
-            .visit-stats-grid {
-                grid-template-columns: repeat(3, 1fr);
+        @media (max-width: 575px) {
+            .visit-stats-grid .visit-stat-card {
+                min-width: calc(50% - 7px);
+                flex: 0 0 calc(50% - 7px);
+            }
+        }
+
+        @media (min-width: 576px) {
+            .visit-stats-grid .visit-stat-card {
+                min-width: calc(25% - 10.5px);
+                flex: 0 0 calc(25% - 10.5px);
             }
         }
 
@@ -136,24 +145,55 @@
         }
     </style>
 
-    @php
-        $visitStats = $visitStats ?? ['weekly' => 0, 'monthly' => 0, 'total' => 0];
+@php
+        $uniqueStats = $visitStats['unique'] ?? ['daily' => 0, 'weekly' => 0, 'monthly' => 0, 'total' => 0];
+        $visitorStats = $visitStats['visitor'] ?? ['daily' => 0, 'weekly' => 0, 'monthly' => 0, 'total' => 0];
     @endphp
     <section class="visit-stats-section">
         <div class="container">
-            <h2 class="visit-stats-title">Jumlah Kunjungan Website</h2>
+            <h2 class="visit-stats-title">Jumlah Pengunjung Unik</h2>
+            <p style="font-size: 0.85rem; color: #888; margin-bottom: 14px;">Cookie berlaku 1 tahun - 1 orang diakses beberapa kali tetap dihitung 1x</p>
             <div class="visit-stats-grid">
                 <div class="visit-stat-card">
+                    <p class="visit-stat-label">Harian</p>
+                    <p class="visit-stat-value">{{ number_format($uniqueStats['daily'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="visit-stat-card">
                     <p class="visit-stat-label">Mingguan</p>
-                    <p class="visit-stat-value">{{ number_format($visitStats['weekly'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="visit-stat-value">{{ number_format($uniqueStats['weekly'] ?? 0, 0, ',', '.') }}</p>
                 </div>
                 <div class="visit-stat-card">
                     <p class="visit-stat-label">Bulanan</p>
-                    <p class="visit-stat-value">{{ number_format($visitStats['monthly'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="visit-stat-value">{{ number_format($uniqueStats['monthly'] ?? 0, 0, ',', '.') }}</p>
                 </div>
                 <div class="visit-stat-card">
                     <p class="visit-stat-label">Total</p>
-                    <p class="visit-stat-value">{{ number_format($visitStats['total'] ?? 0, 0, ',', '.') }}</p>
+                    <p class="visit-stat-value">{{ number_format($uniqueStats['total'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="visit-stats-section">
+        <div class="container">
+            <h2 class="visit-stats-title">Jumlah Kunjungan Website</h2>
+            <p style="font-size: 0.85rem; color: #888; margin-bottom: 14px;">Session berlaku 30 menit - Setiap akses dihitung</p>
+            <div class="visit-stats-grid">
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Harian</p>
+                    <p class="visit-stat-value">{{ number_format($visitorStats['daily'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Mingguan</p>
+                    <p class="visit-stat-value">{{ number_format($visitorStats['weekly'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Bulanan</p>
+                    <p class="visit-stat-value">{{ number_format($visitorStats['monthly'] ?? 0, 0, ',', '.') }}</p>
+                </div>
+                <div class="visit-stat-card">
+                    <p class="visit-stat-label">Total</p>
+                    <p class="visit-stat-value">{{ number_format($visitorStats['total'] ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>

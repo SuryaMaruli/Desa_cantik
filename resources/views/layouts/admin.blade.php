@@ -336,28 +336,41 @@
                     <span class="links_name">Berita & Informasi</span>
                 </a>
             </li>
-            <li>
+<li>
                 <a href="{{ route('admin.data-kelurahan.index') }}" class="{{ request()->is('admin/data-kelurahan*') ? 'active' : '' }}">
                     <i class='bx bx-data'></i>
                     <span class="links_name">Data Kelurahan</span>
                 </a>
             </li>
-            <li>
-                <a href="{{ route('admin.monografi.index') }}" class="{{ request()->is('admin/monografi*') ? 'active' : '' }}">
-                    <i class='bx bx-book-bookmark'></i>
-                    <span class="links_name">Monografi</span>
-                </a>
-            </li>
+
             <li>
                 <a href="{{ route('admin.galeri.index') }}" class="{{ request()->is('admin/galeri*') ? 'active' : '' }}">
                     <i class='bx bx-image'></i>
                     <span class="links_name">Galeri</span>
                 </a>
             </li>
-            <li>
+<li>
                 <a href="{{ route('admin.layanan.index') }}" class="{{ request()->is('admin/layanan*') ? 'active' : '' }}">
                     <i class='bx bx-file'></i>
                     <span class="links_name">Layanan</span>
+                </a>
+            </li>
+<li>
+                <a href="{{ route('admin.maklumat-pelayananan.index') }}" class="{{ request()->is('admin/maklumat-pelayananan*') ? 'active' : '' }}">
+                    <i class='bx bx-info-square'></i>
+                    <span class="links_name">Maklumat Pelayanan</span>
+                </a>
+            </li>
+<li>
+                <a href="{{ route('admin.struktur-organisasi.index') }}" class="{{ request()->is('admin/struktur-organisasi*') ? 'active' : '' }}">
+                    <i class='bx bx-sitemap'></i>
+                    <span class="links_name">Struktur Organisasi</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.monografi.index') }}" class="{{ request()->is('admin/monografi*') ? 'active' : '' }}">
+                    <i class='bx bx-map-alt'></i>
+                    <span class="links_name">Monografi</span>
                 </a>
             </li>
             <li>
@@ -402,13 +415,7 @@
                     <span class="links_name">Profil Saya</span>
                 </a>
             </li>
-            <li>
-                <a href="{{ route('admin.pengaturan.index') }}" class="{{ request()->is('admin/pengaturan*') ? 'active' : '' }}">
-                    <i class='bx bx-cog'></i>
-                    <span class="links_name">Pengaturan</span>
-                </a>
-            </li>
-            <li>
+<li>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class='bx bx-log-out'></i>
                     <span class="links_name">Logout</span>
@@ -429,12 +436,23 @@
             <h4 class="mb-0 ms-3 d-none d-md-block">@yield('page-title', 'Dashboard')</h4>
         </div>
         
-        <div class="dropdown user-dropdown">
+<div class="dropdown user-dropdown">
             <a class="dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="d-flex align-items-center">
-                    <div class="user-avatar">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
-                    </div>
+<div class="d-flex align-items-center">
+                        @if(Auth::user()->foto_profil)
+                            <img src="{{ asset('storage/' . Auth::user()->foto_profil) }}"
+                                 alt="Foto Profil" 
+                                 class="user-avatar"
+                                 style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;"
+                                 onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="user-avatar" style="display: none;">
+                                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                            </div>
+                        @else
+                            <div class="user-avatar">
+                                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                            </div>
+                        @endif
                     <div class="user-info">
                         <p class="user-name mb-0">{{ Auth::user()->name ?? 'Administrator' }}</p>
                         <small class="user-role">Admin</small>

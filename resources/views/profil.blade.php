@@ -355,36 +355,41 @@
             </div>
         </div>
 
-        <h2 class="section-title-center">MONOGRAFI KELURAHAN CITANGKIL</h2>
-        @if($monografis->count() > 0)
+<h2 class="section-title-center">MONOGRAFI KELURAHAN CITANGKIL</h2>
+@if($monografis->count() > 0)
             @foreach($monografis as $monografi)
             <div class="card">
                 <div class="image-container">
-                    <img src="{{ $monografi->gambar_mono_url }}" alt="Papan Monografi" class="image-board">
+<img src="{{ $monografi->gambar_mono ? url('storage/' . $monografi->gambar_mono) : '' }}" alt="Papan Monografi" class="image-board">
                 </div>
             </div>
             @endforeach
         @else
             <div class="card">
-                <div class="image-container">
-                    <img src="https://placehold.co/900x500?text=Belum+Ada+Data+Monografi" alt="Belum Ada Data" class="image-board">
+                <div class="empty-state">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Informasi Monografi belum ditambahkan</h3>
+                    <p>Monografi Kelurahan akan ditampilkan di sini setelah ditambahkan oleh admin.</p>
                 </div>
             </div>
         @endif
 
-        <h2 class="section-title-center normal-case">Struktur Organisasi</h2>
-        @if($monografis->count() > 0)
-            @foreach($monografis as $monografi)
+<h2 class="section-title-center normal-case">Struktur Organisasi</h2>
+        @php
+            $struktur = \App\Models\StrukturOrganisasi::first();
+        @endphp
+        @if($struktur && $struktur->gambar)
             <div class="card">
                 <div class="image-container">
-                    <img src="{{ $monografi->gambar_struktur_url }}" alt="Struktur Organisasi" class="image-board">
+                    <img src="{{ asset('storage/' . $struktur->gambar) }}" alt="Struktur Organisasi" class="image-board">
                 </div>
             </div>
-            @endforeach
         @else
             <div class="card">
-                <div class="image-container">
-                    <img src="https://placehold.co/900x500?text=Belum+Ada+Data+Struktur" alt="Belum Ada Data" class="image-board">
+                <div class="empty-state">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Struktur Organisasi belum ditambahkan</h3>
+                    <p>Struktur Organisasi Kelurahan akan ditampilkan di sini setelah ditambahkan oleh admin.</p>
                 </div>
             </div>
         @endif

@@ -354,11 +354,11 @@
             </ul>
         </div>
 
-        @if($berita->count() > 0)
-            <!-- Berita Utama (Item pertama) -->
+@if($beritaUtama || $berita->count() > 0)
+            <!-- Berita Utama (Diprioritaskan dari is_utama) -->
             @php
-                $heroBerita = $berita->first();
-                $otherBerita = $berita->slice(1);
+                $heroBerita = $beritaUtama;
+                $otherBerita = $berita;
             @endphp
             
             @if($heroBerita)
@@ -406,7 +406,7 @@
                 <h2 class="latest-section-label">Berita Terbaru</h2>
 
                 <div class="grid-container">
-                    @foreach($otherBerita as $item)
+@foreach($otherBerita as $item)
                         <div class="grid-card">
                             <span class="grid-badge badge-{{ strtolower($item->kategori ?? 'program') }}">{{ $item->kategori ?? 'Umum' }}</span>
                             @if($item->gambar)
