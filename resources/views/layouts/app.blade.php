@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Kelurahan Citangkil - Website Resmi')</title>
+<title>@yield('title', 'Kelurahan Citangkil - Website Resmi')</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+<style>
         /* Reset dasar agar tampilan konsisten */
         * {
             margin: 0;
@@ -22,6 +23,170 @@
             background-color: #ffffff;
             padding-top: 80px;
         }
+
+        /* ============================================
+           PRELOADER - Elegant Loading Screen
+           ============================================ */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #F89039 0%, #e27e2e 50%, #F89039 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+
+        .preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Logo Circle Animation */
+        .preloader-logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: pulse-logo 2s ease-in-out infinite;
+            margin-bottom: 30px;
+        }
+
+        .preloader-logo i {
+            color: #F89039;
+            font-size: 42px;
+        }
+
+        @keyframes pulse-logo {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        /* Title */
+        .preloader-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .preloader-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin-bottom: 35px;
+            letter-spacing: 1px;
+        }
+
+        /* Loading Bar Container */
+        .loading-bar-container {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Loading Bar Progress */
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 10px;
+            animation: load-progress 2s ease-in-out infinite;
+        }
+
+        @keyframes load-progress {
+            0% {
+                width: 0%;
+                margin-left: 0;
+            }
+            50% {
+                width: 70%;
+                margin-left: 15%;
+            }
+            100% {
+                width: 0%;
+                margin-left: 100%;
+            }
+        }
+
+        /* Loading Dots Animation */
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 25px;
+        }
+
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: dots-bounce 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dots-bounce {
+            0%, 80%, 100% {
+                transform: scale(0.6);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Hide Preloader when loaded */
+        body.loaded .preloader {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .preloader-logo {
+                width: 80px;
+                height: 80px;
+            }
+            .preloader-logo i {
+                font-size: 34px;
+            }
+            .preloader-title {
+                font-size: 20px;
+            }
+            .preloader-subtitle {
+                font-size: 12px;
+            }
+        }
+        /* ============================================
+           END PRELOADER
+           ============================================ */
 
         /* --- Header Hijau --- */
         .hero-section {
@@ -423,6 +588,25 @@
     @stack('styles')
 </head>
 <body>
+<!-- Preloader - Elegant Loading Screen -->
+    <div class="preloader">
+        <div class="preloader-logo">
+            <img src="{{ asset('favicon.ico') }}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain;">
+        </div>
+        <h1 class="preloader-title">Kelurahan Citangkil</h1>
+        <p class="preloader-subtitle">Kec. Citangkil, Kota Cilegon</p>
+        
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+        
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar">
         <div class="brand-section">
@@ -499,8 +683,29 @@
     <!-- Footer -->
     @include('layouts.footer')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Preloader functionality - Hide when page is loaded
+        window.addEventListener('load', function() {
+            document.body.classList.add('loaded');
+            // Remove preloader from DOM after animation completes
+            setTimeout(function() {
+                var preloader = document.querySelector('.preloader');
+                if (preloader) {
+                    preloader.style.display = 'none';
+                }
+            }, 600); // Match with CSS transition duration
+        });
+
+// Fallback: Hide preloader after 7 seconds anyway
+        setTimeout(function() {
+            document.body.classList.add('loaded');
+            var preloader = document.querySelector('.preloader');
+            if (preloader) {
+                preloader.style.display = 'none';
+            }
+        }, 7000);
+
         const backToTopBtn = document.getElementById('backToTopBtn');
         if (backToTopBtn) {
             backToTopBtn.addEventListener('click', function () {
