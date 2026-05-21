@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Admin\MaklumatPelayanananController;
 use App\Http\Controllers\Admin\StrukturOrganisasiController;
 use App\Http\Controllers\Admin\MonografiController;
+use App\Http\Controllers\BatasWilayahController;
 
 // --- MODELS IMPORT (Untuk Public Routes) ---
 use App\Models\Layanan; 
@@ -179,6 +180,9 @@ Route::get('/maklumat-pelayananan', function () {
 Route::get('/struktur-organisasi', function () {
     return view('struktur-organisasi');
 });
+
+// --- BATAS WILAYAH API ROUTES ---
+Route::get('/api/batas-wilayah', [BatasWilayahController::class, 'getVillageBoundaries'])->name('api.batas-wilayah');
 
 
 // =========================================================================

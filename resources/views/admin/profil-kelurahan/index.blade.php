@@ -16,7 +16,7 @@
                 <div class="header-content">
                     <div>
                         <h1>Profil Kelurahan</h1>
-                        <p class="subtitle">Kelola informasi umum, visi, misi, dan batas wilayah.</p>
+<p class="subtitle">Kelola informasi umum, visi, dan misi.</p>
                     </div>
                     
                     <div class="header-actions">
@@ -189,47 +189,7 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Batas Wilayah</h2>
-                
-                <div class="row-grid">
-                    <div>
-                        <div class="content-wrapper" style="margin-bottom: 15px;">
-                            <span class="label">Utara</span>
-                            <div class="info-content">
-                                <span class="view-value" id="view-wilayah_utara">{{ $profilKelurahan->wilayah_utara ?? '-' }}</span>
-                                <input type="text" class="form-control" name="wilayah_utara" id="input-wilayah_utara" value="{{ $profilKelurahan->wilayah_utara ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="content-wrapper">
-                            <span class="label">Timur</span>
-                            <div class="info-content">
-                                <span class="view-value" id="view-wilayah_timur">{{ $profilKelurahan->wilayah_timur ?? '-' }}</span>
-                                <input type="text" class="form-control" name="wilayah_timur" id="input-wilayah_timur" value="{{ $profilKelurahan->wilayah_timur ?? '' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="content-wrapper" style="margin-bottom: 15px;">
-                            <span class="label">Selatan</span>
-                            <div class="info-content">
-                                <span class="view-value" id="view-wilayah_selatan">{{ $profilKelurahan->wilayah_selatan ?? '-' }}</span>
-                                <input type="text" class="form-control" name="wilayah_selatan" id="input-wilayah_selatan" value="{{ $profilKelurahan->wilayah_selatan ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="content-wrapper">
-                            <span class="label">Barat</span>
-                            <div class="info-content">
-                                <span class="view-value" id="view-wilayah_barat">{{ $profilKelurahan->wilayah_barat ?? '-' }}</span>
-                                <input type="text" class="form-control" name="wilayah_barat" id="input-wilayah_barat" value="{{ $profilKelurahan->wilayah_barat ?? '' }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </form> {{-- End Form --}}
+</form>
 
     </main>
 </div>

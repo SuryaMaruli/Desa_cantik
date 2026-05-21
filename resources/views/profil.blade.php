@@ -321,39 +321,310 @@
             </div>
         </div>
 
-        <h2 class="section-title">Batas Wilayah</h2>
+<h2 class="section-title">Perbatasan Wilayah Kelurahan Citangkil</h2>
         <div class="card">
-            <div class="boundaries-grid">
-                <div class="boundary-item bg-blue-light">
-                    <div class="direction-box bg-blue">U</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Utara</h4>
-                        <p>{{ $profilKelurahan->wilayah_utara ?? '-' }}</p>
-                    </div>
-                </div>
-                <div class="boundary-item bg-orange-light">
-                    <div class="direction-box bg-orange">S</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Selatan</h4>
-                        <p>{{ $profilKelurahan->wilayah_selatan ?? '-' }}</p>
-                    </div>
-                </div>
-                <div class="boundary-item bg-purple-light">
-                    <div class="direction-box bg-purple">B</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Barat</h4>
-                        <p>{{ $profilKelurahan->wilayah_barat ?? '-' }}</p>
-                    </div>
-                </div>
-                <div class="boundary-item bg-green-light">
-                    <div class="direction-box bg-green">T</div>
-                    <div class="boundary-info">
-                        <h4>Sebelah Timur</h4>
-                        <p>{{ $profilKelurahan->wilayah_timur ?? '-' }}</p>
-                    </div>
+            <div class="map-placeholder" id="mapLoading">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; background: #f8f9fa; border-radius: 12px;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 48px; color: #F6903A; margin-bottom: 15px;"></i>
+                    <p style="color: #666;">Memuat peta wilayah...</p>
                 </div>
             </div>
+<div class="map-container" style="display: none;">
+                <div id="villageMap"></div>
+            </div>
         </div>
+        
+        <!-- Leaflet CSS & JS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        
+        <style>
+            .map-container {
+                width: 100%;
+                height: 450px;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+            
+            #villageMap {
+                width: 100%;
+                height: 100%;
+            }
+            
+            /* Custom marker styles */
+            .custom-marker {
+                background: #F6903A;
+                border-radius: 50%;
+                border: 3px solid white;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            }
+            
+            /* Map controls styling */
+            .leaflet-control-zoom {
+                border: none !important;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
+            }
+            
+            .leaflet-control-zoom a {
+                background: white !important;
+                color: #333 !important;
+            }
+            
+            .leaflet-control-zoom a:hover {
+                background: #f5f5f5 !important;
+            }
+            
+/* Popup styling - Override Leaflet default dark styles */
+            .leaflet-popup-content-wrapper {
+                border-radius: 8px;
+                box-shadow: 0 3px 14px rgba(0,0,0,0.3);
+                background: #fff !important;
+                color: #333 !important;
+            }
+            
+            .leaflet-popup-tip {
+                background: #fff !important;
+                box-shadow: none;
+            }
+            
+            .leaflet-popup-tip:after {
+                background: #fff !important;
+            }
+            
+            .leaflet-popup-content {
+                margin: 10px 12px;
+                line-height: 1.4;
+                background: transparent;
+                color: #333;
+            }
+            
+            .leaflet-popup-content h4 {
+                color: inherit;
+                margin: 0 0 4px 0;
+                font-size: 13px;
+                font-weight: 600;
+            }
+            
+            .leaflet-popup-content p {
+                margin: 0;
+                color: #555;
+                font-size: 11px;
+            }
+            
+            .leaflet-popup-close-button {
+                color: #333 !important;
+            }
+            
+            .leaflet-popup-close-button:hover {
+                color: #666 !important;
+            }
+        </style>
+        
+<script>
+            // Initialize map - with error handling
+            try {
+            var map = L.map('villageMap').setView([-5.9825, 106.0515], 14);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18,
+            }).addTo(map);
+            
+            // Custom village marker icon
+            var villageIcon = L.divIcon({
+                className: 'custom-marker',
+                html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40],
+                popupAnchor: [0, -40]
+            });
+            
+            // Add scale control
+            L.control.scale({
+                imperial: false,
+                metric: true
+            }).addTo(map);
+            
+// =========================================================
+            // BATAS WILAYAH - LOAD GEOJSON FROM STORAGE (BatasWilayah.py output)
+            // =========================================================
+            
+            // Define colors from Python code
+            var warna = {
+                "CITANGKIL": "red",
+                "RAMANUJU": "blue",
+                "MASIGIT": "green",
+                "TAMAN BARU": "orange",
+                "KEBONSARI": "purple"
+            };
+            
+            // Boundary direction info (from Python code)
+            var keteranganBatas = {
+                "RAMANUJU": "Utara",
+                "MASIGIT": "Timur",
+                "TAMAN BARU": "Selatan",
+                "KEBONSARI": "Barat"
+            };
+            
+            // Style function for GeoJSON layers
+            function getStyle(feature) {
+                var desaName = feature.properties.DESA;
+                var color = warna[desaName] || 'gray';
+                return {
+                    color: color,
+                    weight: 2,
+                    fillColor: color,
+                    fillOpacity: 0.35
+                };
+            }
+            
+// Popup function
+            function onEachFeature(feature, layer) {
+                var desa = feature.properties.DESA;
+                var kecamatan = feature.properties.KECAMATAN || '-';
+                var kabKota = feature.properties.KAB_KOTA || '-';
+                
+                // Build popup content
+                var popupContent;
+                if (desa === "CITANGKIL") {
+                    popupContent = '<h4 style="color:' + warna[desa] + '">' + 
+                        '<b>'+'KELURAHAN ' + desa + '</b><br>' +
+                        'Kecamatan : ' + kecamatan + '<br>' +'</h4>';
+                } else {
+                    var arah = keteranganBatas[desa] || '-';
+                    popupContent = '<h4 style="color:' + warna[desa] + '">' + 
+                        '<b>' + 'Batas Bagian ' + arah + '</b><br>' +
+                        'KELURAHAN: ' + desa + '<br>' +
+                        'KECAMATAN: ' + kecamatan + '<br>'+'</h4>';
+                }
+                
+                // Bind popup and show on mouseover (hover) immediately
+                layer.bindPopup(popupContent);
+                
+                // Add mouseover event to show popup immediately on hover
+                layer.on({
+                    mouseover: function(e) {
+                        this.openPopup();
+                    },
+                    mouseout: function(e) {
+                        this.closePopup();
+                    }
+                });
+                
+                // Add tooltip on hover
+                layer.bindTooltip(desa, {
+                    permanent: false,
+                    direction: 'center',
+                    className: 'village-tooltip',
+                    sticky: true
+                });
+            }
+            
+// Variable to store GeoJSON data for later use
+            var geoJsonLayer = null;
+            
+// Load GeoJSON from public folder
+            var geoJsonUrl = '{{ asset("shapefile/citangkil_boundaries.geojson") }}';
+            console.log('Loading GeoJSON from:', geoJsonUrl);
+            
+            fetch(geoJsonUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('GeoJSON loaded successfully, features:', data.features.length);
+                    
+                    // Add GeoJSON layer to map
+                    geoJsonLayer = L.geoJSON(data, {
+                        style: getStyle,
+                        onEachFeature: onEachFeature
+                    }).addTo(map);
+                    
+                    // Hide loading, show map container
+                    document.getElementById('mapLoading').style.display = 'none';
+                    document.querySelector('.map-container').style.display = 'block';
+                    
+                    // Fit map bounds to GeoJSON data
+                    map.invalidateSize();
+                    var bounds = L.geoJSON(data).getBounds();
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds, {padding: [50, 50]});
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading GeoJSON:', error);
+                    document.getElementById('mapLoading').innerHTML = 
+                        '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:250px;background:#f8f9fa;border-radius:12px;">' +
+                        '<i class="fas fa-exclamation-triangle" style="font-size:48px;color:#F6903A;margin-bottom:15px;"></i>' +
+                        '<p style="color:#666;">Gagal memuat data batas wilayah</p>' +
+                        '<p style="color:#999;font-size:11px;margin-top:5px;">Error: ' + error.message + '</p></div>';
+                });
+            
+// =========================================================
+            // ADD LEGEND
+            // =========================================================
+            var legend = L.control({position: 'bottomright'});
+            legend.onAdd = function(map) {
+                var div = L.DomUtil.create('div', 'map-legend');
+                div.innerHTML = `
+                    <div style="background:white;padding:10px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.15);font-size:12px;">
+                        <strong style="display:block;margin-bottom:8px;">Legenda Batas Wilayah</strong>
+                        <div style="display:flex;align-items:center;margin-bottom:4px;">
+                            <span style="width:16px;height:16px;background:blue;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
+                            <span>Utara (Ramanuju)</span>
+                        </div>
+                        <div style="display:flex;align-items:center;margin-bottom:4px;">
+                            <span style="width:16px;height:16px;background:purple;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
+                            <span>Barat (Kebonsari)</span>
+                        </div>
+                        <div style="display:flex;align-items:center;margin-bottom:4px;">
+                            <span style="width:16px;height:16px;background:green;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
+                            <span>Timur (Masigit)</span>
+                        </div>
+                        <div style="display:flex;align-items:center;margin-bottom:4px;">
+                            <span style="width:16px;height:16px;background:orange;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
+                            <span>Selatan (Taman Baru)</span>
+                        </div>
+                        <div style="display:flex;align-items:center;margin-top:6px;padding-top:6px;border-top:1px solid #eee;">
+                            <span style="width:16px;height:16px;background:red;opacity:0.3;margin-right:8px;border-radius:3px;border:2px solid red;"></span>
+                            <span>Citangkil</span>
+                        </div>
+                    </div>
+                `;
+                return div;
+            };
+            legend.addTo(map);
+            
+// =========================================================
+            // MAP LAYER CONTROLS
+            // =========================================================
+            var baseLayers = {
+                'Peta Standard': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap'
+                }),
+                'Peta Satelit': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: '&copy; Esri'
+                }),
+                'Peta Gelap': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; CartoDB'
+                })
+            };
+            
+            L.control.layers(baseLayers).addTo(map);
+            
+            } catch(e) {
+                console.error('Error initializing map:', e);
+                document.getElementById('villageMap').innerHTML = 
+                    '<div style="padding:20px;text-align:center;color:red;">' +
+                    'Error loading map. Please refresh the page.' +
+                    '</div>';
+            }
+        </script>
 
 <h2 class="section-title-center">MONOGRAFI KELURAHAN CITANGKIL</h2>
 @if($monografis->count() > 0)
