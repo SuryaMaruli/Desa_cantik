@@ -217,6 +217,313 @@
         }
         .info-link:hover { gap: 12px; color: #d50000; }
 
+        /* --- PRESTASI --- */
+        .prestasi-section { padding: 60px 20px 78px; background: #fffbf0; }
+        .prestasi-header { text-align: center; margin-bottom: 34px; }
+        .prestasi-header h2 { color: #e65100; font-size: 2rem; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
+        .prestasi-header p { color: #666; font-size: 1rem; margin: 0; }
+        .prestasi-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .prestasi-card {
+            background: #ffffff;
+            border: 1px solid #f3e4d5;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(230, 81, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+        .prestasi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(230, 81, 0, 0.13); }
+        .prestasi-carousel-wrap {
+            background: #fff;
+            overflow: hidden;
+            cursor: zoom-in;
+            border-bottom: 1px solid #f5e7d6;
+        }
+        .prestasi-carousel {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .prestasi-carousel::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 45%;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.48) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .prestasi-carousel-track { position: absolute; inset: 0; }
+        .prestasi-carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f57c00;
+            font-size: 38px;
+            background: linear-gradient(135deg, #fff4e8, #ffe1c4);
+        }
+        .prestasi-carousel-slide.active { opacity: 1; pointer-events: auto; }
+        .prestasi-carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+        .prestasi-carousel-wrap:hover .prestasi-carousel-slide.active img { transform: scale(1.035); }
+        .prestasi-badge {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.72);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 6;
+            backdrop-filter: blur(8px);
+        }
+        .prestasi-photo-count {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            z-index: 6;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.72);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            backdrop-filter: blur(8px);
+        }
+        .prestasi-carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.62);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 6;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .prestasi-carousel-btn:hover { background: rgba(15, 23, 42, 0.86); transform: translateY(-50%) scale(1.04); }
+        .prestasi-carousel-btn.prev { left: 10px; }
+        .prestasi-carousel-btn.next { right: 10px; }
+        .prestasi-carousel-dots {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 10px;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+        .prestasi-carousel-dot {
+            width: 7px;
+            height: 7px;
+            border: 0;
+            border-radius: 50%;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.62);
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+            cursor: pointer;
+            transition: width 0.2s ease, background 0.2s ease;
+        }
+        .prestasi-carousel-dot.active {
+            width: 18px;
+            border-radius: 999px;
+            background: #fff;
+        }
+        .prestasi-expand-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.72);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            z-index: 6;
+            pointer-events: none;
+        }
+        .prestasi-carousel-thumbs {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding: 8px 10px 9px;
+            background: #fff;
+            scrollbar-width: thin;
+        }
+        .prestasi-carousel-thumb {
+            width: 42px;
+            height: 32px;
+            flex-shrink: 0;
+            display: block;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 2px solid transparent;
+            cursor: pointer;
+            opacity: 0.66;
+            transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+        .prestasi-carousel-thumb:hover { opacity: 0.9; }
+        .prestasi-carousel-thumb.active {
+            border-color: #f97316;
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+        .prestasi-content { padding: 14px 15px 16px; display: flex; flex-direction: column; flex: 1; }
+        .prestasi-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .prestasi-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #fff4e8;
+            color: #b45309;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .prestasi-card h3 { font-size: 0.98rem; color: #222; line-height: 1.35; margin-bottom: 8px; font-weight: 700; }
+        .prestasi-card p {
+            color: #666;
+            font-size: 0.82rem;
+            line-height: 1.55;
+            margin-bottom: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .prestasi-viewer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.82);
+            z-index: 10001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 72px 24px 28px;
+        }
+        .prestasi-viewer-overlay.active { display: flex; }
+        .prestasi-viewer-stage {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .prestasi-viewer-stage img {
+            max-width: 90vw;
+            max-height: 82vh;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            transition: transform 0.2s ease;
+            transform-origin: center center;
+        }
+        .prestasi-viewer-toolbar {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            z-index: 3;
+        }
+        .prestasi-viewer-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.92);
+            color: #1f2937;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .prestasi-viewer-btn:hover { background: #fff3e0; color: #e65100; }
+        .prestasi-viewer-zoom {
+            min-width: 58px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .prestasi-viewer-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.92);
+            color: #1f2937;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            transition: 0.2s;
+            z-index: 2;
+        }
+        .prestasi-viewer-nav:hover { background: #fff3e0; color: #e65100; }
+        .prestasi-viewer-nav.prev { left: 28px; }
+        .prestasi-viewer-nav.next { right: 28px; }
+        .prestasi-viewer-overlay.has-multiple .prestasi-viewer-nav { display: flex; }
+        .prestasi-empty {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 34px;
+            border-radius: 18px;
+            background: #ffffff;
+            text-align: center;
+            color: #666;
+            border: 1px dashed #f0c7a3;
+        }
+        .prestasi-empty i { color: #F89039; font-size: 42px; margin-bottom: 14px; }
+
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .lurah-card { flex-direction: column; }
@@ -225,6 +532,12 @@
             .contacts { flex-direction: column; gap: 15px; }
             .hero-section h1 { font-size: 1.8rem; }
             .info-card { padding: 25px; }
+            .prestasi-section { padding: 60px 15px; }
+            .prestasi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; }
+        }
+
+        @media (max-width: 575px) {
+            .prestasi-grid { grid-template-columns: 1fr; max-width: 340px; }
         }
     </style>
 
@@ -362,6 +675,247 @@
             @endforelse
         </div>
     </section>
+
+    <section class="prestasi-section">
+        <div class="prestasi-header">
+            <h2>Prestasi</h2>
+            <p>Prestasi dan penghargaan yang telah diraih Kelurahan Citangkil.</p>
+        </div>
+
+        @if(($prestasi ?? collect())->count() > 0)
+            <div class="prestasi-grid">
+                @foreach($prestasi as $item)
+                    <article class="prestasi-card">
+                        <div class="prestasi-carousel-wrap">
+                            <div class="prestasi-carousel" data-prestasi-carousel data-current-index="0">
+                                <div class="prestasi-carousel-track">
+                                    @forelse($item->fotos as $index => $foto)
+                                        <div class="prestasi-carousel-slide {{ $index === 0 ? 'active' : '' }}" data-slide-index="{{ $index }}">
+                                            <img src="{{ asset('storage/' . $foto->foto) }}" alt="{{ $item->judul }}">
+                                        </div>
+                                    @empty
+                                        <div class="prestasi-carousel-slide active" data-slide-index="0">
+                                            <i class="fas fa-trophy"></i>
+                                        </div>
+                                    @endforelse
+                                </div>
+                                <span class="prestasi-badge">
+                                    <i class="fas fa-award"></i>
+                                    {{ $item->peringkat }}
+                                </span>
+                                @if($item->fotos->count() > 1)
+                                    <span class="prestasi-photo-count">
+                                        <i class="far fa-images"></i>
+                                        {{ $item->fotos->count() }} foto
+                                    </span>
+                                    <button type="button" class="prestasi-carousel-btn prev" data-prestasi-prev aria-label="Foto sebelumnya">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button type="button" class="prestasi-carousel-btn next" data-prestasi-next aria-label="Foto berikutnya">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                    <div class="prestasi-carousel-dots">
+                                        @foreach($item->fotos as $index => $foto)
+                                            <button type="button" class="prestasi-carousel-dot {{ $index === 0 ? 'active' : '' }}" data-prestasi-dot="{{ $index }}" aria-label="Lihat foto {{ $index + 1 }}"></button>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                @if($item->fotos->count() > 0)
+                                    <div class="prestasi-expand-btn">
+                                        <i class="fas fa-expand-alt"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            @if($item->fotos->count() > 1)
+                                <div class="prestasi-carousel-thumbs">
+                                    @foreach($item->fotos as $index => $foto)
+                                        <img src="{{ asset('storage/' . $foto->foto) }}"
+                                             alt="Thumbnail {{ $index + 1 }}"
+                                             class="prestasi-carousel-thumb {{ $index === 0 ? 'active' : '' }}"
+                                             data-prestasi-thumb="{{ $index }}">
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                        <div class="prestasi-content">
+                            <div class="prestasi-meta">
+                                <span><i class="far fa-calendar"></i> {{ $item->tahun }}</span>
+                                <span><i class="fas fa-location-dot"></i> {{ $item->tingkat }}</span>
+                            </div>
+                            <h3>{{ $item->judul }}</h3>
+                            <p>{{ $item->deskripsi }}</p>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        @else
+            <div class="prestasi-empty">
+                <i class="fas fa-trophy"></i>
+                <h3>Belum Ada Prestasi</h3>
+                <p>Prestasi kelurahan akan ditampilkan di sini setelah ditambahkan oleh admin.</p>
+            </div>
+        @endif
+    </section>
+
+    <div class="prestasi-viewer-overlay" id="prestasiViewer" aria-hidden="true">
+        <div class="prestasi-viewer-toolbar">
+            <button type="button" class="prestasi-viewer-btn" id="prestasiZoomOutBtn" aria-label="Zoom out">
+                <i class="fas fa-minus"></i>
+            </button>
+            <span class="prestasi-viewer-zoom" id="prestasiZoomLabel">100%</span>
+            <button type="button" class="prestasi-viewer-btn" id="prestasiZoomInBtn" aria-label="Zoom in">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        <div class="prestasi-viewer-stage">
+            <img src="" alt="" id="prestasiViewerImage">
+        </div>
+        <button type="button" class="prestasi-viewer-nav prev" id="prestasiViewerPrevBtn" aria-label="Foto sebelumnya">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button type="button" class="prestasi-viewer-nav next" id="prestasiViewerNextBtn" aria-label="Foto berikutnya">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        const prestasiViewer = document.getElementById('prestasiViewer');
+        const prestasiViewerImage = document.getElementById('prestasiViewerImage');
+        const prestasiZoomLabel = document.getElementById('prestasiZoomLabel');
+        let prestasiViewerPhotos = [];
+        let prestasiViewerIndex = 0;
+        let prestasiZoom = 1;
+
+        document.querySelectorAll('[data-prestasi-carousel]').forEach(carousel => {
+            const slides = carousel.querySelectorAll('.prestasi-carousel-slide');
+            const dots = carousel.querySelectorAll('[data-prestasi-dot]');
+            const thumbs = carousel.closest('.prestasi-carousel-wrap')?.querySelectorAll('[data-prestasi-thumb]') || [];
+            const prevBtn = carousel.querySelector('[data-prestasi-prev]');
+            const nextBtn = carousel.querySelector('[data-prestasi-next]');
+            let currentIndex = 0;
+
+            const carouselPhotos = Array.from(slides).map(slide => {
+                const image = slide.querySelector('img');
+                return {
+                    src: image?.src || '',
+                    alt: image?.alt || 'Foto prestasi',
+                };
+            }).filter(photo => photo.src);
+
+            slides.forEach((slide, slideIndex) => {
+                const image = slide.querySelector('img');
+                image?.addEventListener('click', () => openPrestasiViewer(carouselPhotos, slideIndex));
+            });
+
+            if (slides.length <= 1) return;
+
+            const goToSlide = index => {
+                currentIndex = (index + slides.length) % slides.length;
+                carousel.dataset.currentIndex = currentIndex;
+
+                slides.forEach((slide, slideIndex) => {
+                    slide.classList.toggle('active', slideIndex === currentIndex);
+                });
+                dots.forEach((dot, dotIndex) => {
+                    dot.classList.toggle('active', dotIndex === currentIndex);
+                });
+                thumbs.forEach((thumb, thumbIndex) => {
+                    thumb.classList.toggle('active', thumbIndex === currentIndex);
+                });
+            };
+
+            prevBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                goToSlide(currentIndex - 1);
+            });
+            nextBtn?.addEventListener('click', event => {
+                event.stopPropagation();
+                goToSlide(currentIndex + 1);
+            });
+            dots.forEach(dot => {
+                dot.addEventListener('click', event => {
+                    event.stopPropagation();
+                    goToSlide(Number(dot.dataset.prestasiDot));
+                });
+            });
+            thumbs.forEach(thumb => {
+                thumb.addEventListener('click', event => {
+                    event.stopPropagation();
+                    goToSlide(Number(thumb.dataset.prestasiThumb));
+                });
+            });
+        });
+
+        function openPrestasiViewer(photos, index = 0) {
+            prestasiViewerPhotos = Array.isArray(photos) ? photos : [];
+            prestasiViewerIndex = index;
+            prestasiViewer.classList.toggle('has-multiple', prestasiViewerPhotos.length > 1);
+            showPrestasiViewerPhoto(prestasiViewerIndex);
+            prestasiViewer.classList.add('active');
+            prestasiViewer.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showPrestasiViewerPhoto(index) {
+            if (prestasiViewerPhotos.length === 0) return;
+
+            prestasiViewerIndex = (index + prestasiViewerPhotos.length) % prestasiViewerPhotos.length;
+            const photo = prestasiViewerPhotos[prestasiViewerIndex];
+            prestasiZoom = 1;
+            prestasiViewerImage.src = photo.src;
+            prestasiViewerImage.alt = photo.alt || 'Foto prestasi';
+            updatePrestasiZoom();
+        }
+
+        function closePrestasiViewer() {
+            prestasiViewer.classList.remove('active');
+            prestasiViewer.classList.remove('has-multiple');
+            prestasiViewer.setAttribute('aria-hidden', 'true');
+            prestasiViewerImage.src = '';
+            prestasiViewerPhotos = [];
+            prestasiViewerIndex = 0;
+            document.body.style.overflow = '';
+        }
+
+        function updatePrestasiZoom() {
+            prestasiViewerImage.style.transform = `scale(${prestasiZoom})`;
+            prestasiZoomLabel.textContent = `${Math.round(prestasiZoom * 100)}%`;
+        }
+
+        function zoomPrestasiPhoto(delta) {
+            prestasiZoom = Math.min(4, Math.max(0.5, prestasiZoom + delta));
+            updatePrestasiZoom();
+        }
+
+        document.getElementById('prestasiZoomOutBtn').addEventListener('click', () => zoomPrestasiPhoto(-0.25));
+        document.getElementById('prestasiZoomInBtn').addEventListener('click', () => zoomPrestasiPhoto(0.25));
+        document.getElementById('prestasiViewerPrevBtn').addEventListener('click', () => showPrestasiViewerPhoto(prestasiViewerIndex - 1));
+        document.getElementById('prestasiViewerNextBtn').addEventListener('click', () => showPrestasiViewerPhoto(prestasiViewerIndex + 1));
+
+        window.addEventListener('click', event => {
+            if (
+                prestasiViewer.classList.contains('active') &&
+                event.target.closest('#prestasiViewer') &&
+                !event.target.closest('#prestasiViewerImage') &&
+                !event.target.closest('.prestasi-viewer-toolbar') &&
+                !event.target.closest('.prestasi-viewer-nav')
+            ) {
+                closePrestasiViewer();
+            }
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && prestasiViewer.classList.contains('active')) {
+                closePrestasiViewer();
+            }
+            if (event.key === 'ArrowLeft' && prestasiViewer.classList.contains('active') && prestasiViewerPhotos.length > 1) {
+                showPrestasiViewerPhoto(prestasiViewerIndex - 1);
+            }
+            if (event.key === 'ArrowRight' && prestasiViewer.classList.contains('active') && prestasiViewerPhotos.length > 1) {
+                showPrestasiViewerPhoto(prestasiViewerIndex + 1);
+            }
+        });
+    </script>
 
     <style>
         .visit-stats-section {

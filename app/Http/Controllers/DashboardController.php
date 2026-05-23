@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DataLurah;
 use App\Models\Beranda;
+use App\Models\Prestasi;
 use App\Models\VisitorStat;
 use App\Models\VisitorHit;
 use Carbon\Carbon;
@@ -22,6 +23,7 @@ class DashboardController extends Controller
     {
         $dataLurah = DataLurah::first();
         $beranda = Beranda::first();
+        $prestasi = Prestasi::with('fotos')->latest()->take(6)->get();
 
         $now = Carbon::now();
         $weeklyKey = $now->isoFormat('GGGG-[W]WW');
@@ -159,7 +161,7 @@ class DashboardController extends Controller
             'visitor' => $visitorStats,
         ];
 
-        $response = response()->view('dashboard.index', compact('dataLurah', 'beranda', 'visitStats'));
+        $response = response()->view('dashboard.index', compact('dataLurah', 'beranda', 'visitStats', 'prestasi'));
 
         if ($isNewVisitorCookie) {
             $response->headers->setCookie(

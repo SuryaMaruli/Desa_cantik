@@ -18,19 +18,21 @@
         </div>
     </div>
 
-    <div class="content-card">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+<div class="content-card">
+        @php
+            $sessionMessage = '';
+            $sessionType = '';
+            if(session('success')) {
+                $sessionMessage = session('success');
+                $sessionType = 'success';
+            } elseif(session('error')) {
+                $sessionMessage = session('error');
+                $sessionType = 'error';
+            }
+        @endphp
+        
+        @if($sessionMessage)
+            <div id="session-notification-data" data-message="{{ $sessionMessage }}" data-type="{{ $sessionType }}" style="display: none;"></div>
         @endif
 
 @if($admins->count() > 0)
@@ -60,11 +62,14 @@
                         <p class="admin-email">
                             <i class='bx bx-envelope'></i> {{ $admin->email }}
                         </p>
-                        <div class="news-meta-row">
-                            <span class="meta-item">
-                                <i class='bx bx-calendar'></i> 
-                                {{ optional($admin->created_at)->format('d M Y') ?? '-' }}
-                            </span>
+                        <p class="admin-role">
+                            @if($admin->role === 'super_admin')
+                                <span class="badge badge-super-admin"><i class='bx bx-shield-check'></i> Super Admin</span>
+                            @else
+                                <span class="badge badge-admin"><i class='bx bx-user'></i> Admin</span>
+                            @endif
+                        </p>
+<div class="news-meta-row">
                             <span class="meta-item">
                                 <i class='bx bx-time-five'></i> 
                                 {{ optional($admin->updated_at)->diffForHumans() ?? '-' }}
@@ -80,14 +85,20 @@
                                 <i class='bx bx-edit-alt'></i> Edit
                             </a>
                             @if($admin->id !== auth()->id())
-                                <button type="button" class="btn-action btn-delete" onclick="deleteAdmin({{ $admin->id }}, '{{ $admin->name }}')">
-                                    <i class='bx bx-trash'></i> Hapus
-                                </button>
+                                @if($isSuperAdmin && $admin->role === 'admin')
+                                    <button type="button" class="btn-action btn-delete" onclick='deleteAdmin({{ $admin->id }}, @json($admin->name))'>
+                                        <i class='bx bx-trash'></i> Hapus
+                                    </button>
+                                @elseif(!$isSuperAdmin)
+                                    <button type="button" class="btn-action btn-delete" onclick='deleteAdmin({{ $admin->id }}, @json($admin->name))'>
+                                        <i class='bx bx-trash'></i> Hapus
+                                    </button>
+                                @endif
                             @endif
                         </div>
                     </div>
                 </div>
-            @endforeach
+@endforeach
 
             <!-- Pagination -->
             <div class="pagination-wrapper">
@@ -120,39 +131,6 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-x'></i> Tutup
                 </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">
-                    <i class='bx bx-error-circle'></i> Konfirmasi Hapus
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning">
-                    <i class='bx bx-error'></i>
-                    <strong>Perhatian!</strong> Tindakan ini tidak dapat dibatalkan.
-                </div>
-                <p>Apakah Anda yakin ingin menghapus admin "<strong id="adminName"></strong>"?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class='bx bx-x'></i> Batal
-                </button>
-                <form id="deleteForm" method="POST" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        <i class='bx bx-trash'></i> Hapus
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -312,6 +290,7 @@
     color: white;
     font-size: 12px;
     border: 2px solid white;
+    font-weight: 500;
 }
 
 .admin-email {
@@ -321,6 +300,34 @@
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+.admin-role {
+    margin: 8px 0;
+}
+
+.badge-super-admin {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-admin {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .badge-current-user {
@@ -483,18 +490,169 @@
 function previewPhoto(photoUrl, adminName) {
     document.getElementById('previewPhoto').src = photoUrl;
     document.getElementById('photoPreviewModalLabel').innerHTML = '<i class="bx bx-user"></i> Foto Profil - ' + adminName;
+    showNotification('Membuka foto profil ' + adminName, 'info');
 }
 
 function deleteAdmin(id, name) {
-    document.getElementById('adminName').textContent = name;
-    document.getElementById('deleteForm').action = '/admin/admin/' + id;
-    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    showDeleteConfirm(id, name);
+}
+
+function showDeleteConfirm(id, name) {
+    const existingModal = document.getElementById('delete-confirm-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'delete-confirm-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2;
+                            display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                    <i class="bx bx-trash" style="font-size: 36px; color: #ef4444;"></i>
+                </div>
+                <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    Apakah Anda yakin ingin menghapus<br>
+                    <strong style="color: #1f2937; font-size: 16px;"></strong>?
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" onclick="closeDeleteModal()" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Batal</button>
+                <button type="button" onclick="confirmDelete(${id})" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
+            </div>
+        </div>
+    `;
+
+    modal.querySelector('strong').textContent = `"${name}"`;
+
+    const style = document.createElement('style');
+    style.id = 'delete-confirm-animation-style';
+    style.textContent = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    `;
+    document.head.appendChild(style);
+    modal.onclick = function(e) {
+        if (e.target === modal) closeDeleteModal();
+    };
+    document.body.appendChild(modal);
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('delete-confirm-modal');
+    const style = document.getElementById('delete-confirm-animation-style');
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.9)';
+        modal.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+            modal.remove();
+            if (style) style.remove();
+        }, 300);
+    }
+}
+
+function confirmDelete(id) {
+    closeDeleteModal();
+    showNotification('Menghapus admin...', 'info');
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/admin/admin/' + id;
+    form.style.display = 'none';
+    form.innerHTML = `
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="_method" value="DELETE">
+    `;
+    document.body.appendChild(form);
+    setTimeout(() => form.submit(), 500);
+}
+
+window.closeDeleteModal = closeDeleteModal;
+window.confirmDelete = confirmDelete;
+
+// Show session notification on page load (only one popup)
+document.addEventListener('DOMContentLoaded', function() {
+    const sessionData = document.getElementById('session-notification-data');
+    if (sessionData) {
+        const message = sessionData.getAttribute('data-message');
+        const type = sessionData.getAttribute('data-type');
+        if (message) {
+            showNotification(message, type);
+        }
+    }
+});
+
+// Custom Notification Function (same as data-kelurahan page)
+function showNotification(message, type = 'success') {
+    // Hapus notifikasi yang ada terlebih dahulu
+    document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    const config = {
+        success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+        error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+        warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+        info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+    };
+    
+    const c = config[type] || config.success;
+    
+    notification.className = 'custom-notification';
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${c.bg}; color: ${c.color};
+        padding: 16px 24px; border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+        font-family: 'Poppins', sans-serif; font-size: 14px;
+        display: flex; align-items: center; gap: 12px;
+        animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        min-width: 280px; max-width: 400px;
+    `;
+    notification.innerHTML = `
+        <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+        <span style="font-weight: 500;">${message}</span>
+    `;
+    
+    // Tambahkan animasi CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight { 
+            from { transform: translateX(120%); opacity: 0; } 
+            to { transform: translateX(0); opacity: 1; } 
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(notification);
+    
+    // Hapus notifikasi setelah 3.5 detik
+    setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        notification.style.opacity = '0';
+        notification.style.transition = 'all 0.4s ease';
+        setTimeout(() => { notification.remove(); style.remove(); }, 400);
+    }, 3500);
 }
 
 // Search functionality
 document.getElementById('searchAdmin').addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
     const items = document.querySelectorAll('.news-list-item');
+    let visibleCount = 0;
     
     items.forEach(item => {
         const name = item.querySelector('h3').textContent.toLowerCase();
@@ -502,9 +660,36 @@ document.getElementById('searchAdmin').addEventListener('input', function(e) {
         
         if (name.includes(searchTerm) || email.includes(searchTerm)) {
             item.style.display = 'flex';
+            visibleCount++;
         } else {
             item.style.display = 'none';
         }
+    });
+
+    if (searchTerm.trim() !== '' && visibleCount === 0) {
+        showNotification('Tidak ada admin yang cocok dengan pencarian', 'warning');
+    }
+});
+
+document.querySelector('.btn-add-news')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetUrl = this.href;
+    this.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Membuka...';
+    showNotification('Membuka form tambah admin', 'info');
+    setTimeout(() => {
+        window.location.href = targetUrl;
+    }, 500);
+});
+
+document.querySelectorAll('.btn-action.btn-edit').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetUrl = this.href;
+        this.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Membuka...';
+        showNotification('Membuka form edit admin', 'info');
+        setTimeout(() => {
+            window.location.href = targetUrl;
+        }, 500);
     });
 });
 </script>

@@ -11,12 +11,9 @@
                 <h1>Manajemen Data Lurah</h1>
                 <p>Kelola informasi dan foto Lurah yang ditampilkan di beranda</p>
             </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+<div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-edit" onclick="openDataLurahModal()">
                     <i class="fa-regular fa-pen-to-square"></i> Edit Data
-                </button>
-                <button class="btn-edit btn-delete-sambutan" onclick="hapusSambutanLurah()">
-                    <i class="fa-regular fa-trash-can"></i> Hapus Kata Sambutan
                 </button>
             </div>
         </div>
@@ -168,14 +165,6 @@
     background-color: #e04a00;
 }
 
-.btn-delete-sambutan {
-    background-color: #dc3545;
-}
-
-.btn-delete-sambutan:hover {
-    background-color: #bb2d3b;
-}
-
 /* --- Layout Grid (Foto & Info) --- */
 .content-grid {
     display: grid;
@@ -323,30 +312,122 @@
         grid-template-columns: 1fr;
     }
 }
+
+@keyframes slideInRight {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
 </style>
 
 @push('scripts')
 <script>
-// Fungsi untuk menampilkan notifikasi
-function showNotification(message, type = 'info') {
-    // Buat elemen notifikasi
+function showNotification(message, type = 'success') {
+    document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+
     const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    const config = {
+        success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+        error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+        danger: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+        warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+        info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+    };
+
+    const c = config[type] || config.success;
+
+    notification.className = 'custom-notification';
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${c.bg}; color: ${c.color};
+        padding: 16px 24px; border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+        font-family: 'Poppins', sans-serif; font-size: 14px;
+        display: flex; align-items: center; gap: 12px;
+        animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        min-width: 280px; max-width: 400px;
+    `;
     notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+        <span style="font-weight: 500;">${message}</span>
     `;
     
-    // Tambahkan ke body
     document.body.appendChild(notification);
     
-    // Auto remove setelah 5 detik
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, 5000);
+        notification.style.transform = 'translateX(120%)';
+        notification.style.opacity = '0';
+        notification.style.transition = 'all 0.4s ease';
+        setTimeout(() => notification.remove(), 400);
+    }, 3500);
+}
+
+function showDeleteConfirm(onConfirm) {
+    const oldModal = document.getElementById('delete-confirm-modal');
+    if (oldModal) oldModal.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'delete-confirm-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2;
+                            display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                    <i class="bx bx-trash" style="font-size: 36px; color: #ef4444;"></i>
+                </div>
+                <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    Apakah Anda yakin ingin menghapus<br>
+                    <strong style="color: #1f2937; font-size: 16px;">kata sambutan dan foto lurah</strong>?
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" id="cancelDeleteSambutan" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Batal</button>
+                <button type="button" id="confirmDeleteSambutan" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
+            </div>
+        </div>
+    `;
+
+    modal.onclick = function(e) {
+        if (e.target === modal) closeDeleteModal();
+    };
+
+    document.body.appendChild(modal);
+
+    document.getElementById('cancelDeleteSambutan').onclick = closeDeleteModal;
+    document.getElementById('confirmDeleteSambutan').onclick = function() {
+        closeDeleteModal();
+        onConfirm();
+    };
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('delete-confirm-modal');
+    if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => modal.remove(), 300);
+    }
 }
 
 // Load data lurah dari database saat page load
@@ -366,6 +447,7 @@ function loadDataLurahFromDB() {
         })
         .catch(error => {
             console.error('Error loading data lurah:', error);
+            showNotification('Gagal memuat data lurah terbaru.', 'error');
         });
 }
 
@@ -384,14 +466,36 @@ function updateModalWithData(dataLurah) {
     document.getElementById('namaLurah').value = dataLurah.nama_lurah || 'M. ALI WAHIDI, S.Sos.M.Si';
     document.getElementById('nipLurah').value = dataLurah.nip || '196512311985031023';
     document.getElementById('pangkatLurah').value = dataLurah.pangkat || 'Pembina Tingkat I';
-    document.getElementById('golonganLurah').value = dataLurah.golongan || 'IV/b';
+    document.getElementById('golonganLurah').value = dataLurah.golang || 'IV/b';
     document.getElementById('jabatanLurah').value = dataLurah.jabatan || 'Lurah Citangkil';
     document.getElementById('sambutanLurah').value = dataLurah.sambutan_lurah || 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.';
     
     // Load foto jika ada
     if (dataLurah.foto_lurah) {
         showFotoPreview('/storage/foto-lurah/' + dataLurah.foto_lurah);
+    } else {
+        document.getElementById('fotoPreview').style.display = 'none';
+        document.getElementById('fotoLurah').value = '';
     }
+    
+    // Setelah data dimuat, simpan sebagai data original dan inisialisasi event listeners untuk deteksi perubahan
+    // Ini memastikan tombol "Simpan Perubahan" hanya aktif jika ada perubahan
+    if (typeof simpanOriginalDataLurah === 'function') {
+        simpanOriginalDataLurah();
+    }
+    if (typeof initEventListenersDataLurah === 'function') {
+        initEventListenersDataLurah();
+    }
+    if (typeof cekPerubahanDataLurah === 'function') {
+        cekPerubahanDataLurah();
+    }
+    
+    // Force update tombol status setelah semua inisialisasi selesai
+    setTimeout(function() {
+        if (typeof cekPerubahanDataLurah === 'function') {
+            cekPerubahanDataLurah();
+        }
+    }, 200);
 }
 
 // Fungsi untuk preview foto
@@ -410,6 +514,7 @@ function removeFoto() {
     
     previewDiv.style.display = 'none';
     fileInput.value = '';
+    showNotification('Preview foto dihapus. Perubahan berlaku setelah disimpan.', 'info');
 }
 
 // Event listener untuk file input
@@ -418,25 +523,47 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fileInput) {
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    showFotoPreview(e.target.result);
-                };
-                reader.readAsDataURL(file);
+            if (!file) return;
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                fileInput.value = '';
+                showNotification('Format foto harus JPG, JPEG, PNG, atau WebP.', 'warning');
+                return;
             }
+
+            if (file.size > 2 * 1024 * 1024) {
+                fileInput.value = '';
+                showNotification('Ukuran foto maksimal 2 MB.', 'warning');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                showFotoPreview(e.target.result);
+                showNotification('Preview foto lurah berhasil dimuat.', 'info');
+            };
+            reader.readAsDataURL(file);
         });
     }
 });
 
 // Override fungsi simpanDataLurah untuk menggunakan backend
 window.simpanDataLurah = function() {
+    const namaLurah = document.getElementById('namaLurah').value.trim();
+    const jabatanLurah = document.getElementById('jabatanLurah').value.trim();
+
+    if (!namaLurah || !jabatanLurah) {
+        showNotification('Nama dan jabatan lurah wajib diisi.', 'warning');
+        return;
+    }
+
     const formData = new FormData();
-    formData.append('namaLurah', document.getElementById('namaLurah').value);
+    formData.append('namaLurah', namaLurah);
     formData.append('nipLurah', document.getElementById('nipLurah').value);
     formData.append('pangkatLurah', document.getElementById('pangkatLurah').value);
     formData.append('golonganLurah', document.getElementById('golonganLurah').value);
-    formData.append('jabatanLurah', document.getElementById('jabatanLurah').value);
+    formData.append('jabatanLurah', jabatanLurah);
     formData.append('sambutanLurah', document.getElementById('sambutanLurah').value);
     
     // Add foto if selected
@@ -446,6 +573,13 @@ window.simpanDataLurah = function() {
     }
     
     formData.append('_token', '{{ csrf_token() }}');
+
+    const saveButton = document.querySelector('#dataLurahModal .btn-primary');
+    const originalButtonHtml = saveButton ? saveButton.innerHTML : '';
+    if (saveButton) {
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Menyimpan...';
+    }
 
     fetch('{{ route("admin.data-lurah.update") }}', {
         method: 'POST',
@@ -463,7 +597,7 @@ window.simpanDataLurah = function() {
             }
             
             // Tampilkan notifikasi sukses
-            showNotification('Data lurah berhasil disimpan!', 'success');
+            showNotification(data.message || 'Data lurah berhasil disimpan!', 'success');
             
             // Tutup modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('dataLurahModal'));
@@ -471,12 +605,18 @@ window.simpanDataLurah = function() {
                 modal.hide();
             }
         } else {
-            showNotification(data.message || 'Gagal menyimpan data lurah!', 'danger');
+            showNotification(data.message || 'Gagal menyimpan data lurah!', 'error');
         }
     })
     .catch(error => {
         console.error('Error saving data lurah:', error);
-        showNotification('Terjadi kesalahan saat menyimpan data!', 'danger');
+        showNotification('Terjadi kesalahan saat menyimpan data!', 'error');
+    })
+    .finally(() => {
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.innerHTML = originalButtonHtml;
+        }
     });
 };
 
@@ -502,22 +642,35 @@ function updateFotoDisplay(fotoUrl) {
     `;
 }
 
-// Fungsi untuk membuka modal Data Lurah
+// Fungsi untuk membuka modal Data Lurah - dengan integrasi deteksi perubahan
 window.openDataLurahModal = function() {
-    // Load data terbaru dari database
-    loadDataLurahFromDB();
+    // Load data terbaru dari database dan simpan sebagai data original
+    loadDataLurahFromDBUntukEdit();
     
     // Buka modal
     const modal = new bootstrap.Modal(document.getElementById('dataLurahModal'));
     modal.show();
 };
 
+// Fungsi khusus untuk load data saat modal dibuka (menyimpan original data juga)
+function loadDataLurahFromDBUntukEdit() {
+    fetch('{{ route("admin.data-lurah.api") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data) {
+                updateDisplayWithData(data.data);
+                updateModalWithData(data.data);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading data lurah:', error);
+            showNotification('Gagal memuat data lurah terbaru.', 'error');
+        });
+}
+
 // Fungsi hapus kata sambutan + foto
 window.hapusSambutanLurah = function() {
-    if (!confirm('Yakin ingin menghapus kata sambutan dan foto lurah?')) {
-        return;
-    }
-
+    showDeleteConfirm(function() {
     fetch('{{ route("admin.data-lurah.destroy-sambutan") }}', {
         method: 'DELETE',
         headers: {
@@ -533,12 +686,13 @@ window.hapusSambutanLurah = function() {
             showNotification(data.message || 'Kata sambutan berhasil dihapus!', 'success');
             loadDataLurahFromDB();
         } else {
-            showNotification(data.message || 'Gagal menghapus kata sambutan!', 'danger');
+            showNotification(data.message || 'Gagal menghapus kata sambutan!', 'error');
         }
     })
     .catch(error => {
         console.error('Error deleting kata sambutan:', error);
-        showNotification('Terjadi kesalahan saat menghapus data!', 'danger');
+        showNotification('Terjadi kesalahan saat menghapus data!', 'error');
+    });
     });
 };
 </script>

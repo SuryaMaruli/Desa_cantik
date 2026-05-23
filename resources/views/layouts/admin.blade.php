@@ -12,8 +12,11 @@
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
-    <!-- Font Awesome -->
+<!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css">
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -453,9 +456,9 @@
                                 {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
                             </div>
                         @endif
-                    <div class="user-info">
+<div class="user-info">
                         <p class="user-name mb-0">{{ Auth::user()->name ?? 'Administrator' }}</p>
-                        <small class="user-role">Admin</small>
+                        <small class="user-role">{{ Auth::user()->role === 'super_admin' ? 'Super Admin' : 'Admin' }}</small>
                     </div>
                     <i class='bx bx-chevron-down ms-1'></i>
                 </div>
@@ -484,8 +487,11 @@
         @yield('content')
     </main>
 
-    <!-- Bootstrap JS and dependencies -->
+<!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.js"></script>
     
     <!-- Data Lurah Modal (Global) -->
     <div class="modal fade" id="dataLurahModal" tabindex="-1" aria-labelledby="dataLurahModalLabel" aria-hidden="true">
@@ -543,18 +549,9 @@
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
+<div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-outline-info me-auto" onclick="exportDataLurah()">
-                        <i class='bx bx-download'></i> Export
-                    </button>
-                    <div class="btn-group me-auto">
-                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importDataLurah(event)">
-                        <button type="button" class="btn btn-outline-warning" onclick="document.getElementById('importFile').click()">
-                            <i class='bx bx-upload'></i> Import
-                        </button>
-                    </div>
-                    <button type="button" class="btn btn-primary" onclick="simpanDataLurah()">
+                    <button type="button" class="btn btn-primary" id="btnSimpanDataLurah" onclick="simpanDataLurah()" disabled>
                         <i class='bx bx-save'></i> Simpan Perubahan
                     </button>
                 </div>
@@ -645,10 +642,88 @@
         loadDataLurah();
     });
 
-    // Fungsi untuk membuka modal Data Lurah
+// Fungsi untuk membuka modal Data Lurah
     function openDataLurahModal() {
+        // Simpan data original saat modal dibuka
+        simpanOriginalDataLurah();
+        
+        // Inisialisasi event listeners untuk form fields
+        initEventListenersDataLurah();
+        
+        // Cek perubahan dan update status tombol
+        cekPerubahanDataLurah();
+        
         const modal = new bootstrap.Modal(document.getElementById('dataLurahModal'));
         modal.show();
+    }
+
+    // Variable untuk menyimpan data original
+    var originalDataLurah = {};
+
+    // Fungsi untuk menyimpan data original
+    function simpanOriginalDataLurah() {
+        originalDataLurah = {
+            namaLurah: document.getElementById('namaLurah').value,
+            nipLurah: document.getElementById('nipLurah').value,
+            pangkatLurah: document.getElementById('pangkatLurah').value,
+            golonganLurah: document.getElementById('golonganLurah').value,
+            jabatanLurah: document.getElementById('jabatanLurah').value,
+            sambutanLurah: document.getElementById('sambutanLurah').value
+        };
+    }
+
+    // Fungsi untuk cek perubahan
+    function cekPerubahanDataLurah() {
+        const btn = document.getElementById('btnSimpanDataLurah');
+        if (!btn) return;
+
+        const dataSaatIni = {
+            namaLurah: document.getElementById('namaLurah').value,
+            nipLurah: document.getElementById('nipLurah').value,
+            pangkatLurah: document.getElementById('pangkatLurah').value,
+            golonganLurah: document.getElementById('golonganLurah').value,
+            jabatanLurah: document.getElementById('jabatanLurah').value,
+            sambutanLurah: document.getElementById('sambutanLurah').value
+        };
+
+        // Cek apakah ada perubahan
+        const adaPerubahan = 
+            dataSaatIni.namaLurah !== originalDataLurah.namaLurah ||
+            dataSaatIni.nipLurah !== originalDataLurah.nipLurah ||
+            dataSaatIni.pangkatLurah !== originalDataLurah.pangkatLurah ||
+            dataSaatIni.golonganLurah !== originalDataLurah.golonganLurah ||
+            dataSaatIni.jabatanLurah !== originalDataLurah.jabatanLurah ||
+            dataSaatIni.sambutanLurah !== originalDataLurah.sambutanLurah;
+
+        // Cek apakah ada file foto baru
+        const fotoInput = document.getElementById('fotoLurah');
+        const adaFotoBaru = fotoInput && fotoInput.files && fotoInput.files.length > 0;
+
+// Enable tombol jika ada perubahan atau ada foto baru
+        if (adaPerubahan || adaFotoBaru) {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
+    }
+
+    // Event listeners untuk form fields Data Lurah
+    function initEventListenersDataLurah() {
+        const fields = ['namaLurah', 'nipLurah', 'pangkatLurah', 'golonganLurah', 'jabatanLurah', 'sambutanLurah'];
+        
+        fields.forEach(function(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', cekPerubahanDataLurah);
+                field.addEventListener('change', cekPerubahanDataLurah);
+            }
+        });
+
+        // Event listener untuk file input
+        const fotoInput = document.getElementById('fotoLurah');
+        if (fotoInput) {
+            fotoInput.addEventListener('change', cekPerubahanDataLurah);
+        }
     }
 
     // Fungsi untuk menyimpan data lurah ke localStorage
@@ -801,14 +876,28 @@
         }
     }
 
-    // Initial call
-    handleResize();
+// Initial call - wrapped in try-catch to prevent errors from breaking script chain
+    try {
+        if (typeof handleResize === 'function') {
+            handleResize();
+        }
+    } catch (e) {
+        console.warn('handleResize error:', e);
+    }
     
-    // Add event listener for window resize with debounce
+    // Add event listener for window resize with debounce - also wrapped in try-catch
     let resizeTimer;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(handleResize, 250);
+        resizeTimer = setTimeout(function() {
+            try {
+                if (typeof handleResize === 'function') {
+                    handleResize();
+                }
+            } catch (e) {
+                console.warn('handleResize on resize error:', e);
+            }
+        }, 250);
     });
     
     // Close dropdown when clicking outside
@@ -826,8 +915,8 @@
                 }
             }
         });
-    });
+});
 </script>
-    @stack('scripts')
+@stack('scripts')
 </body>
 </html>

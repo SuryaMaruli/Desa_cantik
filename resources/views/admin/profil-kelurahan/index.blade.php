@@ -250,6 +250,18 @@
     body.is-editing .form-control { display: block; }
     body.is-editing .btn-edit { display: none; }
     body.is-editing .btn-save { display: inline-flex; }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
 </style>
 @endpush
 
@@ -260,9 +272,29 @@
 
     function toggleEditMode() {
         document.body.classList.add('is-editing');
+        showNotification('Mode edit aktif. Silakan ubah data profil kelurahan.', 'info');
     }
 
     function saveData() {
+        const form = document.getElementById('form-profil-kelurahan');
+        const namaKelurahan = document.getElementById('input-nama_kelurahan');
+
+        if (!namaKelurahan.value.trim()) {
+            showNotification('Nama kelurahan wajib diisi.', 'warning');
+            namaKelurahan.focus();
+            return;
+        }
+
+        showActionConfirm({
+            type: 'success',
+            title: 'Simpan Perubahan?',
+            message: 'Apakah Anda yakin ingin menyimpan perubahan profil kelurahan?',
+            confirmText: 'Ya, Simpan',
+            onConfirm: submitProfilKelurahan
+        });
+    }
+
+    function submitProfilKelurahan() {
         // Tampilkan loading state
         const saveButton = document.querySelector('.btn-save');
         const originalText = saveButton.innerHTML;
@@ -297,9 +329,9 @@
                 });
 
                 document.body.classList.remove('is-editing');
-                showNotification('Profil Kelurahan berhasil disimpan!', 'success');
+                showNotification(data.message || 'Profil Kelurahan berhasil disimpan!', 'success');
             } else {
-                showNotification(data.message || 'Terjadi kesalahan saat menyimpan data', 'error');
+                showNotification(getErrorMessage(data, 'Terjadi kesalahan saat menyimpan data'), 'error');
             }
         })
         .catch(error => {
@@ -332,6 +364,7 @@
         `;
         
         misiList.appendChild(newMisiItem);
+        showNotification('Kolom misi baru berhasil ditambahkan.', 'info');
         
         // Karena kita dalam mode edit (tombol add muncul), pastikan input baru terlihat
         // CSS body.is-editing .form-control { display: block } akan menanganinya,
@@ -346,8 +379,17 @@
         const misiList = document.getElementById('misi-list-container');
         
         if (misiList.children.length > 1) {
-            misiItem.remove();
-            updateMisiNumbers();
+            showActionConfirm({
+                type: 'delete',
+                title: 'Hapus Misi?',
+                message: 'Apakah Anda yakin ingin menghapus misi ini?',
+                confirmText: 'Ya, Hapus',
+                onConfirm: function() {
+                    misiItem.remove();
+                    updateMisiNumbers();
+                    showNotification('Misi berhasil dihapus dari daftar.', 'success');
+                }
+            });
         } else {
             showNotification('Minimal harus ada 1 misi!', 'warning');
         }
@@ -373,30 +415,105 @@
     }
 
     function showNotification(message, type = 'success') {
+        document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+
         const notification = document.createElement('div');
-        const bgColor = type === 'success' ? '#22c55e' : '#f59e0b';
+        const config = {
+            success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+            error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+            warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+            info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+        };
+        const c = config[type] || config.success;
         
+        notification.className = 'custom-notification';
         notification.style.cssText = `
             position: fixed; top: 20px; right: 20px;
-            background-color: ${bgColor}; color: white;
-            padding: 12px 20px; border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000; font-family: 'Inter', sans-serif; font-size: 14px;
-            animation: slideInRight 0.3s ease;
+            background: ${c.bg}; color: ${c.color};
+            padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+            font-family: 'Inter', sans-serif; font-size: 14px;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 280px; max-width: 400px;
         `;
-        notification.textContent = message;
+        notification.innerHTML = `
+            <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+            <span style="font-weight: 500;">${message}</span>
+        `;
         
-        const style = document.createElement('style');
-        style.textContent = `@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
-        document.head.appendChild(style);
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
+            notification.style.transform = 'translateX(120%)';
             notification.style.opacity = '0';
-            notification.style.transition = 'all 0.3s ease';
-            setTimeout(() => { notification.remove(); style.remove(); }, 300);
-        }, 3000);
+            notification.style.transition = 'all 0.4s ease';
+            setTimeout(() => notification.remove(), 400);
+        }, 3500);
+    }
+
+    function showActionConfirm({ type = 'success', title, message, confirmText = 'Ya', onConfirm }) {
+        const oldModal = document.getElementById('action-confirm-modal');
+        if (oldModal) oldModal.remove();
+
+        const isDelete = type === 'delete';
+        const modal = document.createElement('div');
+        modal.id = 'action-confirm-modal';
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        modal.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background: ${isDelete ? '#fef2f2' : '#ecfdf5'};
+                                display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                        <i class="bx ${isDelete ? 'bx-trash' : 'bx-check-circle'}" style="font-size: 36px; color: ${isDelete ? '#ef4444' : '#10b981'};"></i>
+                    </div>
+                    <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">${title}</h3>
+                    <p style="margin: 0; color: #6b7280; font-size: 14px;">${message}</p>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button type="button" id="cancelActionConfirm" style="flex: 1; padding: 12px 24px; border: none;
+                                border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                                cursor: pointer; transition: all 0.2s;">Batal</button>
+                    <button type="button" id="confirmActionConfirm" style="flex: 1; padding: 12px 24px; border: none;
+                                border-radius: 10px; background: ${isDelete ? '#ef4444' : '#10b981'}; color: white; font-weight: 500;
+                                cursor: pointer; transition: all 0.2s;">${confirmText}</button>
+                </div>
+            </div>
+        `;
+
+        modal.onclick = function(e) {
+            if (e.target === modal) closeActionConfirm();
+        };
+
+        document.body.appendChild(modal);
+        document.getElementById('cancelActionConfirm').onclick = closeActionConfirm;
+        document.getElementById('confirmActionConfirm').onclick = function() {
+            closeActionConfirm();
+            if (typeof onConfirm === 'function') onConfirm();
+        };
+    }
+
+    function closeActionConfirm() {
+        const modal = document.getElementById('action-confirm-modal');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => modal.remove(), 300);
+        }
+    }
+
+    function getErrorMessage(data, fallback) {
+        if (data?.errors) {
+            const firstKey = Object.keys(data.errors)[0];
+            if (firstKey && data.errors[firstKey]?.length) return data.errors[firstKey][0];
+        }
+        return data?.message || fallback;
     }
 </script>
 @endpush

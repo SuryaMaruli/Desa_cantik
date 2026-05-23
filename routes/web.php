@@ -114,7 +114,60 @@ Route::get('/data', function () {
 });
 
 Route::get('/desa-cantik', function () {
-    $galeri = Galeri::latest()->take(6)->get();
+    // Get all galeri items ordered by position, then grup_order (same logic as admin)
+    $allPhotos = Galeri::orderBy('position', 'asc')
+        ->orderBy('grup_order', 'asc')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    // Group by grup_id or id_galeri for non-grouped items
+    $groupedGaleri = [];
+    $processedGroups = [];
+    
+    foreach ($allPhotos as $photo) {
+        $groupId = $photo->grup_id ?? 'single_' . $photo->id_galeri;
+        
+        if (!in_array($groupId, $processedGroups)) {
+            $processedGroups[] = $groupId;
+            
+            // Get all photos in this group
+            if ($photo->grup_id) {
+                $groupPhotos = $allPhotos->where('grup_id', $photo->grup_id)
+                    ->sortBy('grup_order')
+                    ->values();
+            } else {
+                // Single photo - no group
+                $groupPhotos = collect([$photo]);
+            }
+            
+            // Get the main (utama) photo
+            $utama = $groupPhotos->firstWhere('is_grup_utama', true) ?? $groupPhotos->first();
+            
+            $groupedGaleri[] = (object) [
+                'id' => $utama->id_galeri,
+                'id_galeri' => $utama->id_galeri,
+                'grup_id' => $photo->grup_id,
+                'position' => $utama->position,
+                'judul_foto' => $utama->judul_foto,
+                'deskripsi' => $utama->deskripsi,
+                'kategori' => $utama->kategori,
+                'tanggal_kegiatan' => $utama->tanggal_kegiatan,
+                'foto' => $utama->foto,
+                'is_group' => $photo->grup_id !== null,
+                'photo_count' => $groupPhotos->count(),
+                'group_photos' => $groupPhotos,
+                'utama' => $utama,
+            ];
+        }
+    }
+    
+    // Re-sort by position and take 6 groups
+    usort($groupedGaleri, function($a, $b) {
+        return $a->position - $b->position;
+    });
+    
+    $galeri = collect(array_slice($groupedGaleri, 0, 6));
+    
     $tentang = TentangDesa::first();
     $metadata = MetadataStatistik::all();
     $outputPrograms = OutputProgram::all();
@@ -169,6 +222,10 @@ Route::get('/berita', function () {
 Route::get('/berita/{id}', function ($id) {
     $berita = Berita::where('id', $id)->where('is_published', true)->first();
     if (!$berita) abort(404);
+    
+    // Increment views counter setiap kali berita dibaca
+    $berita->increment('views');
+    
     return view('berita-detail', compact('berita'));
 });
 
@@ -206,10 +263,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // --- DASHBOARD ---
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
-    // --- BERANDA ---
+// --- BERANDA ---
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda.index');
     Route::post('/beranda', [BerandaController::class, 'store'])->name('beranda.store');
     Route::put('/beranda/{id}', [BerandaController::class, 'update'])->name('beranda.update');
+    Route::put('/beranda/{id}/image', [BerandaController::class, 'updateImage'])->name('beranda.update.image');
+    Route::put('/beranda/{id}/logo', [BerandaController::class, 'updateLogo'])->name('beranda.update.logo');
     
 // --- PROFIL ---
     Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
@@ -221,8 +280,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::put('/data-kelurahan/update/{id}', [DataKelurahanController::class, 'update'])->name('data-kelurahan.update');
     Route::delete('/data-kelurahan/delete/{id}', [DataKelurahanController::class, 'destroy'])->name('data-kelurahan.destroy');
     
-    // --- GALERI ---
+// --- GALERI ---
     Route::resource('galeri', GaleriController::class);
+    Route::post('galeri/update-position', [GaleriController::class, 'updatePosition'])->name('galeri.update-position');
+    Route::post('galeri/bulk-destroy', [GaleriController::class, 'bulkDestroy'])->name('galeri.bulk-destroy');
     
     // --- PROFIL KELURAHAN ---
     Route::get('/profil-kelurahan', [ProfilKelurahanController::class, 'index'])->name('profil-kelurahan.index');

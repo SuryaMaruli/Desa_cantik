@@ -365,13 +365,110 @@
             fill: white;
         }
 
-        /* Responsif untuk layar kecil (HP) - Menyembunyikan menu */
+/* Responsif untuk layar kecil (HP) - Menyembunyikan menu dan menambahkan hamburger */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 15px 20px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                gap: 0;
             }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .nav-links li:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-links li a {
+                display: block;
+                padding: 12px 0;
+                width: 100%;
+            }
+            
+            /* Dropdown untuk mobile */
+            .nav-links li.dropdown .dropdown-menu {
+                position: static;
+                box-shadow: none;
+                padding-left: 15px;
+                display: none;
+            }
+            
+            .nav-links li.dropdown .dropdown-menu.show {
+                display: block;
+            }
+            
+            .nav-links li.dropdown .dropdown-toggle::after {
+                float: right;
+            }
+            
             .navbar {
                 padding: 15px 20px;
+                flex-wrap: wrap;
+            }
+            
+            /* Hamburger Button */
+            .hamburger {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+                height: 40px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 5px;
+                z-index: 1001;
+            }
+            
+            .hamburger span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background-color: #555;
+                margin: 2px 0;
+                transition: all 0.3s ease;
+                border-radius: 2px;
+            }
+            
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 6px);
+            }
+            
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -6px);
+            }
+            
+            .navbar .brand-section {
+                flex: 1;
+            }
+            
+            .navbar .hamburger-wrapper {
+                display: flex;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .hamburger-wrapper {
+                display: none;
             }
         }
 
@@ -670,6 +767,15 @@
                 </li>
             @endauth
         </ul>
+        
+        <!-- Hamburger Button for Mobile -->
+        <div class="hamburger-wrapper">
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
     </nav>
 
     @yield('content')
@@ -706,7 +812,7 @@
             }
         }, 7000);
 
-        const backToTopBtn = document.getElementById('backToTopBtn');
+const backToTopBtn = document.getElementById('backToTopBtn');
         if (backToTopBtn) {
             backToTopBtn.addEventListener('click', function () {
                 window.scrollTo({
@@ -715,6 +821,52 @@
                 });
             });
         }
+        
+        // Mobile Menu Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        // Mobile Dropdown Toggle
+        const dropdownToggle = document.querySelector('.dropdown-toggle');
+        if (dropdownToggle) {
+            dropdownToggle.addEventListener('click', function(e) {
+                // Only trigger on mobile
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    const dropdownMenu = this.nextElementSibling;
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.toggle('show');
+                    }
+                }
+            });
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (navLinks && hamburger) {
+                if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            }
+        });
+        
+        // Close mobile menu when window is resized to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && navLinks) {
+                navLinks.classList.remove('active');
+                if (hamburger) {
+                    hamburger.classList.remove('active');
+                }
+            }
+        });
     </script>
     @stack('scripts')
 </body>

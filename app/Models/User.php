@@ -22,6 +22,7 @@ protected $fillable = [
         'email',
         'password',
         'foto_profil',
+        'role',
     ];
 
     /**

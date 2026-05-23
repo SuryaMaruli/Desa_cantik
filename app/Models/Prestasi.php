@@ -23,4 +23,9 @@ class Prestasi extends Model
         'tahun' => 'integer',
         'tanggal' => 'date',
     ];
+
+    public function fotos()
+    {
+        return $this->hasMany(PrestasiFoto::class)->orderBy('position');
+    }
 }

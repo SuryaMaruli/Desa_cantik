@@ -44,13 +44,14 @@
     }
 
     /* E. Tabel Data Penduduk */
-    .table-container {
+.table-container {
         background: #fff;
         border-radius: 12px;
         padding: 25px 30px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         border: 1px solid #eee;
         margin-bottom: 30px;
+        overflow-x: auto;
     }
     .table-header {
         display: flex;
@@ -86,17 +87,20 @@
         font-weight: 600;
         color: #333;
     }
-    .search-box {
+.search-box {
         display: flex;
         align-items: center;
         gap: 10px;
+        flex-wrap: wrap;
     }
     .search-input {
-        padding: 8px 15px;
+        padding: 10px 15px;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 14px;
-        width: 250px;
+        width: 100%;
+        min-width: 150px;
+        flex: 1;
     }
     .data-table {
         width: 100%;
@@ -426,7 +430,7 @@
         }
     }
     
-    @media (max-width: 768px) {
+@media (max-width: 768px) {
         .stats-grid { 
             grid-template-columns: 1fr; 
         }
@@ -438,6 +442,78 @@
         .rw-grid {
             grid-template-columns: 1fr;
             column-gap: 20px;
+        }
+    }
+
+    /* Mobile Responsive Table & Buttons */
+    @media (max-width: 480px) {
+        .home-content {
+            padding: 15px;
+        }
+        .table-container {
+            padding: 15px;
+        }
+        .table-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .header-actions {
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-tambah {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 16px;
+            min-height: 44px;
+        }
+        .search-box {
+            width: 100%;
+        }
+        .data-table {
+            display: block;
+            overflow-x: auto;
+        }
+        .data-table th,
+        .data-table td {
+            padding: 10px 8px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .btn-action {
+            padding: 8px 12px;
+            min-height: 44px;
+            min-width: 44px;
+            font-size: 11px;
+        }
+        .action-buttons {
+            gap: 6px;
+        }
+        .modal-content {
+            width: 95%;
+            max-width: 95%;
+            margin: 5% auto;
+        }
+        .form-group {
+            padding: 0 15px;
+        }
+        .form-group input,
+        .form-group select {
+            font-size: 16px;
+            padding: 12px;
+        }
+        .form-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-cancel,
+        .btn-submit {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+            min-height: 44px;
         }
     }
 </style>
@@ -674,9 +750,173 @@
 
 @push('scripts')
 <script>
+    // ========== 1. REALTIME SEARCH FUNCTIONALITY ==========
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize any required JavaScript components
+        const searchInput = document.querySelector('.search-input');
+        const tableRows = document.querySelectorAll('.data-table tbody tr');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                tableRows.forEach(row => {
+                    const namaCell = row.querySelector('td:nth-child(2)');
+                    if (namaCell) {
+                        const namaText = namaCell.textContent.toLowerCase();
+                        if (namaText.includes(searchTerm)) {
+                            row.style.display = '';
+                            row.style.animation = 'fadeInRow 0.3s ease';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // Show/hide "no results" message
+                const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+                const tableBody = document.querySelector('.data-table tbody');
+                let noResultMsg = document.getElementById('no-result-message');
+                
+                if (visibleRows.length === 0 && searchTerm !== '') {
+                    if (!noResultMsg) {
+                        noResultMsg = document.createElement('tr');
+                        noResultMsg.id = 'no-result-message';
+                        noResultMsg.innerHTML = `<td colspan="6" style="text-align: center; padding: 30px; color: #888;">
+                            <i class="bx bx-search" style="font-size: 48px; margin-bottom: 10px;"></i><br>
+                            Tidak ada data yang cocok dengan "<strong>${searchTerm}</strong>"
+                        </td>`;
+                        tableBody.appendChild(noResultMsg);
+                    }
+                    noResultMsg.style.display = '';
+                } else if (noResultMsg) {
+                    noResultMsg.style.display = 'none';
+                }
+            });
+        }
     });
+
+    // ========== 2. ENHANCED NOTIFICATION SYSTEM ==========
+    function showNotification(message, type = 'success') {
+        // Remove existing notifications first
+        document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        const config = {
+            success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+            error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+            warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+            info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+        };
+        
+        const c = config[type] || config.success;
+        
+        notification.className = 'custom-notification';
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px;
+            background: ${c.bg}; color: ${c.color};
+            padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+            font-family: 'Poppins', sans-serif; font-size: 14px;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 280px; max-width: 400px;
+        `;
+        notification.innerHTML = `
+            <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+            <span style="font-weight: 500;">${message}</span>
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight { 
+                from { transform: translateX(120%); opacity: 0; } 
+                to { transform: translateX(0); opacity: 1; } 
+            }
+            @keyframes fadeInRow {
+                from { opacity: 0.5; transform: translateX(-10px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(style);
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(120%)';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.4s ease';
+            setTimeout(() => { notification.remove(); style.remove(); }, 400);
+        }, 3500);
+    }
+
+    // ========== 3. BUTTON FEEDBACK TOASTS ==========
+    function showButtonFeedback(btn, message, type = 'info') {
+        const originalHTML = btn.innerHTML;
+        
+        // Show temporary feedback
+        btn.innerHTML = `<i class="bx bx-check" style="margin-right: 4px;"></i>${message}`;
+        btn.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+        }, 1500);
+    }
+
+    // ========== 4. INTERACTIVE TOAST FOR DELETE ==========
+    function showDeleteConfirm(id, nama) {
+        const modal = document.createElement('div');
+        modal.id = 'delete-confirm-modal';
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        `;
+        
+        modal.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2; 
+                                display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                        <i class="bx bx-trash" style="font-size: 36px; color: #ef4444;"></i>
+                    </div>
+                    <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
+                    <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                        Apakah Anda yakin ingin menghapus<br>
+                        <strong style="color: #1f2937; font-size: 16px;">"${nama}"</strong>?
+                    </p>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button onclick="closeDeleteModal()" style="flex: 1; padding: 12px 24px; border: none; 
+                                border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                                cursor: pointer; transition: all 0.2s;">Batal</button>
+                    <button onclick="confirmDelete(${id})" style="flex: 1; padding: 12px 24px; border: none; 
+                                border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
+                                cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
+                </div>
+            </div>
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        `;
+        document.head.appendChild(style);
+        modal.onclick = function(e) { if(e.target === modal) closeDeleteModal(); };
+        document.body.appendChild(modal);
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('delete-confirm-modal');
+        if (modal) {
+            modal.style.opacity = '0';
+            modal.style.transform = 'scale(0.9)';
+            setTimeout(() => modal.remove(), 300);
+        }
+    }
+
+    window.closeDeleteModal = closeDeleteModal;
 
     function tambahPenduduk() {
         // Tampilkan modal tambah penduduk
@@ -838,73 +1078,79 @@
         }
     }
 
+// ========== 5. DELETE FUNCTIONS WITH INTERACTIVE CONFIRM ==========
     function deletePenduduk(id, nama) {
-        if (confirm('Apakah Anda yakin ingin menghapus data penduduk "' + nama + '"?')) {
-            // Kirim request delete ke server
-            fetch(`/admin/data-kelurahan/delete/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Hapus baris dari tabel dengan animasi
-                    const row = document.querySelector(`tr:nth-child(${id + 1})`);
-                    if (row) {
-                        row.style.transition = 'opacity 0.3s';
-                        row.style.opacity = '0';
-                        setTimeout(() => row.remove(), 300);
-                    }
-                    
-                    // Tampilkan notifikasi
-                    showNotification('Data penduduk berhasil dihapus', 'success');
-                    
-                    // Reload halaman setelah 1.5 detik untuk update statistik
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    showNotification(data.message || 'Terjadi kesalahan saat menghapus data', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
-            });
-        }
+        // Use interactive modal instead of basic confirm
+        showDeleteConfirm(id, nama);
     }
 
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        const bgColor = type === 'success' ? '#28a745' : '#dc3545';
+    function confirmDelete(id) {
+        // Tutup modal konfirmasi
+        closeDeleteModal();
         
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px;
-            background-color: ${bgColor}; color: white;
-            padding: 12px 20px; border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000; font-family: 'Poppins', sans-serif; font-size: 14px;
-            animation: slideInRight 0.3s ease;
-        `;
-        notification.textContent = message;
-        
-        const style = document.createElement('style');
-        style.textContent = `@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
-        document.head.appendChild(style);
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
-            notification.style.opacity = '0';
-            notification.style.transition = 'all 0.3s ease';
-            setTimeout(() => { notification.remove(); style.remove(); }, 300);
-        }, 3000);
+        // Kirim request delete ke server
+        fetch(`/admin/data-kelurahan/delete/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Hapus baris dari tabel dengan animasi
+                const row = document.querySelector(`tr:nth-child(${id + 1})`);
+                if (row) {
+                    row.style.transition = 'opacity 0.3s, transform 0.3s';
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(-20px)';
+                    setTimeout(() => row.remove(), 300);
+                }
+                
+                // Tampilkan notifikasi sukses
+                showNotification('🎉 Data penduduk berhasil dihapus!', 'success');
+                
+                // Reload halaman setelah 1.5 detik untuk update statistik
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showNotification(data.message || 'Terjadi kesalahan saat menghapus data', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
+        });
     }
+
+    window.confirmDelete = confirmDelete;
+
+    // ========== 6. BUTTON CLICK FEEDBACK ==========
+    // Add nice ripple effect to add button
+    document.querySelector('.btn-tambah')?.addEventListener('click', function() {
+        this.innerHTML = '<i class="bx bx Loader-alt bx-spin" style="font-size: 18px;"></i> Membuka...';
+        setTimeout(() => {
+            this.innerHTML = '<i class="bx bx-plus-circle"></i> Tambah Penduduk';
+        }, 500);
+    });
+
+// Add search feedback
+    document.querySelector('.btn-edit-data')?.addEventListener('click', function() {
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput && searchInput.value.trim() !== '') {
+            this.innerHTML = '<i class="bx bx-check"></i> Ditemukan!';
+            showNotification(`Mencari: "${searchInput.value}"`, 'info');
+            setTimeout(() => {
+                this.innerHTML = '<i class="bx bx-search"></i> Cari';
+            }, 1500);
+        } else {
+            showNotification('Mohon masukkan nama yang ingin dicari', 'warning');
+        }
+    });
 </script>
 @endpush
 @endsection

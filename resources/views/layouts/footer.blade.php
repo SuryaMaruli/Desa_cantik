@@ -184,7 +184,7 @@
         .footer-bottom-links {
             margin-top: 0;
         }
-    }
+}
 
     .footer-bottom-link {
         color: #9ca3af;
@@ -194,6 +194,100 @@
 
     .footer-bottom-link:hover {
         color: white;
+    }
+
+    /* ============================================
+       MOBILE OPTIMIZATION FOOTER
+       ============================================ */
+    @media (max-width: 767px) {
+        .footer-section {
+            padding: 40px 16px;
+        }
+
+        .footer-grid {
+            gap: 28px;
+        }
+
+        .footer-title {
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+        }
+
+        .footer-subtitle {
+            font-size: 1.05rem;
+            margin-bottom: 14px;
+        }
+
+        .footer-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer-map-wrap iframe {
+            width: 100%;
+            max-width: 100%;
+            height: 160px;
+        }
+
+        .footer-list li {
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            min-height: 44px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .footer-link {
+            padding: 8px 0;
+            display: block;
+            min-height: 44px;
+            line-height: 1.4;
+        }
+
+        .social-link {
+            width: 48px;
+            height: 48px;
+        }
+
+        .social-links {
+            gap: 16px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            gap: 12px;
+        }
+
+        .footer-bottom-links {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        /* Prevent horizontal scroll */
+        .footer-container {
+            overflow-x: hidden;
+        }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 375px) {
+        .footer-section {
+            padding: 32px 14px;
+        }
+
+        .footer-title {
+            font-size: 1.1rem;
+        }
+
+        .footer-subtitle {
+            font-size: 1rem;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+        }
     }
 </style>
 

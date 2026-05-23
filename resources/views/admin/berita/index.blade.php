@@ -24,32 +24,6 @@
     </div>
 
     <div class="content-card" id="beritaContent">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Validation Error:</strong><br>
-                <ul class="mb-0">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
 @if($beritas->count() > 0)
             @if(isset($keyword) && $keyword !== '')
                 <div class="search-result-info">
@@ -169,6 +143,10 @@
     .photo-order-label{font-size:11px;color:#666}
     .remove-photo-btn{width:100%;margin-top:5px;font-size:11px;padding:4px 6px}
     .multi-photo-help{font-size:12px;color:#666;margin-top:6px}
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
     @media (max-width:768px){.news-list-item{flex-direction:column;gap:15px}.news-thumbnail{width:100%;height:200px}}
 </style>
 
@@ -325,6 +303,7 @@
         justify-content: center;
         font-size: 32px;
     }
+    .popup-icon i { font-size: 36px; }
     .popup-icon.edit { background: #dbeafe; color: #1d4ed8; }
     .popup-icon.unpublish { background: #fef3c7; color: #b45309; }
     .popup-icon.publish { background: #d1fae5; color: #059669; }
@@ -382,8 +361,60 @@
     let editExisting = [];
     let editNewFiles = [];
     let dragged = null;
+    let editPopupShown = false;
 
     const uid = (p='id') => `${p}_${Math.random().toString(36).slice(2,10)}`;
+
+    function showNotification(message, type = 'success') {
+        document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+
+        const notification = document.createElement('div');
+        const config = {
+            success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+            error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+            warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+            info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+        };
+        const c = config[type] || config.success;
+
+        notification.className = 'custom-notification';
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px;
+            background: ${c.bg}; color: ${c.color};
+            padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+            font-family: 'Poppins', sans-serif; font-size: 14px;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 280px; max-width: 400px;
+        `;
+        notification.innerHTML = `
+            <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+            <span style="font-weight: 500;">${message}</span>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.transform = 'translateX(120%)';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.4s ease';
+            setTimeout(() => notification.remove(), 400);
+        }, 3500);
+    }
+
+    function reloadAfterNotification(message, type = 'success') {
+        showNotification(message, type);
+        setTimeout(() => window.location.reload(), 1200);
+    }
+
+    function getErrorMessage(data, fallback) {
+        if (data?.errors) {
+            const firstKey = Object.keys(data.errors)[0];
+            if (firstKey && data.errors[firstKey]?.length) return data.errors[firstKey][0];
+        }
+        return data?.message || fallback;
+    }
 
     function wireDnD(container, cb) {
         container.querySelectorAll('.photo-card').forEach(card => {
@@ -531,13 +562,36 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = [
+            @if(session('success'))
+                { message: @json(session('success')), type: 'success' },
+            @endif
+            @if(session('error'))
+                { message: @json(session('error')), type: 'error' },
+            @endif
+            @if($errors->any())
+                { message: @json($errors->first()), type: 'error' },
+            @endif
+        ];
+
+        flashMessages.forEach((flash, index) => {
+            setTimeout(() => showNotification(flash.message, flash.type), index * 500);
+        });
+
         const t = document.getElementById('tanggal_publikasi');
         if (t) t.value = new Date().toISOString().split('T')[0];
 
         document.getElementById('create_fotos').addEventListener('change', function(e) {
             createFiles = [];
             Array.from(e.target.files).forEach((file, i) => {
-                if (!file.type.match('image.*') || file.size > 2 * 1024 * 1024) return;
+                if (!file.type.match('image.*')) {
+                    showNotification('File harus berupa gambar.', 'warning');
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Ukuran foto maksimal 2 MB.', 'warning');
+                    return;
+                }
                 const fr = new FileReader();
                 fr.onload = ev => {
                     createFiles.push({uid: uid('c'), file, preview: ev.target.result, isMain: i === 0});
@@ -549,26 +603,51 @@
 
         document.getElementById('createBeritaForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            if (createFiles.length === 0) return alert('Minimal unggah 1 foto.');
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                showNotification('Lengkapi data berita terlebih dahulu.', 'warning');
+                return;
+            }
+            if (createFiles.length === 0) return showNotification('Minimal unggah 1 foto.', 'warning');
             const mainIdx = createFiles.findIndex(f => f.isMain);
-            if (mainIdx < 0) return alert('Pilih 1 foto utama.');
+            if (mainIdx < 0) return showNotification('Pilih 1 foto utama.', 'warning');
 
             const fd = new FormData(this);
             createFiles.forEach(f => fd.append('fotos[]', f.file));
             fd.set('foto_utama_index', String(mainIdx));
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Menyimpan...';
 
             fetch('{{ route('admin.berita.store') }}', {
                 method:'POST',
                 body:fd,
                 headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'}
             }).then(r => r.json()).then(d => {
-                if (d.success) location.reload(); else alert(d.message || 'Gagal menyimpan');
-            }).catch(err => alert('Terjadi kesalahan: ' + err.message));
+                if (d.success) {
+                    reloadAfterNotification(d.message || 'Berita berhasil ditambahkan!', 'success');
+                } else {
+                    showNotification(getErrorMessage(d, 'Gagal menyimpan berita.'), 'error');
+                }
+            }).catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'))
+              .finally(() => {
+                  submitBtn.disabled = false;
+                  submitBtn.innerHTML = originalText;
+              });
         });
 
         document.getElementById('edit_new_fotos').addEventListener('change', function(e) {
             Array.from(e.target.files).forEach((file, i) => {
-                if (!file.type.match('image.*') || file.size > 2 * 1024 * 1024) return;
+                if (!file.type.match('image.*')) {
+                    showNotification('File harus berupa gambar.', 'warning');
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Ukuran foto maksimal 2 MB.', 'warning');
+                    return;
+                }
                 const fr = new FileReader();
                 fr.onload = ev => {
                     const noMain = !editExisting.some(f => !f.deleted && f.isMain) && !editNewFiles.some(f => f.isMain);
@@ -580,8 +659,6 @@
         });
 
 // Show "Edit Berita" popup confirmation BEFORE submitting the edit form
-        let editPopupShown = false;
-        
         document.getElementById('editBeritaForm').addEventListener('submit', function(e) {
             if (editPopupShown) {
                 // Popup was already confirmed, proceed with submission
@@ -590,27 +667,45 @@
             }
             
             e.preventDefault();
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                showNotification('Lengkapi data berita terlebih dahulu.', 'warning');
+                return;
+            }
             
             // Show "Edit Berita" popup before proceeding
             showPopup('edit', 'Edit Berita', 'Apakah Anda yakin ingin menyimpan perubahan pada berita ini?', function() {
                 editPopupShown = true;
                 
                 const remaining = editExisting.filter(f => !f.deleted).length + editNewFiles.length;
-                if (remaining <= 0) return alert('Minimal harus ada 1 foto.');
-                if (!editExisting.some(f => !f.deleted && f.isMain) && !editNewFiles.some(f => f.isMain)) return alert('Pilih 1 foto utama.');
+                if (remaining <= 0) return showNotification('Minimal harus ada 1 foto.', 'warning');
+                if (!editExisting.some(f => !f.deleted && f.isMain) && !editNewFiles.some(f => f.isMain)) return showNotification('Pilih 1 foto utama.', 'warning');
 
                 collectEditOrder();
                 const fd = new FormData(document.getElementById('editBeritaForm'));
                 editNewFiles.forEach(f => fd.append('fotos[]', f.file));
 
                 const id = document.getElementById('edit_berita_id').value;
+                const submitBtn = document.querySelector('#editBeritaForm button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Mengupdate...';
+
                 fetch(`/admin/berita/${id}`, {
                     method:'POST',
                     body:fd,
                     headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'}
                 }).then(r => r.json()).then(d => {
-                    if (d.success) location.reload(); else alert(d.message || 'Gagal update');
-                }).catch(err => alert('Terjadi kesalahan: ' + err.message));
+                    if (d.success) {
+                        reloadAfterNotification(d.message || 'Berita berhasil diperbarui!', 'success');
+                    } else {
+                        showNotification(getErrorMessage(d, 'Gagal update berita.'), 'error');
+                    }
+                }).catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'))
+                  .finally(() => {
+                      submitBtn.disabled = false;
+                      submitBtn.innerHTML = originalText;
+                  });
             });
         });
     });
@@ -622,7 +717,7 @@ function openEditModal(id) {
         fetch(`/admin/berita/${id}/edit-data`)
             .then(r => r.json())
             .then(d => {
-                if (!d.success) return alert(d.message || 'Gagal ambil data');
+                if (!d.success) return showNotification(d.message || 'Gagal ambil data.', 'error');
                 const b = d.berita;
                 document.getElementById('edit_berita_id').value = b.id;
                 document.getElementById('edit_judul').value = b.judul;
@@ -646,7 +741,7 @@ function openEditModal(id) {
 
                 new bootstrap.Modal(document.getElementById('editBeritaModal')).show();
             })
-            .catch(err => alert('Terjadi kesalahan: ' + err.message));
+            .catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'));
     }
 
 // Custom Popup Functions
@@ -662,7 +757,14 @@ function openEditModal(id) {
 
     function showPopup(type, title, message, onConfirm) {
         popupIcon.className = 'popup-icon ' + type;
-        popupIcon.innerHTML = type === 'edit' ? '✏️' : type === 'delete' ? '🗑️' : type === 'unpublish' ? '👁️' : '✅';
+        const iconMap = {
+            edit: 'bx-edit-alt',
+            delete: 'bx-trash',
+            unpublish: 'bx-hide',
+            publish: 'bx-show',
+            utama: 'bx-star'
+        };
+        popupIcon.innerHTML = `<i class='bx ${iconMap[type] || 'bx-check'}'></i>`;
         popupTitle.innerHTML = title;
         popupMessage.innerHTML = message;
         
@@ -705,8 +807,11 @@ popupConfirm.onclick = function() {
             
             fetch(`/admin/berita/${id}/toggle-publish`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
-                .then(d => { if (d.success) location.reload(); else alert(d.message || 'Gagal'); })
-                .catch(err => alert('Terjadi kesalahan: ' + err.message));
+                .then(d => {
+                    if (d.success) reloadAfterNotification(d.message || 'Berita berhasil disimpan sebagai draft!', 'success');
+                    else showNotification(d.message || 'Gagal mengubah status.', 'error');
+                })
+                .catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'));
         });
     }
 
@@ -717,8 +822,11 @@ popupConfirm.onclick = function() {
             
             fetch(`/admin/berita/${id}/toggle-publish`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
-                .then(d => { if (d.success) location.reload(); else alert(d.message || 'Gagal'); })
-                .catch(err => alert('Terjadi kesalahan: ' + err.message));
+                .then(d => {
+                    if (d.success) reloadAfterNotification(d.message || 'Berita berhasil dipublikasikan!', 'success');
+                    else showNotification(d.message || 'Gagal mengubah status.', 'error');
+                })
+                .catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'));
         });
     }
 
@@ -730,8 +838,11 @@ popupConfirm.onclick = function() {
 
             fetch(`/admin/berita/${id}`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
-                .then(d => { if (d.success) location.reload(); else alert(d.message || 'Gagal hapus'); })
-                .catch(err => alert('Terjadi kesalahan: ' + err.message));
+                .then(d => {
+                    if (d.success) reloadAfterNotification(d.message || 'Berita berhasil dihapus!', 'success');
+                    else showNotification(d.message || 'Gagal hapus berita.', 'error');
+                })
+                .catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'));
         });
     }
 
@@ -748,8 +859,11 @@ popupConfirm.onclick = function() {
             
             fetch(`/admin/berita/${id}/set-utama`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
-                .then(d => { if (d.success) location.reload(); else alert(d.message || 'Gagal'); })
-                .catch(err => alert('Terjadi kesalahan: ' + err.message));
+                .then(d => {
+                    if (d.success) reloadAfterNotification(d.message || 'Berita berhasil dijadikan berita utama!', 'success');
+                    else showNotification(d.message || 'Gagal mengubah status utama.', 'error');
+                })
+                .catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'));
         });
     }
 
@@ -760,8 +874,11 @@ popupConfirm.onclick = function() {
             
             fetch(`/admin/berita/${id}/set-utama`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
-                .then(d => { if (d.success) location.reload(); else alert(d.message || 'Gagal'); })
-                .catch(err => alert('Terjadi kesalahan: ' + err.message));
+                .then(d => {
+                    if (d.success) reloadAfterNotification(d.message || 'Status berita utama berhasil dibatalkan!', 'success');
+                    else showNotification(d.message || 'Gagal mengubah status utama.', 'error');
+                })
+                .catch(err => showNotification('Terjadi kesalahan: ' + err.message, 'error'));
         });
     }
 
@@ -805,12 +922,15 @@ popupConfirm.onclick = function() {
             
             if (d.success) {
                 renderSearchResults(d.beritas, d.total, keyword);
+            } else {
+                showNotification(d.message || 'Gagal mencari berita.', 'error');
             }
         })
         .catch(err => {
             contentDiv.style.opacity = '1';
             contentDiv.style.pointerEvents = 'auto';
             console.error('Search error:', err);
+            showNotification('Terjadi kesalahan saat mencari berita.', 'error');
         });
     }
     
@@ -832,6 +952,10 @@ popupConfirm.onclick = function() {
                 const statusText = berita.is_published ? 'Published' : 'Draft';
                 const toggleIcon = berita.is_published ? 'bx-eye-slash' : 'bx-show';
                 const toggleText = berita.is_published ? 'Unpublish' : 'Publish';
+                const toggleHandler = berita.is_published ? 'unpublishBerita' : 'publishBerita';
+                const utamaClass = berita.is_utama ? 'btn-utama-active' : 'btn-utama';
+                const utamaText = berita.is_utama ? 'Batal Utama' : 'Jadikan Utama';
+                const utamaHandler = berita.is_utama ? 'hapusUtamaBerita' : 'jadikanUtamaBerita';
                 
                 html += `
                 <div class="news-list-item" data-berita-id="${berita.id}">
@@ -850,12 +974,12 @@ popupConfirm.onclick = function() {
                             <button type="button" class="btn-action btn-edit" onclick="openEditModal(${berita.id})">
                                 <i class='bx bx-edit-alt'></i> Edit
                             </button>
-                            <form action="/admin/berita/${berita.id}/toggle-publish" method="POST" style="display:inline;">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="btn-action ${berita.is_published ? 'btn-unpublish' : 'btn-publish'}">
-                                    <i class='bx ${toggleIcon}'></i> ${toggleText}
-                                </button>
-                            </form>
+                            <button type="button" class="btn-action ${utamaClass}" onclick="${utamaHandler}(${berita.id})">
+                                <i class='bx bx-star'></i> ${utamaText}
+                            </button>
+                            <button type="button" class="btn-action ${berita.is_published ? 'btn-unpublish' : 'btn-publish'}" onclick="${toggleHandler}(${berita.id})">
+                                <i class='bx ${toggleIcon}'></i> ${toggleText}
+                            </button>
                             <button type="button" class="btn-action btn-delete" onclick="deleteBerita(${berita.id})">
                                 <i class='bx bx-trash'></i> Hapus
                             </button>

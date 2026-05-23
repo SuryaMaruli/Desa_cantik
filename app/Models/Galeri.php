@@ -14,6 +14,10 @@ class Galeri extends Model
         'kategori',
         'tanggal_kegiatan',
         'foto',
+        'position',
+        'grup_id',
+        'grup_order',
+        'is_grup_utama',
     ];
     
     protected $casts = [
