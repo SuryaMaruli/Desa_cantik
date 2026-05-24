@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\StrukturOrganisasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
 class StrukturOrganisasiController extends Controller
@@ -20,7 +21,23 @@ class StrukturOrganisasiController extends Controller
         return view('admin.struktur-organisasi.index', compact('struktur'));
     }
 
-public function store(Request $request)
+    private function respond(Request $request, string $status, string $message, int $code = 200, ?string $redirectRoute = null)
+    {
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => $status,
+                'message' => $message,
+            ], $code);
+        }
+
+        $redirect = $redirectRoute
+            ? redirect()->route($redirectRoute)
+            : redirect()->back();
+
+        return $redirect->with($status === 'success' ? 'success' : 'error', $message);
+    }
+
+    public function store(Request $request)
     {
         Log::info('=== STRUKTUR ORGANISASI STORE START ===');
         Log::info('Request data:', $request->all());
@@ -29,13 +46,22 @@ public function store(Request $request)
             // Check if there's already a photo
             $existingStruktur = StrukturOrganisasi::first();
             if ($existingStruktur) {
-                return redirect()->route('admin.struktur-organisasi.index')
-                    ->with('error', 'Hanya dapat menambahkan satu foto! Silakan edit atau hapus foto yang ada terlebih dahulu.');
+                return $this->respond(
+                    $request,
+                    'error',
+                    'Hanya dapat menambahkan satu foto! Silakan edit atau hapus foto yang ada terlebih dahulu.',
+                    422,
+                    'admin.struktur-organisasi.index'
+                );
             }
 
-            $request->validate([
+            $validator = Validator::make($request->all(), [
                 'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
             ]);
+
+            if ($validator->fails()) {
+                return $this->respond($request, 'error', $validator->errors()->first(), 422);
+            }
 
             // Handle file upload
             if ($request->hasFile('gambar')) {
@@ -62,20 +88,21 @@ public function store(Request $request)
                         'gambar' => $path,
                     ]);
 
-                    return redirect()->route('admin.struktur-organisasi.index')
-                        ->with('success', 'Gambar struktur organisasi berhasil ditambahkan!');
+                    return $this->respond(
+                        $request,
+                        'success',
+                        'Gambar struktur organisasi berhasil ditambahkan!',
+                        200,
+                        'admin.struktur-organisasi.index'
+                    );
                 }
             }
 
-            return redirect()->back()
-                ->with('error', 'Tidak ada file yang diupload')
-                ->withInput();
+            return $this->respond($request, 'error', 'Tidak ada file yang diupload', 422);
 
         } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
+            return $this->respond($request, 'error', 'Terjadi kesalahan: ' . $e->getMessage(), 500);
         }
     }
 
@@ -87,9 +114,13 @@ public function store(Request $request)
         try {
             $struktur = StrukturOrganisasi::findOrFail($id);
 
-            $request->validate([
+            $validator = Validator::make($request->all(), [
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
             ]);
+
+            if ($validator->fails()) {
+                return $this->respond($request, 'error', $validator->errors()->first(), 422);
+            }
 
             $data = [];
 
@@ -131,14 +162,17 @@ public function store(Request $request)
 
             $struktur->update($data);
 
-            return redirect()->route('admin.struktur-organisasi.index')
-                ->with('success', 'Gambar struktur organisasi berhasil diupdate!');
+            return $this->respond(
+                $request,
+                'success',
+                'Gambar struktur organisasi berhasil diupdate!',
+                200,
+                'admin.struktur-organisasi.index'
+            );
 
         } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
+            return $this->respond($request, 'error', 'Terjadi kesalahan: ' . $e->getMessage(), 500);
         }
     }
 
@@ -164,13 +198,17 @@ public function store(Request $request)
 
             $struktur->delete();
 
-            return redirect()->route('admin.struktur-organisasi.index')
-                ->with('success', 'Gambar struktur organisasi berhasil dihapus!');
+            return $this->respond(
+                request(),
+                'success',
+                'Gambar struktur organisasi berhasil dihapus!',
+                200,
+                'admin.struktur-organisasi.index'
+            );
 
         } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return $this->respond(request(), 'error', 'Terjadi kesalahan: ' . $e->getMessage(), 500);
         }
     }
 }

@@ -18,6 +18,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 16px;
     }
 
     .header-text h1 {
@@ -33,19 +34,24 @@
         margin: 0;
     }
 
-    .btn-primary {
+    .btn-primary,
+    .btn-submit {
         background: #F6903A;
-        border-color: #F6903A;
+        border: none;
         color: white;
         padding: 10px 20px;
         border-radius: 8px;
         font-weight: 500;
-        transition: all 0.3s;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover,
+    .btn-submit:hover {
         background: #E57A2A;
-        border-color: #E57A2A;
     }
 
     .table-container {
@@ -82,6 +88,12 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
+    .current-image {
+        max-width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
     .empty-state {
         text-align: center;
         padding: 60px 20px;
@@ -94,50 +106,72 @@
         margin-bottom: 16px;
     }
 
-    .btn-sm {
-        padding: 6px 12px;
-        font-size: 13px;
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 6px 10px;
+        border: none;
         border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
     }
 
-    .btn-danger {
-        background: #dc2626;
-        border-color: #dc2626;
+    .btn-edit {
+        background: #007bff;
+        color: white;
     }
 
-    .btn-danger:hover {
-        background: #b91c1c;
-        border-color: #b91c1c;
+    .btn-edit:hover {
+        background: #0056b3;
     }
 
-    .alert {
-        padding: 12px 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+    .btn-delete {
+        background: #dc3545;
+        color: white;
     }
 
-    .alert-success {
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #bbf7d0;
+    .btn-delete:hover {
+        background: #c82333;
     }
 
-    .alert-danger {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #fecaca;
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s;
     }
 
     .modal-content {
-        background: white;
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 0;
+        border: 1px solid #888;
         border-radius: 12px;
-        padding: 24px;
+        width: 500px;
+        max-width: 90%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        animation: slideIn 0.3s;
     }
 
     .modal-header {
-        background: #F6903A;
+        background: linear-gradient(135deg, #F6903A, #E57A2A);
         color: white;
-        padding: 16px 24px;
+        padding: 20px 25px;
         border-radius: 12px 12px 0 0;
         display: flex;
         justify-content: space-between;
@@ -150,28 +184,54 @@
         font-weight: 600;
     }
 
-    .btn-close {
+    .modal-close {
         background: none;
         border: none;
-        color: white;
         font-size: 24px;
+        color: white;
         cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.2s;
     }
 
-    .form-label {
-        font-weight: 500;
-        color: #374151;
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-body {
+        padding-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        padding: 0 25px;
+    }
+
+    .form-group label {
+        display: block;
         margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
     }
 
-    .form-control {
-        padding: 10px 14px;
-        border: 1px solid #d1d5db;
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 14px;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
     }
 
-    .form-control:focus {
+    .form-group input:focus {
+        outline: none;
         border-color: #F6903A;
         box-shadow: 0 0 0 3px rgba(246, 144, 58, 0.1);
     }
@@ -179,36 +239,86 @@
     .text-muted {
         color: #9ca3af;
         font-size: 13px;
+        margin: 8px 0 0;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 20px 25px;
+        background: #f8f9fa;
+        border-radius: 0 0 12px 12px;
+        margin: 0;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
+
+    .btn-cancel:hover {
+        background: #5a6268;
+    }
+
+    .status-badge {
+        background: #d4edda;
+        color: #155724;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .table-row .row {
+            gap: 16px;
+        }
+
+        .action-buttons {
+            justify-content: flex-start;
+        }
     }
 </style>
 
 <div class="container-fluid p-4">
-    @if(session('success'))
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle me-2"></i>
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            {{ session('error') }}
-        </div>
-    @endif
-
-<div class="header-card">
+    <div class="header-card">
         <div class="header-content">
             <div class="header-text">
                 <h1>Monografi</h1>
                 <p>Kelola gambar monografi kelurahan</p>
             </div>
             @if($monografis->count() == 0)
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="fas fa-plus me-2"></i>Tambah Gambar
-            </button>
+                <button type="button" class="btn-primary" onclick="openActionModal('uploadModal')">
+                    <i class="bx bx-plus-circle"></i>Tambah Gambar
+                </button>
             @else
-            <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Foto sudah ditambahkan</span>
+                <span class="status-badge"><i class="bx bx-check-circle"></i>Foto sudah ditambahkan</span>
             @endif
         </div>
     </div>
@@ -218,62 +328,61 @@
             Daftar Gambar Monografi
         </div>
 
-@if($monografis->count() > 0)
+        @if($monografis->count() > 0)
             @foreach($monografis as $item)
-            <div class="table-row">
-                <div class="row w-100">
-                    <div class="col-md-8">
-<img src="{{ url('storage/' . $item->gambar_mono) }}" alt="Monografi" class="image-preview">
-                    </div>
-<div class="col-md-4 d-flex align-items-center justify-content-end gap-2">
-                        <button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id_monografi }}">
-                            <i class="fas fa-edit me-1"></i> Edit
-                        </button>
-                        <form action="{{ route('admin.monografi.destroy', $item->id_monografi) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm btn-delete">
-                                <i class="fas fa-trash me-1"></i> Hapus
-                            </button>
-                        </form>
+                <div class="table-row">
+                    <div class="row w-100">
+                        <div class="col-md-8">
+                            <img src="{{ url('storage/' . $item->gambar_mono) }}" alt="Monografi" class="image-preview">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-end">
+                            <div class="action-buttons">
+                                <button type="button" class="btn-action btn-edit" onclick="openActionModal('editModal{{ $item->id_monografi }}')">
+                                    <i class="bx bx-edit"></i> Edit
+                                </button>
+                                <button type="button" class="btn-action btn-delete" onclick="showDeleteConfirm('deleteForm{{ $item->id_monografi }}', 'Gambar Monografi')">
+                                    <i class="bx bx-trash"></i> Hapus
+                                </button>
+                            </div>
+                            <form id="deleteForm{{ $item->id_monografi }}" action="{{ route('admin.monografi.destroy', $item->id_monografi) }}" method="POST" class="d-none">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Edit Modal -->
-            <div class="modal fade" id="editModal{{ $item->id_monografi }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
+                <div id="editModal{{ $item->id_monografi }}" class="modal">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h3>Edit Gambar</h3>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="modal-close" onclick="closeActionModal('editModal{{ $item->id_monografi }}')">&times;</button>
                         </div>
                         <form action="{{ route('admin.monografi.update', $item->id_monografi) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Gambar Saat Ini</label>
-                                    <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $item->gambar_mono) }}" alt="Current" style="max-width: 200px; border-radius: 8px;">
-                                    </div>
+                                <div class="form-group">
+                                    <label>Gambar Saat Ini</label>
+                                    <img src="{{ asset('storage/' . $item->gambar_mono) }}" alt="Current" class="current-image">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="gambar{{ $item->id_monografi }}" class="form-label">Ganti Gambar (Opsional)</label>
-                                    <input type="file" class="form-control" id="gambar{{ $item->id_monografi }}" name="gambar" accept="image/*">
-                                    <p class="text-muted mt-1">Format: JPG, PNG, JPEG, GIF. Max: 4MB</p>
+                                <div class="form-group">
+                                    <label for="gambar{{ $item->id_monografi }}">Ganti Gambar (Opsional)</label>
+                                    <input type="file" id="gambar{{ $item->id_monografi }}" name="gambar" accept="image/*">
+                                    <p class="text-muted">Format: JPG, PNG, JPEG, GIF. Max: 5MB</p>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            <div class="form-actions">
+                                <button type="button" class="btn-cancel" onclick="closeActionModal('editModal{{ $item->id_monografi }}')">Batal</button>
+                                <button type="submit" class="btn-submit">
+                                    <i class="bx bx-save"></i> Simpan Perubahan
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
             @endforeach
-@else
+        @else
             <div class="empty-state">
                 <i class="fas fa-image"></i>
                 <h3>Informasi Monografi belum ditambahkan</h3>
@@ -283,103 +392,183 @@
     </div>
 </div>
 
-<!-- Upload Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Tambah Gambar Monografi</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('admin.monografi.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="gambar" class="form-label">Pilih Gambar</label>
-                        <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" required>
-                        <p class="text-muted mt-1">Format: JPG, PNG, JPEG, GIF. Max: 4MB</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Tambah Gambar Monografi</h3>
+            <button type="button" class="modal-close" onclick="closeActionModal('uploadModal')">&times;</button>
         </div>
+        <form action="{{ route('admin.monografi.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="gambar">Pilih Gambar</label>
+                    <input type="file" id="gambar" name="gambar" accept="image/*" required>
+                    <p class="text-muted">Format: JPG, PNG, JPEG, GIF. Max: 5MB</p>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="closeActionModal('uploadModal')">Batal</button>
+                <button type="submit" class="btn-submit">
+                    <i class="bx bx-save"></i> Simpan
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
-<!-- SweetAlert2 CSS & JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Show success/error messages with SweetAlert
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
-    @endif
+    const successMessage = @js(session('success'));
+    const errorMessage = @js(session('error'));
 
-    @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: '{{ session('error') }}',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true
-        });
-    @endif
+    if (successMessage) {
+        showNotification(successMessage, 'success');
+    }
 
-    // Delete confirmation with SweetAlert
-    document.querySelectorAll('.btn-delete').forEach(function(button) {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const form = this.closest('form');
-            Swal.fire({
-                icon: 'warning',
-                title: 'Apakah Anda yakin?',
-                text: 'Data yang dihapus tidak dapat dikembalikan!',
-                showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
-    });
-
-    // Edit click - show confirmation
-    document.querySelectorAll('.btn-edit').forEach(function(button) {
-        button.addEventListener('click', function(e) {
-            const target = this.getAttribute('data-bs-target');
-            Swal.fire({
-                icon: 'info',
-                title: 'Edit Foto',
-                text: 'Anda akan mengedit foto Monografi.',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
-            });
-        });
-    });
+    if (errorMessage) {
+        showNotification(errorMessage, 'error');
+    }
 });
+
+function showNotification(message, type = 'success') {
+    document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+
+    const notification = document.createElement('div');
+    const config = {
+        success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+        error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+        warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+        info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+    };
+    const c = config[type] || config.success;
+
+    notification.className = 'custom-notification';
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${c.bg}; color: ${c.color};
+        padding: 16px 24px; border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+        font-family: 'Poppins', sans-serif; font-size: 14px;
+        display: flex; align-items: center; gap: 12px;
+        animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        min-width: 280px; max-width: 400px;
+    `;
+    notification.innerHTML = `
+        <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+        <span style="font-weight: 500;">${message}</span>
+    `;
+
+    ensurePopupKeyframes();
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        notification.style.opacity = '0';
+        notification.style.transition = 'all 0.4s ease';
+        setTimeout(() => notification.remove(), 400);
+    }, 3500);
+}
+
+function openActionModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeActionModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function showDeleteConfirm(formId, nama) {
+    const oldModal = document.getElementById('delete-confirm-modal');
+    if (oldModal) oldModal.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'delete-confirm-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2;
+                            display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                    <i class="bx bx-trash" style="font-size: 36px; color: #ef4444;"></i>
+                </div>
+                <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    Apakah Anda yakin ingin menghapus<br>
+                    <strong style="color: #1f2937; font-size: 16px;">"${nama}"</strong>?
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button onclick="closeDeleteModal()" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Batal</button>
+                <button onclick="confirmDelete('${formId}')" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
+            </div>
+        </div>
+    `;
+
+    ensurePopupKeyframes();
+    modal.onclick = function(e) {
+        if (e.target === modal) closeDeleteModal();
+    };
+    document.body.appendChild(modal);
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('delete-confirm-modal');
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.9)';
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
+function confirmDelete(formId) {
+    const form = document.getElementById(formId);
+    if (form) {
+        form.submit();
+    }
+}
+
+function ensurePopupKeyframes() {
+    if (document.getElementById('monografi-popup-keyframes')) return;
+
+    const style = document.createElement('style');
+    style.id = 'monografi-popup-keyframes';
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+window.onclick = function(event) {
+    if (event.target.classList && event.target.classList.contains('modal')) {
+        closeActionModal(event.target.id);
+    }
+};
 </script>
 @endsection

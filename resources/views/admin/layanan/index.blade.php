@@ -7,26 +7,6 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="container">
-    {{-- Notifikasi Sukses/Error --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    @endif
-    
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    
     <div class="card header-card">
         <div class="header-content">
             <div class="header-text">
@@ -53,13 +33,13 @@
                         data-id="{{ $item->id }}"
                         data-nama="{{ $item->nama_layanan }}"
                         data-kategori="{{ $item->kategori }}"
-                        data-persyaratan="{{ json_encode($item->persyaratan) }}"
+                        data-persyaratan='@json($item->persyaratan)'
                     >
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
 
                     {{-- Tombol Hapus --}}
-                    <button class="icon-btn btn-delete" onclick="deleteLayanan({{ $item->id }})">
+                    <button class="icon-btn btn-delete" onclick="deleteLayanan({{ $item->id }}, @js($item->nama_layanan))">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -90,12 +70,12 @@
                         data-id="{{ $item->id }}"
                         data-nama="{{ $item->nama_layanan }}"
                         data-kategori="{{ $item->kategori }}"
-                        data-persyaratan="{{ json_encode($item->persyaratan) }}"
+                        data-persyaratan='@json($item->persyaratan)'
                     >
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
 
-                    <button class="icon-btn btn-delete" onclick="deleteLayanan({{ $item->id }})">
+                    <button class="icon-btn btn-delete" onclick="deleteLayanan({{ $item->id }}, @js($item->nama_layanan))">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -230,21 +210,65 @@
     
     /* MODAL STYLES */
     .modal-overlay { 
-        display: none; /* Hidden by default */
+        display: none;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         background: rgba(0,0,0,0.5); z-index: 1000; 
         justify-content: center; align-items: center; 
+        animation: fadeIn 0.3s ease;
     }
     .modal-content { 
-        background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 500px; 
+        background: white; padding: 0; border-radius: 16px; width: 90%; max-width: 500px; 
         max-height: 90vh; overflow-y: auto; 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        animation: scaleIn 0.3s ease;
     }
-    .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
-    .close-modal { background: none; border: none; font-size: 1.2rem; cursor: pointer; }
-    .form-group { margin-bottom: 15px; }
+    .modal-header {
+        background: linear-gradient(135deg, #F6903A, #E57A2A);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 16px 16px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; }
+    .close-modal {
+        background: none;
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    .close-modal:hover { background: rgba(255,255,255,0.2); }
+    .form-group { margin-bottom: 15px; padding: 0 25px; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
     .requirement-item { display: flex; gap: 10px; margin-bottom: 8px; }
     .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+    .modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 20px 25px;
+        background: #f8f9fa;
+        border-radius: 0 0 16px 16px;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn {
+        from { transform: scale(0.92); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
 </style>
 @endpush
 
@@ -253,14 +277,132 @@
     // --- SETUP MODAL ---
     const modal = document.getElementById('serviceModal');
     const editModal = document.getElementById('editModal');
+
+    function escapeHTML(value) {
+        const div = document.createElement('div');
+        div.textContent = value ?? '';
+        return div.innerHTML;
+    }
+
+    function showNotification(message, type = 'success') {
+        document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+
+        const notification = document.createElement('div');
+        const config = {
+            success: { icon: 'fa-circle-check', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+            error: { icon: 'fa-circle-xmark', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+            warning: { icon: 'fa-circle-exclamation', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+            info: { icon: 'fa-circle-info', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+        };
+        const c = config[type] || config.success;
+
+        notification.className = 'custom-notification';
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px;
+            background: ${c.bg}; color: ${c.color};
+            padding: 16px 24px; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+            font-family: 'Poppins', sans-serif; font-size: 14px;
+            display: flex; align-items: center; gap: 12px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 280px; max-width: 400px;
+        `;
+        notification.innerHTML = `
+            <i class="fa-solid ${c.icon}" style="font-size: 24px;"></i>
+            <span style="font-weight: 500;">${escapeHTML(message)}</span>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.transform = 'translateX(120%)';
+            notification.style.opacity = '0';
+            notification.style.transition = 'all 0.4s ease';
+            setTimeout(() => notification.remove(), 400);
+        }, 3500);
+    }
+
+    function showDeleteConfirm(id, nama) {
+        document.getElementById('delete-confirm-modal')?.remove();
+
+        const deleteModal = document.createElement('div');
+        deleteModal.id = 'delete-confirm-modal';
+        deleteModal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        deleteModal.innerHTML = `
+            <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2;
+                                display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                        <i class="fa-solid fa-trash-can" style="font-size: 32px; color: #ef4444;"></i>
+                    </div>
+                    <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
+                    <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                        Apakah Anda yakin ingin menghapus<br>
+                        <strong style="color: #1f2937; font-size: 16px;">"${escapeHTML(nama)}"</strong>?
+                    </p>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button onclick="closeDeleteModal()" style="flex: 1; padding: 12px 24px; border: none;
+                                border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                                cursor: pointer; transition: all 0.2s;">Batal</button>
+                    <button onclick="confirmDeleteLayanan(${id})" style="flex: 1; padding: 12px 24px; border: none;
+                                border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
+                                cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
+                </div>
+            </div>
+        `;
+
+        deleteModal.onclick = function(e) {
+            if (e.target === deleteModal) closeDeleteModal();
+        };
+        document.body.appendChild(deleteModal);
+    }
+
+    function closeDeleteModal() {
+        const deleteModal = document.getElementById('delete-confirm-modal');
+        if (deleteModal) {
+            deleteModal.style.opacity = '0';
+            deleteModal.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => deleteModal.remove(), 300);
+        }
+    }
+
+    window.closeDeleteModal = closeDeleteModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        @if(session('success'))
+            showNotification(@js(session('success')), 'success');
+        @endif
+
+        @if(session('error'))
+            showNotification(@js(session('error')), 'error');
+        @endif
+
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                showNotification(@js($error), 'error');
+            @endforeach
+        @endif
+    });
     
     // Buka Modal Tambah
-    document.getElementById('addServiceBtn').onclick = () => modal.style.display = 'flex';
+    document.getElementById('addServiceBtn').onclick = () => {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
     
     // Tutup Modal
     const closeModals = () => {
         modal.style.display = 'none';
         editModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     };
     
     document.getElementById('closeModalIcon').onclick = closeModals;
@@ -289,7 +431,7 @@
         if (document.querySelectorAll('#requirementsContainer .requirement-item').length > 1) {
             btn.parentElement.remove();
         } else {
-            alert('Minimal 1 syarat!');
+            showNotification('Minimal 1 syarat!', 'warning');
         }
     }
 
@@ -327,7 +469,7 @@
                 const div = document.createElement('div');
                 div.className = 'requirement-item';
                 div.innerHTML = `
-                    <input type="text" name="persyaratan[]" class="form-control" value="${req}" required>
+                    <input type="text" name="persyaratan[]" class="form-control" value="${escapeHTML(req)}" required>
                     <button type="button" class="btn btn-sm btn-danger" onclick="removeEditRequirement(this)"><i class="fa-solid fa-trash"></i></button>
                 `;
                 container.appendChild(div);
@@ -338,6 +480,7 @@
 
         // 5. Tampilkan Modal
         editModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
     function addEditRequirement() {
@@ -356,32 +499,38 @@
         if (container.querySelectorAll('.requirement-item').length > 1) {
             btn.parentElement.remove();
         } else {
-            alert('Minimal 1 syarat!');
+            showNotification('Minimal 1 syarat!', 'warning');
         }
     }
 
     // --- LOGIKA HAPUS ---
-    function deleteLayanan(id) {
-        if (confirm('Yakin ingin menghapus layanan ini?')) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/admin/layanan/${id}`; // Sesuaikan route delete
-
-            const csrf = document.createElement('input');
-            csrf.type = 'hidden';
-            csrf.name = '_token';
-            csrf.value = document.querySelector('meta[name="csrf-token"]').content;
-            
-            const method = document.createElement('input');
-            method.type = 'hidden';
-            method.name = '_method';
-            method.value = 'DELETE';
-
-            form.appendChild(csrf);
-            form.appendChild(method);
-            document.body.appendChild(form);
-            form.submit();
-        }
+    function deleteLayanan(id, nama) {
+        showDeleteConfirm(id, nama);
     }
+
+    function confirmDeleteLayanan(id) {
+        closeDeleteModal();
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/layanan/${id}`;
+
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+        
+        const method = document.createElement('input');
+        method.type = 'hidden';
+        method.name = '_method';
+        method.value = 'DELETE';
+
+        form.appendChild(csrf);
+        form.appendChild(method);
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    window.confirmDeleteLayanan = confirmDeleteLayanan;
 </script>
 @endpush

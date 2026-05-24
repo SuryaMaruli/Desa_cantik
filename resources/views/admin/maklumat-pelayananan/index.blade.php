@@ -131,17 +131,21 @@
     .modal-content {
         background: white;
         border-radius: 12px;
-        padding: 24px;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     .modal-header {
-        background: #F6903A;
+        background: linear-gradient(135deg, #F6903A, #E57A2A);
         color: white;
-        padding: 16px 24px;
+        padding: 20px 25px;
         border-radius: 12px 12px 0 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 0;
     }
 
     .modal-header h3 {
@@ -156,6 +160,25 @@
         color: white;
         font-size: 24px;
         cursor: pointer;
+        opacity: 1;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+
+    .btn-close::before {
+        content: '\00d7';
+        line-height: 1;
+    }
+
+    .btn-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        opacity: 1;
     }
 
     .form-label {
@@ -180,23 +203,47 @@
         color: #9ca3af;
         font-size: 13px;
     }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+    .modal-footer {
+        background: #f8f9fa;
+        border-top: 0;
+        border-radius: 0 0 12px 12px;
+        padding: 20px 25px;
+        gap: 10px;
+    }
+
+    .modal-footer .btn {
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+
+    .modal-footer .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .modal-footer .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .modal-footer .btn-primary {
+        background: #F6903A;
+        color: white;
+    }
+
+    .modal-footer .btn-primary:hover {
+        background: #E57A2A;
+    }
 </style>
 
 <div class="container-fluid p-4">
-    @if(session('success'))
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle me-2"></i>
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            {{ session('error') }}
-        </div>
-    @endif
-
 <div class="header-card">
         <div class="header-content">
             <div class="header-text">
@@ -309,77 +356,151 @@
     </div>
 </div>
 
-<!-- SweetAlert2 CSS & JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Show success/error messages with SweetAlert
     @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
+        showNotification(@json(session('success')), 'success');
     @endif
 
     @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: '{{ session('error') }}',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true
-        });
+        showNotification(@json(session('error')), 'error');
     @endif
 
-    // Delete confirmation with SweetAlert
     document.querySelectorAll('.btn-delete').forEach(function(button) {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const form = this.closest('form');
-            Swal.fire({
-                icon: 'warning',
-                title: 'Apakah Anda yakin?',
-                text: 'Data yang dihapus tidak dapat dikembalikan!',
-                showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+            showDeleteConfirm(form);
         });
     });
 
-    // Edit click - show confirmation
     document.querySelectorAll('.btn-edit').forEach(function(button) {
         button.addEventListener('click', function(e) {
-            const target = this.getAttribute('data-bs-target');
-            Swal.fire({
-                icon: 'info',
-                title: 'Edit Foto',
-                text: 'Anda akan mengedit foto Maklumat Pelayanan.',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
-            });
+            showNotification('Anda akan mengedit foto Maklumat Pelayanan.', 'info');
         });
     });
 });
+
+function showNotification(message, type = 'success') {
+    document.querySelectorAll('.custom-notification').forEach(n => n.remove());
+
+    const notification = document.createElement('div');
+    const config = {
+        success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
+        error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
+        warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
+        info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
+    };
+
+    const c = config[type] || config.success;
+
+    notification.className = 'custom-notification';
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${c.bg}; color: ${c.color};
+        padding: 16px 24px; border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
+        font-family: 'Poppins', sans-serif; font-size: 14px;
+        display: flex; align-items: center; gap: 12px;
+        animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        min-width: 280px; max-width: 400px;
+    `;
+    notification.innerHTML = `
+        <i class="bx ${c.icon}" style="font-size: 24px;"></i>
+        <span style="font-weight: 500;">${message}</span>
+    `;
+
+    ensurePopupAnimations();
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        notification.style.opacity = '0';
+        notification.style.transition = 'all 0.4s ease';
+        setTimeout(() => notification.remove(), 400);
+    }, 3500);
+}
+
+function showDeleteConfirm(form) {
+    const modal = document.createElement('div');
+    modal.id = 'delete-confirm-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2;
+                            display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                    <i class="bx bx-trash" style="font-size: 36px; color: #ef4444;"></i>
+                </div>
+                <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    Apakah Anda yakin ingin menghapus<br>
+                    <strong style="color: #1f2937; font-size: 16px;">gambar Maklumat Pelayanan</strong>?
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" onclick="closeDeleteModal()" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Batal</button>
+                <button type="button" id="confirm-delete-action" style="flex: 1; padding: 12px 24px; border: none;
+                            border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
+                            cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
+            </div>
+        </div>
+    `;
+
+    ensurePopupAnimations();
+    modal.onclick = function(e) {
+        if (e.target === modal) closeDeleteModal();
+    };
+    document.body.appendChild(modal);
+
+    document.getElementById('confirm-delete-action').addEventListener('click', function() {
+        closeDeleteModal();
+        form.submit();
+    });
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('delete-confirm-modal');
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.9)';
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
+function ensurePopupAnimations() {
+    if (document.getElementById('data-kelurahan-popup-animations')) {
+        return;
+    }
+
+    const style = document.createElement('style');
+    style.id = 'data-kelurahan-popup-animations';
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+window.closeDeleteModal = closeDeleteModal;
 </script>
 @endsection

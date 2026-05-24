@@ -640,7 +640,7 @@
             <h2>INFORMASI PUBLIK</h2>
         </div>
         <div class="info-grid">
-            @forelse($informasiPubliks ?? \App\Models\InformasiPublik::all() as $index => $item)
+            @forelse($informasiPubliks ?? \App\Models\InformasiPublik::where('judul', 'not like', '%Agenda%')->get() as $index => $item)
             <div class="info-card">
                 <div class="info-icon">{{ $index + 1 }}</div>
                 <h4>{{ $item->judul }}</h4>
@@ -662,12 +662,6 @@
             </div>
             <div class="info-card">
                 <div class="info-icon">3</div>
-                <h4>Agenda & Kegiatan</h4>
-                <p>Jadwal kegiatan dan acara yang akan dilaksanakan di kelurahan.</p>
-                <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">4</div>
                 <h4>Dokumen Publik</h4>
                 <p>Akses dokumen dan peraturan yang dapat diakses oleh masyarakat.</p>
                 <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
@@ -756,6 +750,8 @@
             </div>
         @endif
     </section>
+
+    @include('partials.agenda-calendar', ['agendaKegiatans' => $agendaKegiatans ?? collect()])
 
     <div class="prestasi-viewer-overlay" id="prestasiViewer" aria-hidden="true">
         <div class="prestasi-viewer-toolbar">

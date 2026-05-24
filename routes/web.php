@@ -30,6 +30,7 @@ use App\Models\Galeri;
 use App\Models\TentangDesa;
 use App\Models\MetadataStatistik;
 use App\Models\InformasiPublik;
+use App\Models\AgendaKegiatan;
 use App\Models\OutputProgram;
 use App\Models\Prestasi;
 use App\Models\Penduduk;
@@ -179,7 +180,8 @@ Route::get('/desa-cantik/output/{id}', [DesaCantikController::class, 'showOutput
 
 Route::get('/informasi-publik/{id}', function ($id) {
     $informasi = InformasiPublik::findOrFail($id);
-    return view('informasi-publik-detail', compact('informasi'));
+    $agendaKegiatans = AgendaKegiatan::orderBy('tanggal_kegiatan')->get();
+    return view('informasi-publik-detail', compact('informasi', 'agendaKegiatans'));
 })->name('informasi-publik.detail');
 
 Route::get('/kontak', function () {
@@ -307,6 +309,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/informasi-publik', [InformasiPublikController::class, 'index'])->name('informasi-publik.index');
     Route::get('/informasi-publik/create', [InformasiPublikController::class, 'create'])->name('informasi-publik.create');
     Route::post('/informasi-publik', [InformasiPublikController::class, 'store'])->name('informasi-publik.store');
+    Route::post('/informasi-publik/agenda', [InformasiPublikController::class, 'storeAgenda'])->name('informasi-publik.agenda.store');
+    Route::put('/informasi-publik/agenda/{id}', [InformasiPublikController::class, 'updateAgenda'])->name('informasi-publik.agenda.update');
+    Route::delete('/informasi-publik/agenda/{id}', [InformasiPublikController::class, 'destroyAgenda'])->name('informasi-publik.agenda.destroy');
     Route::get('/informasi-publik/{id}/edit', [InformasiPublikController::class, 'edit'])->name('informasi-publik.edit');
     Route::put('/informasi-publik/{id}', [InformasiPublikController::class, 'update'])->name('informasi-publik.update');
     Route::delete('/informasi-publik/{id}', [InformasiPublikController::class, 'destroy'])->name('informasi-publik.destroy');

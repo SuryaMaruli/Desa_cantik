@@ -455,11 +455,6 @@ value="{{ old('no_hp', $beranda->no_hp ?? '') }}" required oninput="checkForChan
                 </div>
             </div>
 
-            <div class="d-flex justify-content-start mb-4">
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
-                    <i class='bx bx-arrow-back'></i> Kembali
-                </a>
-            </div>
         </div>
     </div>
 </div>

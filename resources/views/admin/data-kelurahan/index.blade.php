@@ -87,20 +87,101 @@
         font-weight: 600;
         color: #333;
     }
-.search-box {
+    .search-box {
+        position: relative;
         display: flex;
         align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
+        width: min(100%, 460px);
+        min-height: 46px;
+        padding: 4px;
+        background: #fff;
+        border: 1px solid #d9e4df;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 140, 110, 0.08);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .search-box:hover {
+        border-color: rgba(0, 140, 110, 0.45);
+        box-shadow: 0 12px 28px rgba(0, 140, 110, 0.12);
+    }
+    .search-box:focus-within {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 4px rgba(0, 140, 110, 0.12), 0 14px 30px rgba(0, 140, 110, 0.14);
+        transform: translateY(-1px);
+    }
+    .search-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #ecfdf5;
+        color: var(--primary-green);
+        font-size: 20px;
+        flex: 0 0 auto;
     }
     .search-input {
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        width: 100%;
-        min-width: 150px;
+        height: 38px;
+        min-width: 180px;
         flex: 1;
+        padding: 0 8px 0 12px;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: #1f2937;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .search-input::placeholder {
+        color: #9ca3af;
+        font-weight: 400;
+    }
+    .btn-clear-search {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 8px;
+        background: #f3f4f6;
+        color: #6b7280;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.2s ease;
+        flex: 0 0 auto;
+    }
+    .btn-clear-search:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    .btn-edit-data {
+        min-width: 84px;
+        height: 38px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #008C6E, #00a77f);
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 8px 18px rgba(0, 140, 110, 0.22);
+        transition: all 0.2s ease;
+        flex: 0 0 auto;
+    }
+    .btn-edit-data:hover {
+        background: linear-gradient(135deg, #00785f, #00966f);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 140, 110, 0.28);
+    }
+    .btn-edit-data:active {
+        transform: translateY(0);
     }
     .data-table {
         width: 100%;
@@ -472,6 +553,16 @@
         .search-box {
             width: 100%;
         }
+        .search-input {
+            min-width: 0;
+        }
+        .btn-edit-data span {
+            display: none;
+        }
+        .btn-edit-data {
+            min-width: 42px;
+            padding: 0 12px;
+        }
         .data-table {
             display: block;
             overflow-x: auto;
@@ -602,10 +693,14 @@
                 <button class="btn-tambah" onclick="tambahPenduduk()">
                     <i class='bx bx-plus-circle'></i> Tambah Penduduk
                 </button>
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Cari nama penduduk...">
-                    <button class="btn-edit-data">
-                        <i class='bx bx-search'></i> Cari
+                <div class="search-box" role="search" aria-label="Pencarian penduduk">
+                    <span class="search-icon"><i class='bx bx-search'></i></span>
+                    <input type="text" class="search-input" id="searchPenduduk" placeholder="Cari nama penduduk..." autocomplete="off">
+                    <button type="button" class="btn-clear-search" aria-label="Bersihkan pencarian">
+                        <i class='bx bx-x'></i>
+                    </button>
+                    <button type="button" class="btn-edit-data" aria-label="Cari penduduk">
+                        <i class='bx bx-search'></i><span>Cari</span>
                     </button>
                 </div>
             </div>
@@ -753,11 +848,19 @@
     // ========== 1. REALTIME SEARCH FUNCTIONALITY ==========
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.querySelector('.search-input');
+        const clearSearchBtn = document.querySelector('.btn-clear-search');
         const tableRows = document.querySelectorAll('.data-table tbody tr');
         
         if (searchInput) {
+            const toggleClearButton = () => {
+                if (clearSearchBtn) {
+                    clearSearchBtn.style.display = searchInput.value.trim() ? 'inline-flex' : 'none';
+                }
+            };
+
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase().trim();
+                toggleClearButton();
                 
                 tableRows.forEach(row => {
                     const namaCell = row.querySelector('td:nth-child(2)');
@@ -781,17 +884,38 @@
                     if (!noResultMsg) {
                         noResultMsg = document.createElement('tr');
                         noResultMsg.id = 'no-result-message';
-                        noResultMsg.innerHTML = `<td colspan="6" style="text-align: center; padding: 30px; color: #888;">
-                            <i class="bx bx-search" style="font-size: 48px; margin-bottom: 10px;"></i><br>
-                            Tidak ada data yang cocok dengan "<strong>${searchTerm}</strong>"
-                        </td>`;
+                        const noResultCell = document.createElement('td');
+                        const noResultIcon = document.createElement('i');
+                        const noResultStrong = document.createElement('strong');
+
+                        noResultCell.colSpan = 6;
+                        noResultCell.style.cssText = 'text-align: center; padding: 30px; color: #888;';
+                        noResultIcon.className = 'bx bx-search';
+                        noResultIcon.style.cssText = 'font-size: 48px; margin-bottom: 10px;';
+                        noResultStrong.textContent = searchTerm;
+
+                        noResultCell.appendChild(noResultIcon);
+                        noResultCell.appendChild(document.createElement('br'));
+                        noResultCell.append('Tidak ada data yang cocok dengan "');
+                        noResultCell.appendChild(noResultStrong);
+                        noResultCell.append('"');
+                        noResultMsg.appendChild(noResultCell);
                         tableBody.appendChild(noResultMsg);
                     }
+                    noResultMsg.querySelector('strong').textContent = searchTerm;
                     noResultMsg.style.display = '';
                 } else if (noResultMsg) {
                     noResultMsg.style.display = 'none';
                 }
             });
+
+            clearSearchBtn?.addEventListener('click', function() {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+                searchInput.focus();
+            });
+
+            toggleClearButton();
         }
     });
 
@@ -1145,7 +1269,7 @@
             this.innerHTML = '<i class="bx bx-check"></i> Ditemukan!';
             showNotification(`Mencari: "${searchInput.value}"`, 'info');
             setTimeout(() => {
-                this.innerHTML = '<i class="bx bx-search"></i> Cari';
+                this.innerHTML = '<i class="bx bx-search"></i><span>Cari</span>';
             }, 1500);
         } else {
             showNotification('Mohon masukkan nama yang ingin dicari', 'warning');
