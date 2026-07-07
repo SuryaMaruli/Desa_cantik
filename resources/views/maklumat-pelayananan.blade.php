@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Maklumat Pelayanan - Kelurahan Citangkil')
+@section('title', 'Maklumat Pelayanan - Kelurahan Gunung Sugih')
 
 @section('page-title', 'Maklumat Pelayanan')
 
@@ -109,7 +109,7 @@
     
     <div class="page-header">
         <h1>Maklumat Pelayanan</h1>
-        <p>Informasi lengkap mengenai layanan di Kelurahan Citangkil</p>
+        <p>Informasi lengkap mengenai layanan di Kelurahan Gunung Sugih</p>
     </div>
     
     <div class="content-card">

@@ -7,7 +7,7 @@
     <!-- Welcome Banner -->
     <div class="welcome-banner">
         <h2>Selamat Datang, {{ Auth::user()->name ?? 'Administrator' }}!</h2>
-        <p>Kelola dan pantau website Kelurahan Citangkil dari dashboard ini</p>
+        <p>Kelola dan pantau website {{ $currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih' }} dari dashboard ini</p>
     </div>
 
     <!-- Statistics Grid -->

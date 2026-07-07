@@ -1,13 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Informasi Publik - Admin Kelurahan Citangkil')
+@section('title', 'Informasi Publik - Admin Kelurahan Gunung Sugih')
 @section('page-title', 'Kelola Informasi Publik')
 
 @push('styles')
 <style>
     .informasi-header-card,
-    .informasi-table-container,
-    .agenda-admin-card {
+    .informasi-table-container {
         background: #fff;
         border-radius: 12px;
         padding: 25px 30px;
@@ -130,119 +129,6 @@
         display: block;
         font-size: 48px;
         margin-bottom: 12px;
-    }
-
-    .agenda-admin-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 22px;
-    }
-
-    .agenda-admin-header h4 {
-        font-size: 20px;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 5px;
-    }
-
-    .agenda-admin-header p {
-        color: #666;
-        font-size: 14px;
-        margin: 0;
-    }
-
-    .agenda-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-        margin-bottom: 22px;
-    }
-
-    .agenda-form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    .agenda-form-group input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: border-color 0.2s;
-        box-sizing: border-box;
-    }
-
-    .agenda-form-group input:focus {
-        outline: none;
-        border-color: #F6903A;
-        box-shadow: 0 0 0 3px rgba(246, 144, 58, 0.1);
-    }
-
-    .agenda-time-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .agenda-time-field span {
-        display: block;
-        color: #666;
-        font-size: 12px;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-
-    .agenda-form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 24px;
-    }
-
-    .agenda-table {
-        width: 100%;
-        border-collapse: collapse;
-        border-top: 1px solid #f1f3f4;
-    }
-
-    .agenda-table th {
-        background: #f8f9fa;
-        padding: 12px 15px;
-        text-align: left;
-        font-weight: 600;
-        color: #333;
-        border-bottom: 2px solid #e9ecef;
-        font-size: 14px;
-    }
-
-    .agenda-table td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f1f3f4;
-        font-size: 14px;
-        color: #555;
-        vertical-align: middle;
-    }
-
-    .btn-pdf {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: #dc3545;
-        color: #fff;
-        padding: 7px 10px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .btn-pdf:hover {
-        background: #bd2130;
-        color: #fff;
     }
 
     .info-public-modal {
@@ -417,29 +303,6 @@
             overflow-x: auto;
         }
 
-        .agenda-admin-card {
-            padding: 18px;
-        }
-
-        .agenda-admin-header,
-        .agenda-form-actions {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .agenda-form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .agenda-time-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .agenda-table th,
-        .agenda-table td {
-            white-space: nowrap;
-        }
-
         .informasi-table th,
         .informasi-table td {
             white-space: nowrap;
@@ -530,181 +393,6 @@
         </div>
     </div>
 
-    <div class="agenda-admin-card">
-        <div class="agenda-admin-header">
-            <div>
-                <h4>Jadwal Kegiatan</h4>
-                <p>Tambah agenda yang akan tampil pada kalender di halaman informasi publik.</p>
-            </div>
-            <a href="{{ route('informasi-publik.detail', 4) }}" target="_blank" class="btn-tambah">
-                <i class='bx bx-calendar'></i> Lihat Kalender
-            </a>
-        </div>
-
-        <form action="{{ route('admin.informasi-publik.agenda.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="agenda-form-grid">
-                <div class="agenda-form-group">
-                    <label for="nama_kegiatan">Nama Kegiatan</label>
-                    <input type="text" id="nama_kegiatan" name="nama_kegiatan" value="{{ old('nama_kegiatan') }}" placeholder="Contoh: Musyawarah Kelurahan" required>
-                    @error('nama_kegiatan') <span class="form-error">{{ $message }}</span> @enderror
-                </div>
-                <div class="agenda-form-group">
-                    <label for="tanggal_kegiatan">Tanggal Kegiatan</label>
-                    <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan" value="{{ old('tanggal_kegiatan') }}" required>
-                    @error('tanggal_kegiatan') <span class="form-error">{{ $message }}</span> @enderror
-                </div>
-                <div class="agenda-form-group">
-                    <label for="tempat_kegiatan">Tempat Kegiatan</label>
-                    <input type="text" id="tempat_kegiatan" name="tempat_kegiatan" value="{{ old('tempat_kegiatan') }}" placeholder="Contoh: Aula Kelurahan Citangkil" required>
-                    @error('tempat_kegiatan') <span class="form-error">{{ $message }}</span> @enderror
-                </div>
-                <div class="agenda-form-group">
-                    <label for="jam_kegiatan">Jam Kegiatan</label>
-                    <div class="agenda-time-grid">
-                        <div class="agenda-time-field">
-                            <span>Jam Mulai</span>
-                            <input type="time" id="jam_mulai" name="jam_mulai" value="{{ old('jam_mulai') }}" required>
-                        </div>
-                        <div class="agenda-time-field">
-                            <span>Jam Selesai</span>
-                            <input type="time" id="jam_selesai" name="jam_selesai" value="{{ old('jam_selesai') }}" required>
-                        </div>
-                    </div>
-                    @error('jam_mulai') <span class="form-error">{{ $message }}</span> @enderror
-                    @error('jam_selesai') <span class="form-error">{{ $message }}</span> @enderror
-                    @error('jam_kegiatan') <span class="form-error">{{ $message }}</span> @enderror
-                </div>
-                <div class="agenda-form-group">
-                    <label for="surat_pendukung">Surat Pendukung Kegiatan (PDF)</label>
-                    <input type="file" id="surat_pendukung" name="surat_pendukung" accept="application/pdf,.pdf">
-                    @error('surat_pendukung') <span class="form-error">{{ $message }}</span> @enderror
-                </div>
-            </div>
-            <div class="agenda-form-actions">
-                <button type="submit" class="btn-submit">
-                    <i class='bx bx-save'></i> Tambah Jadwal
-                </button>
-            </div>
-        </form>
-
-        <div class="table-responsive">
-            <table class="agenda-table">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">No</th>
-                        <th>Nama Kegiatan</th>
-                        <th>Tanggal</th>
-                        <th>Tempat</th>
-                        <th>Jam</th>
-                        <th>Surat</th>
-                        <th style="width: 100px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse(($agendaKegiatans ?? collect()) as $index => $agenda)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td><strong>{{ $agenda->nama_kegiatan }}</strong></td>
-                        <td>{{ $agenda->tanggal_kegiatan->format('d M Y') }}</td>
-                        <td>{{ $agenda->tempat_kegiatan }}</td>
-                        <td>{{ $agenda->jam_kegiatan }}</td>
-                        <td>
-                            @if($agenda->surat_pendukung)
-                                <a href="{{ asset('storage/' . $agenda->surat_pendukung) }}" target="_blank" class="btn-pdf">
-                                    <i class='bx bxs-file-pdf'></i> PDF
-                                </a>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button type="button" class="btn-action btn-edit" onclick="openAgendaEditModal({{ $agenda->id }})">
-                                    <i class='bx bx-edit'></i> Edit
-                                </button>
-                                <form action="{{ route('admin.informasi-publik.agenda.destroy', $agenda->id) }}" method="POST" onsubmit="return confirm('Hapus jadwal kegiatan ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete">
-                                        <i class='bx bx-trash'></i> Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <i class='bx bx-calendar-x'></i>
-                                <p>Belum ada jadwal kegiatan</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        @foreach(($agendaKegiatans ?? collect()) as $agenda)
-            @php
-                preg_match('/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/', $agenda->jam_kegiatan, $jamMatches);
-                $jamMulai = $jamMatches[1] ?? '';
-                $jamSelesai = $jamMatches[2] ?? '';
-            @endphp
-            <div id="agendaEditModal{{ $agenda->id }}" class="info-public-modal">
-                <div class="modal-content-custom">
-                    <div class="modal-header-custom">
-                        <h3>Edit Jadwal Kegiatan</h3>
-                        <button type="button" class="modal-close" onclick="closeAgendaEditModal({{ $agenda->id }})">&times;</button>
-                    </div>
-                    <form action="{{ route('admin.informasi-publik.agenda.update', $agenda->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group-custom">
-                            <label for="edit_agenda_nama_{{ $agenda->id }}">Nama Kegiatan</label>
-                            <input type="text" id="edit_agenda_nama_{{ $agenda->id }}" name="nama_kegiatan" value="{{ old('nama_kegiatan', $agenda->nama_kegiatan) }}" required>
-                        </div>
-                        <div class="form-group-custom">
-                            <label for="edit_agenda_tanggal_{{ $agenda->id }}">Tanggal Kegiatan</label>
-                            <input type="date" id="edit_agenda_tanggal_{{ $agenda->id }}" name="tanggal_kegiatan" value="{{ old('tanggal_kegiatan', $agenda->tanggal_kegiatan->format('Y-m-d')) }}" required>
-                        </div>
-                        <div class="form-group-custom">
-                            <label for="edit_agenda_tempat_{{ $agenda->id }}">Tempat Kegiatan</label>
-                            <input type="text" id="edit_agenda_tempat_{{ $agenda->id }}" name="tempat_kegiatan" value="{{ old('tempat_kegiatan', $agenda->tempat_kegiatan) }}" required>
-                        </div>
-                        <div class="form-group-custom">
-                            <label>Jam Kegiatan</label>
-                            <div class="agenda-time-grid">
-                                <div class="agenda-time-field">
-                                    <span>Jam Mulai</span>
-                                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', $jamMulai) }}" required>
-                                </div>
-                                <div class="agenda-time-field">
-                                    <span>Jam Selesai</span>
-                                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', $jamSelesai) }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group-custom">
-                            <label for="edit_agenda_surat_{{ $agenda->id }}">Ganti Surat Pendukung Kegiatan (PDF)</label>
-                            <input type="file" id="edit_agenda_surat_{{ $agenda->id }}" name="surat_pendukung" accept="application/pdf,.pdf">
-                            @if($agenda->surat_pendukung)
-                                <small class="text-muted d-block mt-2">PDF saat ini: {{ basename($agenda->surat_pendukung) }}</small>
-                            @endif
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn-cancel" onclick="closeAgendaEditModal({{ $agenda->id }})">Batal</button>
-                            <button type="submit" class="btn-submit">
-                                <i class='bx bx-save'></i> Update
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        @endforeach
-    </div>
 </div>
 
 <div id="informasiCreateModal" class="info-public-modal">
@@ -889,27 +577,6 @@
         document.body.style.overflow = 'auto';
         document.getElementById('editInformasiForm').reset();
         clearErrors('edit');
-    }
-
-    function openAgendaEditModal(id) {
-        const modal = document.getElementById(`agendaEditModal${id}`);
-        if (!modal) {
-            showNotification('Data jadwal kegiatan tidak ditemukan', 'error');
-            return;
-        }
-
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeAgendaEditModal(id) {
-        const modal = document.getElementById(`agendaEditModal${id}`);
-        if (!modal) {
-            return;
-        }
-
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
     }
 
     function submitInformasi(event) {
@@ -1110,9 +777,6 @@
             closeCreateModal();
         } else if (event.target === editModal) {
             closeEditModal();
-        } else if (event.target.classList.contains('info-public-modal') && event.target.id.startsWith('agendaEditModal')) {
-            event.target.style.display = 'none';
-            document.body.style.overflow = 'auto';
         }
     });
 

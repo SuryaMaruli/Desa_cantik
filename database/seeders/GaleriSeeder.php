@@ -11,7 +11,7 @@ class GaleriSeeder extends Seeder
     {
         Galeri::create([
             'judul_foto' => 'Kegiatan Vaksinasi Massal',
-            'deskripsi' => 'Kegiatan vaksinasi COVID-19 untuk warga Kelurahan Citangkil',
+            'deskripsi' => 'Kegiatan vaksinasi COVID-19 untuk warga Kelurahan Gunung Sugih',
             'kategori' => 'kesehatan',
             'tanggal_kegiatan' => '2024-01-15',
             'foto' => 'galeri/sample1.jpg',

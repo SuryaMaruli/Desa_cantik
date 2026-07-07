@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class ProfilKelurahan extends Model
 {
+    use BelongsToVillage;
+
     protected $table = 'profil_kelurahans';
     
     protected $fillable = [

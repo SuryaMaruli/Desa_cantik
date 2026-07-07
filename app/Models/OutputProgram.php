@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class OutputProgram extends Model
 {
+    use BelongsToVillage;
+
     protected $primaryKey = 'id_program';
     
     protected $fillable = [

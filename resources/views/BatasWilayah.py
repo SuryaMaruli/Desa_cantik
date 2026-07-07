@@ -1,9 +1,10 @@
 # =========================================================
-# VISUALISASI BATAS WILAYAH KELURAHAN CITANGKIL
+# VISUALISASI BATAS WILAYAH KELURAHAN GUNUNG SUGIH
 # =========================================================
 
 import os
 import json
+import shutil
 import geopandas as gpd
 import folium
 
@@ -20,7 +21,9 @@ shp_path = r"D:\CPNS\Penugasan\Desa_cantik\resources\views\BATAS_DESA_DESEMBER_2
 # =========================================================
 # PATH OUTPUT GEOJSON (LARAVEL STORAGE)
 # =========================================================
-geojson_output = r"D:\CPNS\Penugasan\Desa_cantik\storage\app\shapefile\citangkil_boundaries.geojson"
+geojson_output = r"D:\CPNS\Penugasan\Desa_cantik\storage\app\shapefile\bulakan_boundaries.geojson"
+public_geojson_output = r"D:\CPNS\Penugasan\Desa_cantik\public\shapefile\bulakan_boundaries.geojson"
+html_output = r"D:\CPNS\Penugasan\Desa_cantik\resources\views\peta_batas_wilayah_bulakan.html"
 
 # =========================================================
 # BACA SHAPEFILE
@@ -57,19 +60,22 @@ gdf = gdf.to_crs(epsg=4326)
 # DAFTAR WILAYAH
 # =========================================================
 wilayah_dicari = [
-    "CITANGKIL",
-    "RAMANUJU",
-    "MASIGIT",
-    "TAMAN BARU",
-    "KEBONSARI"
+    "GUNUNG SUGIH",
+    "ANYAR",
+    "KOSAMBIRONYOK",
+    "KEPUH"
 ]
 
 # =========================================================
 # FILTER DATA
 # =========================================================
 filtered = gdf[
-    (gdf["DESA"].isin(wilayah_dicari)) &
-    (gdf["KAB_KOTA"].str.contains("CILEGON", case=False, na=False))
+    (
+        (gdf["DESA"].eq("GUNUNG SUGIH") & gdf["KECAMATAN"].str.contains("CIWANDAN", case=False, na=False) & gdf["KAB_KOTA"].str.contains("CILEGON", case=False, na=False)) |
+        (gdf["DESA"].eq("ANYAR") & gdf["KECAMATAN"].str.contains("ANYAR", case=False, na=False) & gdf["KAB_KOTA"].str.contains("SERANG", case=False, na=False)) |
+        (gdf["DESA"].eq("KOSAMBIRONYOK") & gdf["KECAMATAN"].str.contains("ANYAR", case=False, na=False) & gdf["KAB_KOTA"].str.contains("SERANG", case=False, na=False)) |
+        (gdf["DESA"].eq("KEPUH") & gdf["KECAMATAN"].str.contains("CIWANDAN", case=False, na=False) & gdf["KAB_KOTA"].str.contains("CILEGON", case=False, na=False))
+    )
 ].copy()
 
 # =========================================================
@@ -86,6 +92,8 @@ print(filtered[["DESA", "KECAMATAN", "KAB_KOTA"]])
 # =========================================================
 if filtered.empty:
     raise Exception("Data wilayah tidak ditemukan")
+
+filtered.loc[filtered["DESA"] == "KEPUH", "DESA"] = "KARANGASEM"
 
 # =========================================================
 # SIMPAN GEOJSON UNTUK LARAVEL FRONTEND
@@ -104,6 +112,11 @@ with open(geojson_output, 'w') as f:
     json.dump(geojson_dict, f)
 
 print(f"GeoJSON berhasil disimpan: {geojson_output}")
+
+os.makedirs(os.path.dirname(public_geojson_output), exist_ok=True)
+shutil.copyfile(geojson_output, public_geojson_output)
+
+print(f"GeoJSON publik berhasil disimpan: {public_geojson_output}")
 
 # =========================================================
 # TITIK TENGAH PETA
@@ -126,21 +139,26 @@ m = folium.Map(
 # WARNA
 # =========================================================
 warna = {
-    "CITANGKIL": "red",
-    "RAMANUJU": "blue",
-    "MASIGIT": "green",
-    "TAMAN BARU": "orange",
-    "KEBONSARI": "purple"
+    "GUNUNG SUGIH": "red",
+    "ANYAR": "purple",
+    "KOSAMBIRONYOK": "orange",
+    "KARANGASEM": "green"
 }
 
 # =========================================================
 # KETERANGAN BATAS
 # =========================================================
 keterangan_batas = {
-    "RAMANUJU": "Utara",
-    "MASIGIT": "Timur",
-    "TAMAN BARU": "Selatan",
-    "KEBONSARI": "Barat"
+    "ANYAR": "Barat: Berbatasan dengan Desa Anyar di wilayah Kabupaten Serang.",
+    "KOSAMBIRONYOK": "Selatan: Berbatasan dengan Desa Kosambi dan Ronyok di wilayah Kabupaten Serang.",
+    "KARANGASEM": "Timur: Berbatasan dengan Kelurahan Karangasem."
+}
+
+nama_tampil = {
+    "GUNUNG SUGIH": "Kelurahan Gunung Sugih",
+    "ANYAR": "Desa Anyar",
+    "KOSAMBIRONYOK": "Desa Kosambi dan Ronyok",
+    "KARANGASEM": "Kelurahan Karangasem"
 }
 
 # =========================================================
@@ -153,21 +171,23 @@ for _, row in filtered.iterrows():
     color = warna.get(nama, "gray")
 
     # Tooltip
-    if nama == "CITANGKIL":
+    display_nama = nama_tampil.get(nama, nama)
+
+    if nama == "GUNUNG SUGIH":
 
         tooltip_text = f"""
-        <b>{nama}</b><br>
+        <b>{display_nama}</b><br>
         Kecamatan : {row['KECAMATAN']}<br>
         Kota/Kab  : {row['KAB_KOTA']}
         """
 
     else:
 
-        arah = keterangan_batas.get(nama, "-")
+        batas = keterangan_batas.get(nama, "-")
 
         tooltip_text = f"""
-        <b>{nama}</b><br>
-        Batas Sebelah : {arah}<br>
+        <b>{display_nama}</b><br>
+        {batas}<br>
         Kecamatan : {row['KECAMATAN']}<br>
         Kota/Kab  : {row['KAB_KOTA']}
         """
@@ -194,8 +214,8 @@ for _, row in filtered.iterrows():
 
     folium.Marker(
         location=[centroid.y, centroid.x],
-        popup=nama,
-        tooltip=nama,
+        popup=nama_tampil.get(nama, nama),
+        tooltip=nama_tampil.get(nama, nama),
         icon=folium.Icon(
             color=warna.get(nama, "gray")
         )
@@ -204,41 +224,71 @@ for _, row in filtered.iterrows():
 # =========================================================
 # GARIS HUBUNGAN
 # =========================================================
-citangkil_data = filtered[
-    filtered["DESA"] == "CITANGKIL"
+gunung_sugih_data = filtered[
+    filtered["DESA"] == "GUNUNG SUGIH"
 ]
 
-if not citangkil_data.empty:
+if not gunung_sugih_data.empty:
 
-    citangkil_geom = citangkil_data.geometry.iloc[0]
+    gunung_sugih_geom = gunung_sugih_data.geometry.iloc[0]
 
-    citangkil_centroid = citangkil_geom.centroid
+    gunung_sugih_centroid = gunung_sugih_geom.centroid
 
     for _, row in filtered.iterrows():
 
         nama = row["DESA"]
 
-        if nama != "CITANGKIL":
+        if nama != "GUNUNG SUGIH":
 
             target_centroid = row.geometry.centroid
 
-            arah = keterangan_batas.get(nama, "")
+            batas = keterangan_batas.get(nama, "")
 
             folium.PolyLine(
                 locations=[
-                    [citangkil_centroid.y, citangkil_centroid.x],
+                    [gunung_sugih_centroid.y, gunung_sugih_centroid.x],
                     [target_centroid.y, target_centroid.x]
                 ],
                 color=warna.get(nama, "gray"),
                 weight=3,
-                tooltip=f"Batas {arah}: {nama}"
+                tooltip=batas
             ).add_to(m)
+
+    north_point = [
+        gunung_sugih_geom.bounds[3] + 0.01,
+        gunung_sugih_centroid.x
+    ]
+
+    folium.PolyLine(
+        locations=[
+            [gunung_sugih_centroid.y, gunung_sugih_centroid.x],
+            north_point
+        ],
+        color="blue",
+        weight=3,
+        dash_array="8, 8",
+        tooltip="Utara: Berbatasan langsung dengan Perairan Selat Sunda."
+    ).add_to(m)
+
+    folium.Marker(
+        location=north_point,
+        popup="Perairan Selat Sunda",
+        tooltip="Utara: Perairan Selat Sunda",
+        icon=folium.Icon(color="blue", icon="info-sign")
+    ).add_to(m)
 
 # =========================================================
 # LAYER CONTROL
 # =========================================================
 folium.LayerControl().add_to(m)
 
+os.makedirs(os.path.dirname(html_output), exist_ok=True)
+m.save(html_output)
+print(f"Peta HTML berhasil disimpan: {html_output}")
+
 # =========================================================
 # SIMPAN PETA HTML
 # =========================================================
+
+
+

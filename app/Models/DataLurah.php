@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class DataLurah extends Model
 {
+    use BelongsToVillage;
+
     protected $fillable = [
         'nama_lurah',
         'nip',

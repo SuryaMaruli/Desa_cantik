@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Layanan Permintaan Data - Kelurahan Citangkil')
+@section('title', 'Layanan Permintaan Data - Kelurahan Gunung Sugih')
 
 @section('content')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -243,8 +243,8 @@
                         <h4>Lokasi Kantor</h4>
                     </div>
                     <div class="info-content">
-                        <p><strong>Kantor Kelurahan Citangkil</strong></p>
-                        <p>Jl. Raya Citangkil No. 123</p>
+                        <p><strong>Kantor Kelurahan Gunung Sugih</strong></p>
+                        <p>Jl. Raya Bulakan No. 123</p>
                         <p>Kota Cilegon, Banten 42441</p>
                     </div>
                 </div>
@@ -269,7 +269,7 @@
                     <div class="info-content">
                         <p>Telepon: (0254) 123-4567</p>
                         <p>WhatsApp: +62 878-5351-6685</p>
-                        <p>Email: admin@citangkil.go.id</p>
+                        <p>Email: admin@bulakan.go.id</p>
                     </div>
                 </div>
             </div>

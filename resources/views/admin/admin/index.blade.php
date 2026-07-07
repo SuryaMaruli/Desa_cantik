@@ -62,6 +62,7 @@
                         <p class="admin-email">
                             <i class='bx bx-envelope'></i> {{ $admin->email }}
                         </p>
+                        <p class="admin-village"><i class='bx bx-map-pin'></i> {{ $admin->role === 'super_admin' ? 'Semua Kelurahan' : ($admin->village?->official_name ?? 'Belum ditentukan') }}</p>
                         <p class="admin-role">
                             @if($admin->role === 'super_admin')
                                 <span class="badge badge-super-admin"><i class='bx bx-shield-check'></i> Super Admin</span>
@@ -302,6 +303,15 @@
     gap: 6px;
 }
 
+
+.admin-village {
+    color: #6c757d;
+    font-size: 13px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 .admin-role {
     margin: 8px 0;
 }

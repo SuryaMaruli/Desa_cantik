@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $berita->judul . ' - Berita & Informasi - Kelurahan Citangkil')
+@section('title', $berita->judul . ' - Berita & Informasi - Kelurahan Gunung Sugih')
 
 @section('content')
 @php

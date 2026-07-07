@@ -222,7 +222,7 @@
     <header class="header">
         <div class="container">
             <h1>Data Kelurahan</h1>
-            <p>Data statistik dan informasi kependudukan Kelurahan Citangkil yang transparan dan akurat</p>
+            <p>Data statistik dan informasi kependudukan Kelurahan Gunung Sugih yang transparan dan akurat</p>
         </div>
     </header>
 

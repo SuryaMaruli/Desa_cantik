@@ -86,6 +86,24 @@
                         </div>
                     </div>
                 </div>
+<div class="row" id="villageRow">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="village_id" class="form-label">Kelurahan <span class="text-danger">*</span></label>
+                            <select class="form-select" id="village_id" name="village_id">
+                                <option value="" disabled>Pilih kelurahan untuk admin...</option>
+                                @foreach($villages as $village)
+                                    <option value="{{ $village->id }}" {{ old('village_id', $admin->village_id) == $village->id ? 'selected' : '' }}>
+                                        {{ $village->official_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text text-info">
+                                Admin biasa hanya dapat mengelola konten kelurahan yang dipilih.
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 </div>
             </div>
@@ -279,9 +297,22 @@ document.getElementById('password').addEventListener('input', function(e) {
 var originalData = {
     name: @json($admin->name),
     email: @json($admin->email),
-    role: @json($admin->role)
+    role: @json($admin->role),
+    village_id: @json((string) $admin->village_id)
 };
 
+
+function syncVillageField() {
+    var roleInput = document.getElementById('role');
+    var villageInput = document.getElementById('village_id');
+    var villageRow = document.getElementById('villageRow');
+    if (!roleInput || !villageInput || !villageRow) return;
+
+    var isAdmin = roleInput.value === 'admin';
+    villageRow.style.display = isAdmin ? '' : 'none';
+    villageInput.required = isAdmin;
+    if (!isAdmin) villageInput.value = '';
+}
 // Function to check if there are changes
 function checkForChanges() {
     var saveBtn = document.getElementById('saveBtn');
@@ -290,16 +321,22 @@ function checkForChanges() {
     var nameInput = document.getElementById('name');
     var emailInput = document.getElementById('email');
     var passwordInput = document.getElementById('password');
+    var roleInput = document.getElementById('role');
+    var villageInput = document.getElementById('village_id');
     var confirmationInput = document.getElementById('password_confirmation');
+    var roleInput = document.getElementById('role');
+    var villageInput = document.getElementById('village_id');
 
     // Check if any field has been modified
     var hasNameChanged = nameInput && nameInput.value !== originalData.name;
     var hasEmailChanged = emailInput && emailInput.value !== originalData.email;
     var hasPasswordChanged = passwordInput && passwordInput.value !== '';
+    var hasRoleChanged = roleInput && roleInput.value !== originalData.role;
+    var hasVillageChanged = villageInput && villageInput.value !== originalData.village_id;
     var hasConfirmationChanged = confirmationInput && confirmationInput.value !== '';
 
     // If password is filled, confirmation must also be filled
-    var hasChanges = hasNameChanged || hasEmailChanged || hasPasswordChanged || hasConfirmationChanged;
+    var hasChanges = hasNameChanged || hasEmailChanged || hasPasswordChanged || hasConfirmationChanged || hasRoleChanged || hasVillageChanged;
 
     // Only enable if password AND confirmation are both filled, OR other fields changed
     if (hasChanges) {
@@ -325,7 +362,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var nameInput = document.getElementById('name');
     var emailInput = document.getElementById('email');
     var passwordInput = document.getElementById('password');
+    var roleInput = document.getElementById('role');
+    var villageInput = document.getElementById('village_id');
     var confirmationInput = document.getElementById('password_confirmation');
+    var roleInput = document.getElementById('role');
+    var villageInput = document.getElementById('village_id');
 
     if (nameInput) {
         nameInput.addEventListener('input', checkForChanges);
@@ -343,6 +384,14 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmationInput.addEventListener('input', checkForChanges);
         confirmationInput.addEventListener('change', checkForChanges);
     }
+    if (roleInput) {
+        roleInput.addEventListener('change', syncVillageField);
+        roleInput.addEventListener('change', checkForChanges);
+    }
+    if (villageInput) {
+        villageInput.addEventListener('change', checkForChanges);
+    }
+    syncVillageField();
 });
 </script>
 @endsection

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@yield('title', 'Kelurahan Citangkil - Website Resmi')</title>
+<title>@yield('title', 'Kelurahan Gunung Sugih - Website Resmi')</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -334,23 +334,55 @@
         .nav-links {
             list-style: none;
             display: flex;
-            gap: 30px;
+            align-items: center;
+            gap: 22px;
+            margin: 0;
+            padding: 0;
         }
 
-        .nav-links li a {
+        .nav-links li a,
+        .nav-links li button {
             text-decoration: none;
             color: #555;
             font-size: 15px;
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, background-color 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
 
         /* Efek saat mouse diarahkan ke menu (Hover) */
-        .nav-links li a:hover {
+        .nav-links li a:hover,
+        .nav-links li button:hover {
             color: #F89039;
+        }
+
+        .admin-menu-toggle {
+            border: 1px solid rgba(248, 144, 57, 0.22);
+            background: #fff7f0;
+            border-radius: 999px;
+            padding: 8px 12px;
+            color: #F89039 !important;
+        }
+
+        .admin-menu-toggle i:first-child {
+            font-size: 17px;
+        }
+
+        .admin-menu .dropdown-menu {
+            right: 0;
+            left: auto;
+            min-width: 175px;
+        }
+
+        .admin-menu .logout-button {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 10px 20px;
+            text-align: left;
+            cursor: pointer;
         }
 
         .login-icon-link i {
@@ -366,7 +398,7 @@
         }
 
 /* Responsif untuk layar kecil (HP) - Menyembunyikan menu dan menambahkan hamburger */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .nav-links {
                 display: none;
                 position: absolute;
@@ -393,10 +425,19 @@
                 border-bottom: none;
             }
             
-            .nav-links li a {
-                display: block;
+            .nav-links li a,
+            .nav-links li button {
+                display: flex;
                 padding: 12px 0;
                 width: 100%;
+            }
+
+            .admin-menu-toggle {
+                border: none;
+                background: transparent;
+                border-radius: 0;
+                padding: 12px 0;
+                color: #555 !important;
             }
             
             /* Dropdown untuk mobile */
@@ -466,7 +507,7 @@
             }
         }
         
-        @media (min-width: 769px) {
+        @media (min-width: 1025px) {
             .hamburger-wrapper {
                 display: none;
             }
@@ -690,8 +731,8 @@
         <div class="preloader-logo">
             <img src="{{ asset('favicon.ico') }}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain;">
         </div>
-        <h1 class="preloader-title">Kelurahan Citangkil</h1>
-        <p class="preloader-subtitle">Kec. Citangkil, Kota Cilegon</p>
+        <h1 class="preloader-title">Kelurahan Gunung Sugih</h1>
+        <p class="preloader-subtitle">Kec. Ciwandan, Kota Cilegon</p>
         
         <div class="loading-bar-container">
             <div class="loading-bar"></div>
@@ -725,12 +766,20 @@
                 </div>
             @endif
             <div class="brand-text">
-                <span class="brand-title">{{ $beranda->nama_kelurahan ?? 'Kelurahan Citangkil' }}</span>
-                <span class="brand-subtitle">Kec. Citangkil, Kota Cilegon</span>
+                <span class="brand-title">{{ $currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih' }}</span>
+                <span class="brand-subtitle">Kecamatan {{ $currentVillage['district'] ?? 'Ciwandan' }}</span>
             </div>
         </div>
 <ul class="nav-links">
-            <li><a href="{{ route('home') }}">Beranda</a></li>
+            <li><a href="{{ ($currentVillageSlug ?? config('villages.default')) === config('villages.default') ? '/' : '/' . ($currentVillageSlug ?? '') }}">Beranda</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Website Kelurahan <i class="fas fa-chevron-down"></i></a>
+                <ul class="dropdown-menu">
+                    @foreach(($villages ?? []) as $slug => $village)
+                        <li><a href="{{ $slug === config('villages.default') ? '/' : '/' . $slug }}" data-village-switcher-option>{{ $village['official_name'] }}</a></li>
+                    @endforeach
+                </ul>
+            </li>
 <li class="dropdown">
                 <a href="#" class="dropdown-toggle">Tentang Kami <i class="fas fa-chevron-down"></i></a>
                 <ul class="dropdown-menu">
@@ -745,25 +794,43 @@
 
             @guest
                 <li>
-                    <a href="{{ route('login') }}" class="login-icon-link" aria-label="Login" title="Login">
+                    <a href="/login" class="login-icon-link" aria-label="Login" title="Login">
                         <i class="bi bi-box-arrow-in-right"></i>
                     </a>
                 </li>
             @endguest
 
             @auth
-                <li>
-                    <a href="{{ route('admin.dashboard') }}" title="Dashboard Admin">
-                        <i class="bi bi-speedometer2"></i> Dashboard
+                <li class="dropdown admin-menu">
+                    <a href="#" class="dropdown-toggle admin-menu-toggle" aria-label="Menu admin">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Admin</span>
+                        <i class="fas fa-chevron-down"></i>
                     </a>
-                </li>
-                <li>
-                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" style="border:none;background:none;padding:0;color:#555;font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
+                    <ul class="dropdown-menu">
+                        <li>
+                            @php
+                                $authUser = auth()->user();
+                                $adminDashboardUrl = '/admin/dashboard';
+
+                                if ($authUser?->role === 'admin' && $authUser->village?->slug) {
+                                    $adminDashboardUrl = '/admin/' . $authUser->village->slug . '/dashboard';
+                                }
+                            @endphp
+                            <a href="{{ $adminDashboardUrl }}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="village" value="{{ $currentVillageSlug ?? config('villages.default') }}">
+                                <button type="submit" class="logout-button">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
             @endauth
         </ul>
@@ -834,11 +901,10 @@ const backToTopBtn = document.getElementById('backToTopBtn');
         }
         
         // Mobile Dropdown Toggle
-        const dropdownToggle = document.querySelector('.dropdown-toggle');
-        if (dropdownToggle) {
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(function(dropdownToggle) {
             dropdownToggle.addEventListener('click', function(e) {
-                // Only trigger on mobile
-                if (window.innerWidth <= 768) {
+                if (window.innerWidth <= 1024) {
                     e.preventDefault();
                     const dropdownMenu = this.nextElementSibling;
                     if (dropdownMenu) {
@@ -846,7 +912,7 @@ const backToTopBtn = document.getElementById('backToTopBtn');
                     }
                 }
             });
-        }
+        });
         
         // Close mobile menu when clicking outside
         document.addEventListener('click', function(e) {
@@ -860,7 +926,7 @@ const backToTopBtn = document.getElementById('backToTopBtn');
         
         // Close mobile menu when window is resized to desktop
         window.addEventListener('resize', function() {
-            if (window.innerWidth > 768 && navLinks) {
+            if (window.innerWidth > 1024 && navLinks) {
                 navLinks.classList.remove('active');
                 if (hamburger) {
                     hamburger.classList.remove('active');
@@ -871,3 +937,4 @@ const backToTopBtn = document.getElementById('backToTopBtn');
     @stack('scripts')
 </body>
 </html>
+

@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 // --- CONTROLLERS IMPORT ---
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\DashboardController; // Public Dashboard
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\DataKelurahanController;
 use App\Http\Controllers\Admin\GaleriController;
@@ -24,7 +25,7 @@ use App\Http\Controllers\Admin\MonografiController;
 use App\Http\Controllers\BatasWilayahController;
 
 // --- MODELS IMPORT (Untuk Public Routes) ---
-use App\Models\Layanan; 
+use App\Models\Layanan;
 use App\Models\Berita;
 use App\Models\Galeri;
 use App\Models\TentangDesa;
@@ -36,17 +37,35 @@ use App\Models\Prestasi;
 use App\Models\Penduduk;
 use App\Models\ProfilKelurahan;
 use App\Models\Monografi;
+
+$rawRequestCookies = function (Request $request): array {
+    $cookieHeader = (string) $request->server->get('HTTP_COOKIE', '');
+
+    if ($cookieHeader === '') {
+        return $request->cookies->all();
+    }
+
+    $cookies = [];
+
+    foreach (explode(';', $cookieHeader) as $cookie) {
+        [$name, $value] = array_pad(explode('=', trim($cookie), 2), 2, '');
+
+        if ($name !== '') {
+            $cookies[urldecode($name)] = urldecode($value);
+        }
+    }
+
+    return $cookies ?: $request->cookies->all();
+};
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
 
-//=========================================================================
+// =========================================================================
 // 1. PUBLIC ROUTES (Frontend)
 // =========================================================================
-
-// Storage files are served directly via the storage symlink in public/storage/
 
 Route::get('/', [DashboardController::class, 'index'])->name('home');
 Route::get('/kata-sambutan', [DashboardController::class, 'kataSambutan'])->name('kata-sambutan');
@@ -63,7 +82,7 @@ Route::get('/layanan', function () {
 
 Route::get('/layanan-kependudukan', function () {
     $layananKependudukan = Layanan::where('kategori', 'kependudukan')
-        ->orderBy('nama_layanan', 'asc')->get();       
+        ->orderBy('nama_layanan', 'asc')->get();
     return view('layanan-kependudukan', compact('layananKependudukan'));
 });
 
@@ -75,34 +94,35 @@ Route::get('/layanan-data', function () {
 
 Route::get('/data', function () {
     $pendudukData = Penduduk::orderBy('rw')->orderBy('nama')->get();
-    
-    // Hitung statistik
+
     $totalPenduduk = $pendudukData->count();
     $lakiLaki = $pendudukData->where('jenis_kelamin', 'Laki-laki')->count();
     $perempuan = $pendudukData->where('jenis_kelamin', 'Perempuan')->count();
-    
-    // Hitung data per RW
+
     $rws = [];
     for ($i = 1; $i <= 10; $i++) {
         $rwNo = str_pad($i, 2, '0', STR_PAD_LEFT);
         $jumlahRw = $pendudukData->where('rw', $rwNo)->count();
         $lakiRw = $pendudukData->where('rw', $rwNo)->where('jenis_kelamin', 'Laki-laki')->count();
         $perempuanRw = $pendudukData->where('rw', $rwNo)->where('jenis_kelamin', 'Perempuan')->count();
-        
+
         if ($jumlahRw > 0) {
             $rws[] = [
                 'no' => $rwNo,
                 'jumlah' => $jumlahRw,
                 'laki' => $lakiRw,
                 'perempuan' => $perempuanRw,
-                'persentase' => $totalPenduduk > 0 ? round(($jumlahRw / $totalPenduduk) * 100) : 0
+                'persentase' => $totalPenduduk > 0 ? round(($jumlahRw / $totalPenduduk) * 100) : 0,
             ];
         }
     }
-    
-    // Format data untuk charts
-    $rwLabels = []; $rwLakiData = []; $rwPerempuanData = []; $rwPieLabels = []; $rwPieData = [];
-    
+
+    $rwLabels = [];
+    $rwLakiData = [];
+    $rwPerempuanData = [];
+    $rwPieLabels = [];
+    $rwPieData = [];
+
     foreach ($rws as $rw) {
         $rwLabels[] = 'RW ' . $rw['no'];
         $rwLakiData[] = $rw['laki'];
@@ -110,40 +130,44 @@ Route::get('/data', function () {
         $rwPieLabels[] = 'RW ' . $rw['no'];
         $rwPieData[] = $rw['persentase'];
     }
-    
+
     return view('data', compact('totalPenduduk', 'lakiLaki', 'perempuan', 'rws', 'rwLabels', 'rwLakiData', 'rwPerempuanData', 'rwPieLabels', 'rwPieData'));
 });
 
+Route::get('/cek-login', function () {
+    return [
+        'url' => request()->fullUrl(),
+        'check' => auth()->check(),
+        'user' => auth()->user()?->email,
+        'session_id' => session()->getId(),
+    ];
+})->middleware('web');
+
 Route::get('/desa-cantik', function () {
-    // Get all galeri items ordered by position, then grup_order (same logic as admin)
     $allPhotos = Galeri::orderBy('position', 'asc')
         ->orderBy('grup_order', 'asc')
         ->orderBy('created_at', 'desc')
         ->get();
-    
-    // Group by grup_id or id_galeri for non-grouped items
+
     $groupedGaleri = [];
     $processedGroups = [];
-    
+
     foreach ($allPhotos as $photo) {
         $groupId = $photo->grup_id ?? 'single_' . $photo->id_galeri;
-        
+
         if (!in_array($groupId, $processedGroups)) {
             $processedGroups[] = $groupId;
-            
-            // Get all photos in this group
+
             if ($photo->grup_id) {
                 $groupPhotos = $allPhotos->where('grup_id', $photo->grup_id)
                     ->sortBy('grup_order')
                     ->values();
             } else {
-                // Single photo - no group
                 $groupPhotos = collect([$photo]);
             }
-            
-            // Get the main (utama) photo
+
             $utama = $groupPhotos->firstWhere('is_grup_utama', true) ?? $groupPhotos->first();
-            
+
             $groupedGaleri[] = (object) [
                 'id' => $utama->id_galeri,
                 'id_galeri' => $utama->id_galeri,
@@ -161,14 +185,13 @@ Route::get('/desa-cantik', function () {
             ];
         }
     }
-    
-    // Re-sort by position and take 6 groups
-    usort($groupedGaleri, function($a, $b) {
+
+    usort($groupedGaleri, function ($a, $b) {
         return $a->position - $b->position;
     });
-    
+
     $galeri = collect(array_slice($groupedGaleri, 0, 6));
-    
+
     $tentang = TentangDesa::first();
     $metadata = MetadataStatistik::all();
     $outputPrograms = OutputProgram::all();
@@ -179,6 +202,8 @@ Route::get('/desa-cantik', function () {
 Route::get('/desa-cantik/output/{id}', [DesaCantikController::class, 'showOutput'])->name('desa-cantik.show-output');
 
 Route::get('/informasi-publik/{id}', function ($id) {
+    abort_if((int) $id === 4, 404);
+
     $informasi = InformasiPublik::findOrFail($id);
     $agendaKegiatans = AgendaKegiatan::orderBy('tanggal_kegiatan')->get();
     return view('informasi-publik-detail', compact('informasi', 'agendaKegiatans'));
@@ -190,48 +215,42 @@ Route::get('/kontak', function () {
 
 Route::get('/berita', function () {
     $kategori = request('kategori');
-    
-    // Pertama, cari berita utama jika ada
+
     $beritaUtama = Berita::where('is_published', true)
         ->where('is_utama', true)
         ->first();
-    
-    // Query untuk berita lainnya
+
     $query = Berita::where('is_published', true)->orderBy('tanggal_publikasi', 'desc');
-    
-    // Exclude berita utama dari query jika ada
+
     if ($beritaUtama) {
         $query->where('id', '!=', $beritaUtama->id);
     }
-    
+
     if ($kategori && $kategori !== 'Semua') {
         $query->where('kategori', $kategori);
     }
-    
+
     $berita = $query->get();
-    
-    // Ambil kategori unik dari database
+
     $kategoriList = Berita::where('is_published', true)
         ->whereNotNull('kategori')
         ->distinct()
         ->pluck('kategori')
         ->sort()
         ->values();
-    
+
     return view('berita', compact('berita', 'kategori', 'kategoriList', 'beritaUtama'));
 });
 
 Route::get('/berita/{id}', function ($id) {
     $berita = Berita::where('id', $id)->where('is_published', true)->first();
     if (!$berita) abort(404);
-    
-    // Increment views counter setiap kali berita dibaca
+
     $berita->increment('views');
-    
+
     return view('berita-detail', compact('berita'));
 });
 
-// --- TENTANG KAMI ROUTES ---
 Route::get('/maklumat-pelayananan', function () {
     return view('maklumat-pelayananan');
 });
@@ -240,9 +259,33 @@ Route::get('/struktur-organisasi', function () {
     return view('struktur-organisasi');
 });
 
-// --- BATAS WILAYAH API ROUTES ---
 Route::get('/api/batas-wilayah', [BatasWilayahController::class, 'getVillageBoundaries'])->name('api.batas-wilayah');
 
+Route::get('/{village}/{path?}', function (Request $request, string $village, ?string $path = null) use ($rawRequestCookies) {
+    abort_unless(array_key_exists($village, config('villages.items', [])), 404);
+
+    $targetPath = '/' . ltrim($path ?? '', '/');
+    $server = $request->server->all();
+    $server['CURRENT_VILLAGE_SLUG'] = $village;
+    $server['REQUEST_URI'] = $targetPath . ($request->server->get('QUERY_STRING') ? '?' . $request->server->get('QUERY_STRING') : '');
+    $server['PATH_INFO'] = $targetPath;
+
+    $forwardedRequest = Request::create(
+        $targetPath,
+        'GET',
+        $request->query->all(),
+        $rawRequestCookies($request),
+        [],
+        $server
+    );
+
+    if ($request->hasSession()) {
+        $forwardedRequest->setLaravelSession($request->session());
+    }
+
+    return app()->handle($forwardedRequest);
+})->where('village', implode('|', array_map('preg_quote', array_keys(config('villages.items', [])))))
+  ->where('path', '.*');
 
 // =========================================================================
 // 2. AUTHENTICATION ROUTES
@@ -254,58 +297,85 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout.get');
 
+Route::get('/admin/switch-village/{village}', function (Request $request, string $village) {
+    abort_unless(auth()->user()?->role === 'super_admin', 403);
+    abort_unless(array_key_exists($village, config('villages.items', [])), 404);
+
+    $request->session()->put('admin_active_village', $village);
+
+    $redirect = trim((string) $request->query('redirect', 'dashboard'), '/');
+    $redirect = $redirect === '' ? 'dashboard' : $redirect;
+
+    if (str_starts_with($redirect, 'admin/')) {
+        $redirect = trim(substr($redirect, strlen('admin/')), '/');
+    }
+
+    return redirect('/admin/' . $redirect);
+})->middleware('auth')->name('admin.switch-village');
+
+Route::match(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], '/admin/{village}/{path?}', function (Request $request, string $village, ?string $path = null) {
+    abort_unless(array_key_exists($village, config('villages.items', [])), 404);
+
+    $adminPath = trim((string) ($path ?? 'dashboard'), '/');
+    $adminPath = $adminPath === '' ? 'dashboard' : $adminPath;
+
+    if (auth()->user()?->role === 'super_admin') {
+        $request->session()->put('admin_active_village', $village);
+
+        return redirect('/admin/' . $adminPath);
+    }
+
+    $userVillage = auth()->user()?->village;
+
+    if ($userVillage && $village !== $userVillage->slug) {
+        return redirect('/admin/dashboard')
+            ->with('error', 'Anda hanya dapat mengelola website ' . ($userVillage->official_name ?? 'kelurahan Anda') . '.');
+    }
+
+    return redirect('/admin/' . $adminPath);
+})->where('village', implode('|', array_map('preg_quote', array_keys(config('villages.items', [])))))
+  ->where('path', '.*')
+  ->middleware('auth');
 
 // =========================================================================
 // 3. ADMIN ROUTES
 // =========================================================================
 
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
-    
-    // --- DASHBOARD ---
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    
-// --- BERANDA ---
+
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda.index');
     Route::post('/beranda', [BerandaController::class, 'store'])->name('beranda.store');
     Route::put('/beranda/{id}', [BerandaController::class, 'update'])->name('beranda.update');
     Route::put('/beranda/{id}/image', [BerandaController::class, 'updateImage'])->name('beranda.update.image');
     Route::put('/beranda/{id}/logo', [BerandaController::class, 'updateLogo'])->name('beranda.update.logo');
-    
-// --- PROFIL ---
+
     Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
-    
-// --- DATA KELURAHAN ---
+
     Route::get('/data-kelurahan', [DataKelurahanController::class, 'index'])->name('data-kelurahan.index');
     Route::post('/data-kelurahan/store', [DataKelurahanController::class, 'store'])->name('data-kelurahan.store');
     Route::put('/data-kelurahan/update/{id}', [DataKelurahanController::class, 'update'])->name('data-kelurahan.update');
     Route::delete('/data-kelurahan/delete/{id}', [DataKelurahanController::class, 'destroy'])->name('data-kelurahan.destroy');
-    
-// --- GALERI ---
+
     Route::resource('galeri', GaleriController::class);
     Route::post('galeri/update-position', [GaleriController::class, 'updatePosition'])->name('galeri.update-position');
     Route::post('galeri/bulk-destroy', [GaleriController::class, 'bulkDestroy'])->name('galeri.bulk-destroy');
-    
-    // --- PROFIL KELURAHAN ---
+
     Route::get('/profil-kelurahan', [ProfilKelurahanController::class, 'index'])->name('profil-kelurahan.index');
     Route::put('/profil-kelurahan', [ProfilKelurahanController::class, 'update'])->name('profil-kelurahan.update');
-    
-    // --- DESA CANTIK ---
+
     Route::get('/desa-cantik', [DesaCantikController::class, 'index'])->name('desa-cantik.index');
     Route::post('/desa-cantik/tentang', [DesaCantikController::class, 'updateTentang'])->name('desa-cantik.update-tentang');
-    
-    // Desa Cantik: Metadata
     Route::post('/desa-cantik/metadata', [DesaCantikController::class, 'storeMetadata'])->name('desa-cantik.store-metadata');
-    Route::put('/desa-cantik/metadata/{id}', [DesaCantikController::class, 'updateMetadata'])->name('desa-cantik.update-metadata'); // Perbaikan: PUT
+    Route::put('/desa-cantik/metadata/{id}', [DesaCantikController::class, 'updateMetadata'])->name('desa-cantik.update-metadata');
     Route::delete('/desa-cantik/metadata/{id}', [DesaCantikController::class, 'deleteMetadata'])->name('desa-cantik.delete-metadata');
-    
-    // Desa Cantik: Output
     Route::post('/desa-cantik/output', [DesaCantikController::class, 'storeOutput'])->name('desa-cantik.store-output');
-    Route::put('/desa-cantik/output/{id}', [DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output'); // Perbaikan: PUT
+    Route::put('/desa-cantik/output/{id}', [DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output');
     Route::delete('/desa-cantik/output/{id}', [DesaCantikController::class, 'deleteOutput'])->name('desa-cantik.delete-output');
-    
-    // --- INFORMASI PUBLIK ---
+
     Route::get('/informasi-publik', [InformasiPublikController::class, 'index'])->name('informasi-publik.index');
     Route::get('/informasi-publik/create', [InformasiPublikController::class, 'create'])->name('informasi-publik.create');
     Route::post('/informasi-publik', [InformasiPublikController::class, 'store'])->name('informasi-publik.store');
@@ -315,49 +385,40 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/informasi-publik/{id}/edit', [InformasiPublikController::class, 'edit'])->name('informasi-publik.edit');
     Route::put('/informasi-publik/{id}', [InformasiPublikController::class, 'update'])->name('informasi-publik.update');
     Route::delete('/informasi-publik/{id}', [InformasiPublikController::class, 'destroy'])->name('informasi-publik.destroy');
-    
-    // --- PRESTASI ---
-    Route::resource('prestasi', PrestasiController::class)->except(['show']); 
-    
-    // --- DATA LURAH ---
+
+    Route::resource('prestasi', PrestasiController::class)->except(['show']);
+
     Route::get('/data-lurah', [DataLurahController::class, 'index'])->name('data-lurah.index');
     Route::get('/data-lurah/api', [DataLurahController::class, 'getData'])->name('data-lurah.api');
     Route::post('/data-lurah/update', [DataLurahController::class, 'update'])->name('data-lurah.update');
     Route::delete('/data-lurah/sambutan', [DataLurahController::class, 'destroySambutan'])->name('data-lurah.destroy-sambutan');
-    
-    // --- ADMIN ---
-    Route::resource('admin', AdminController::class)->except(['show']); 
-    
-    // --- LAYANAN ---
+
+    Route::resource('admin', AdminController::class)->except(['show']);
+
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
     Route::post('/layanan', [LayananController::class, 'store'])->name('layanan.store');
     Route::put('/layanan/{id}', [LayananController::class, 'update'])->name('layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
-    
-// --- BERITA ---
+
     Route::get('/berita/search', [BeritaController::class, 'search'])->name('berita.search');
-    Route::resource('berita', BeritaController::class)->except(['show']); 
-Route::post('/berita/{berita}/toggle-publish', [BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
+    Route::resource('berita', BeritaController::class)->except(['show']);
+    Route::post('/berita/{berita}/toggle-publish', [BeritaController::class, 'togglePublish'])->name('berita.toggle-publish');
     Route::post('/berita/{berita}/set-utama', [BeritaController::class, 'setUtama'])->name('berita.set-utama');
     Route::get('/berita/{berita}/edit-data', [BeritaController::class, 'getEditData'])->name('berita.edit-data');
     Route::get('/berita/{berita}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
-    
-// --- MAKLUMAT PELAYANAN ---
+
     Route::get('/maklumat-pelayananan', [MaklumatPelayanananController::class, 'index'])->name('maklumat-pelayananan.index');
     Route::post('/maklumat-pelayananan', [MaklumatPelayanananController::class, 'store'])->name('maklumat-pelayananan.store');
     Route::put('/maklumat-pelayananan/{id}', [MaklumatPelayanananController::class, 'update'])->name('maklumat-pelayananan.update');
     Route::delete('/maklumat-pelayananan/{id}', [MaklumatPelayanananController::class, 'destroy'])->name('maklumat-pelayananan.destroy');
-    
-// --- STRUKTUR ORGANISASI ---
+
     Route::get('/struktur-organisasi', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
     Route::post('/struktur-organisasi', [StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
     Route::put('/struktur-organisasi/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur-organisasi.update');
     Route::delete('/struktur-organisasi/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
-    
-    // --- MONOGRAFI ---
+
     Route::get('/monografi', [MonografiController::class, 'index'])->name('monografi.index');
     Route::post('/monografi', [MonografiController::class, 'store'])->name('monografi.store');
     Route::put('/monografi/{id}', [MonografiController::class, 'update'])->name('monografi.update');
     Route::delete('/monografi/{id}', [MonografiController::class, 'destroy'])->name('monografi.destroy');
-    
 });

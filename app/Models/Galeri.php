@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Galeri extends Model
 {
+    use BelongsToVillage;
+
     protected $primaryKey = 'id_galeri';
     
     protected $fillable = [

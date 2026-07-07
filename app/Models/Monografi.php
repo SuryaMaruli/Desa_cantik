@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Monografi extends Model
 {
+    use BelongsToVillage;
+
     protected $table = 'monografis';
     
     protected $primaryKey = 'id_monografi';

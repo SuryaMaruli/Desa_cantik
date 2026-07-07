@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Kelurahan Citangkil</title>
+    <title>Login - Kelurahan Gunung Sugih</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -81,12 +81,7 @@
                 
                 <button type="submit" class="btn btn-primary w-100 btn-login">Masuk</button>
             </form>
-            
-            <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none">Lupa password?</a>
-            </div>
-
-            <div class="mt-3">
+<div class="mt-3">
                 <a href="/" class="btn btn-outline-secondary w-100">Kembali ke Beranda</a>
             </div>
         </div>

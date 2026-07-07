@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Layanan Kependudukan - Kelurahan Citangkil')
+@section('title', 'Layanan Kependudukan - Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -227,7 +227,7 @@
                 <span>Informasi Penting</span>
             </div>
             <ul class="info-list">
-                <li>Semua layanan kependudukan dilayani di Kantor Kelurahan Citangkil</li>
+                <li>Semua layanan kependudukan dilayani di Kantor Kelurahan Gunung Sugih</li>
                 <li>Pastikan semua berkas persyaratan sudah lengkap dan asli</li>
                 <li>Waktu pelayanan: Senin - Jumat, 08.00 - 15.00 WIB</li>
                 <li>Untuk informasi lebih lanjut, hubungi (0254) 123-4567</li>

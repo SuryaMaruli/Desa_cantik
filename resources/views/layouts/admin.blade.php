@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin - Kelurahan Citangkil')</title>
+    <title>@yield('title', 'Admin - Kelurahan Gunung Sugih')</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -83,6 +83,256 @@
             display: block;
         }
         
+
+        .village-switcher {
+            margin: -18px 6px 22px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 22px rgba(132, 58, 0, 0.14);
+        }
+
+        .village-switcher-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            margin-bottom: 10px;
+        }
+
+        .village-switcher-header > div {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .village-switcher-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--sidebar-color);
+            box-shadow: 0 6px 14px rgba(122, 54, 0, 0.18);
+            flex: 0 0 auto;
+        }
+
+        .village-switcher-icon i {
+            font-size: 19px;
+            margin: 0;
+        }
+
+        .village-switcher label {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin: 0 0 4px;
+            display: block;
+        }
+
+        .village-switcher-current {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+            display: block;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .village-switcher-control {
+            position: relative;
+        }
+
+        .village-switcher-control select {
+            width: 100%;
+            min-height: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 9px 44px 9px 11px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #333;
+            background-color: #fff;
+            appearance: none;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 8px 16px rgba(122, 54, 0, 0.16);
+        }
+
+        .village-switcher-control select:focus {
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22), 0 8px 16px rgba(122, 54, 0, 0.16);
+        }
+
+        .village-switcher-control select:disabled {
+            color: #6c4b33;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: default;
+        }
+
+        .village-switcher-selected,
+        .village-switcher-static {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 9px 40px 9px 11px;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #1f2937;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 8px 16px rgba(122, 54, 0, 0.16);
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .village-switcher-dropdown {
+            width: 100%;
+        }
+
+        .village-switcher-button {
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 9px 40px 9px 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            color: #1f2937;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 8px 16px rgba(122, 54, 0, 0.16);
+            text-align: left;
+            position: relative;
+        }
+
+        .village-switcher-button:hover,
+        .village-switcher-button:focus,
+        .village-switcher-button.show {
+            background: #fff;
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22), 0 8px 16px rgba(122, 54, 0, 0.16);
+            color: #111827;
+        }
+
+        .village-switcher-button::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: 13px;
+            transform: translateY(-50%);
+            color: #c66622;
+            font-size: 11px;
+            border: none;
+            margin: 0;
+        }
+
+        .village-switcher-button.show::after {
+            content: '\f077';
+        }
+
+        .village-switcher-button-text {
+            min-width: 0;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .village-switcher-menu {
+            width: 100%;
+            margin-top: 8px !important;
+            padding: 7px;
+            border: none;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 18px 32px rgba(70, 30, 0, 0.24);
+        }
+
+        .village-switcher-menu .dropdown-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            min-height: 40px;
+            border-radius: 9px;
+            padding: 8px 9px;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.25;
+            white-space: normal;
+        }
+
+        .village-switcher-menu .dropdown-item:hover,
+        .village-switcher-menu .dropdown-item:focus {
+            background: #fff3e6;
+            color: #b65212;
+        }
+
+        .village-switcher-menu .dropdown-item.active {
+            background: #f89039;
+            color: #fff;
+        }
+
+        .village-switcher-menu .dropdown-item i {
+            width: 18px;
+            margin: 1px 0 0;
+            font-size: 16px;
+            text-align: center;
+            flex: 0 0 auto;
+        }
+
+        .village-switcher-menu .dropdown-item span {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .village-switcher-control::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: 13px;
+            transform: translateY(-50%);
+            color: #c66622;
+            font-size: 11px;
+            pointer-events: none;
+        }
+
+        .village-switcher-control.is-locked::after {
+            content: '\f023';
+        }
+
+        .village-switcher-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 9px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 11px;
+            line-height: 1;
+        }
+
+        .village-switcher-status i {
+            font-size: 12px;
+            color: #fff;
+            margin: 0;
+        }
         /* Navigation List */
         .nav-list {
             padding: 0;
@@ -311,9 +561,56 @@
     <div class="sidebar" id="sidebar">
         <div class="logo-details">
             <div class="logo_name">Admin Panel</div>
-            <div class="sub_name">Kelurahan Citangkil</div>
+            <div class="sub_name">{{ $currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih' }}</div>
         </div>
-        
+                @php            $adminSwitcherVillages = config('villages.items', []);
+            $adminPath = preg_replace('#^admin/?#', '', request()->path());
+            $adminPathParts = explode('/', trim($adminPath, '/'));
+
+            if (isset($adminPathParts[0]) && array_key_exists($adminPathParts[0], $adminSwitcherVillages)) {
+                array_shift($adminPathParts);
+                $adminPath = implode('/', $adminPathParts);
+            }
+
+            $adminPath = $adminPath === '' ? 'dashboard' : $adminPath;
+        @endphp
+        <div class="village-switcher">
+            <div class="village-switcher-header">
+                <span class="village-switcher-icon" aria-hidden="true">
+                    <i class='bx bx-map-pin'></i>
+                </span>
+                <div>
+                    <label for="adminVillageSwitch">Kelurahan Aktif</label>
+                    <span class="village-switcher-current">{{ $currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih' }}</span>
+                </div>
+            </div>
+            @if(Auth::user()->role === 'super_admin')
+                <div class="dropdown village-switcher-dropdown">
+                    <button class="village-switcher-button dropdown-toggle" type="button" id="adminVillageSwitch" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="village-switcher-button-text">{{ $currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih' }}</span>
+                    </button>
+                    <ul class="dropdown-menu village-switcher-menu" aria-labelledby="adminVillageSwitch">
+                        @foreach($adminSwitcherVillages as $slug => $village)
+                            @php($isActiveVillage = ($currentVillageSlug ?? config('villages.default')) === $slug)
+                            <li>
+                                <a class="dropdown-item {{ $isActiveVillage ? 'active' : '' }}" href="{{ route('admin.switch-village', ['village' => $slug, 'redirect' => $adminPath]) }}" data-village-switcher-option @if($isActiveVillage) aria-current="true" @endif>
+                                    <i class='bx {{ $isActiveVillage ? 'bx-check-circle' : 'bx-map-pin' }}'></i>
+                                    <span>{{ $village['official_name'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+                <span class="village-switcher-status"><i class='bx bx-transfer'></i> Bisa diganti</span>
+            @else
+                <div class="village-switcher-control is-locked">
+                    <div id="adminVillageSwitch" class="village-switcher-static" role="textbox" aria-label="Kelurahan aktif">
+                        {{ $currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih' }}
+                    </div>
+                </div>
+                <span class="village-switcher-status"><i class='bx bx-lock-alt'></i> Akses tetap</span>
+            @endif
+        </div>
         <ul class="nav-list">
 <li>
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard*') ? 'active' : '' }}">
@@ -322,7 +619,7 @@
                 </a>
             </li>
             <li>
-<a href="{{ route('home') }}" class="">
+<a href="{{ ($currentVillageSlug ?? config('villages.default')) === config('villages.default') ? '/' : '/' . ($currentVillageSlug ?? '') }}" class="">
                     <i class='bx bx-home-alt'></i>
                     <span class="links_name">Kembali ke Beranda</span>
                 </a>
@@ -406,12 +703,14 @@
                     <span class="links_name">Data Lurah</span>
                 </a>
             </li>
+            @if(Auth::user()->role === 'super_admin')
             <li>
                 <a href="{{ route('admin.admin.index') }}" class="{{ request()->is('admin/admin*') ? 'active' : '' }}">
                     <i class='bx bx-user-plus'></i>
                     <span class="links_name">Kelola Admin</span>
                 </a>
             </li>
+            @endif
             <li>
                 <a href="{{ route('admin.profil.edit') }}" class="{{ request()->is('admin/profil*') ? 'active' : '' }}">
                     <i class='bx bx-user'></i>
@@ -425,6 +724,7 @@
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
+                    <input type="hidden" name="village" value="{{ $currentVillageSlug ?? config('villages.default') }}">
                 </form>
             </li>
         </ul>
@@ -526,7 +826,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="jabatanLurah" class="form-label">Jabatan</label>
-                                <input type="text" class="form-control" id="jabatanLurah" value="Lurah Citangkil">
+                                <input type="text" class="form-control" id="jabatanLurah" value="Lurah Bulakan">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="nipLurah" class="form-label">NIP</label>
@@ -761,7 +1061,7 @@
             document.getElementById('nipLurah').value = dataLurah.nipLurah || '196512311985031023';
             document.getElementById('pangkatLurah').value = dataLurah.pangkatLurah || 'Pembina Tingkat I';
             document.getElementById('golonganLurah').value = dataLurah.golonganLurah || 'IV/b';
-            document.getElementById('jabatanLurah').value = dataLurah.jabatanLurah || 'Lurah Citangkil';
+            document.getElementById('jabatanLurah').value = dataLurah.jabatanLurah || 'Lurah Bulakan';
             document.getElementById('sambutanLurah').value = dataLurah.sambutanLurah || 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.';
             
             // Load foto jika ada
@@ -920,3 +1220,5 @@
 @stack('scripts')
 </body>
 </html>
+
+

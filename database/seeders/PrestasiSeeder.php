@@ -18,7 +18,7 @@ class PrestasiSeeder extends Seeder
             'tingkat' => 'Kota Cilegon',
             'penyelenggara' => 'Pemerintah Kota Cilegon',
             'tahun' => 2024,
-            'deskripsi' => 'Kelurahan Citangkil meraih juara 1 dalam kompetisi kelurahan terbersih tingkat Kota Cilegon.',
+            'deskripsi' => 'Kelurahan Gunung Sugih meraih juara 1 dalam kompetisi kelurahan terbersih tingkat Kota Cilegon.',
             'tanggal' => '2024-03-15',
         ]);
 

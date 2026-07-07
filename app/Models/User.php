@@ -23,6 +23,7 @@ protected $fillable = [
         'password',
         'foto_profil',
         'role',
+        'village_id',
     ];
 
     /**
@@ -46,5 +47,10 @@ protected $fillable = [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class);
     }
 }

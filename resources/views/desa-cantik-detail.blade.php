@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $program->judul_program . ' - Output Desa Cantik - Kelurahan Citangkil')
+@section('title', $program->judul_program . ' - Output Desa Cantik - Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -154,7 +154,7 @@
                 </div>
                 <div class="meta-item">
                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4z"/></svg>
-                    Kelurahan Citangkil
+                    Kelurahan Gunung Sugih
                 </div>
             </div>
         </div>

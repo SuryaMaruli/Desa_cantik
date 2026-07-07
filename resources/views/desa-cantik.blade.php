@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Program Desa Cantik - Kelurahan Citangkil')
+@section('title', 'Program Desa Cantik - Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -1112,7 +1112,7 @@
         <div class="container">
             <h1>Program Desa Cantik</h1>
             <p class="subtitle">Output Pembinaan Desa Cantik oleh BPS Kota Cilegon - Mirroring Website</p>
-            <p class="subtitle">Kelurahan Citangkil</p>
+            <p class="subtitle">Kelurahan Gunung Sugih</p>
         </div>
     </header>
 

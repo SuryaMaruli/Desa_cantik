@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Berita & Informasi - Kelurahan Citangkil')
+@section('title', 'Berita & Informasi - Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -336,8 +336,8 @@ body {
 <header class="main-header">
         <div class="container">
             <h1>Berita & Informasi</h1>
-            <p class="subtitle">Update terkini seputar kegiatan, pengumuman, dan berita dari Kelurahan Citangkil</p>
-            <p class="subtitle">Kelurahan Citangkil</p>
+            <p class="subtitle">Update terkini seputar kegiatan, pengumuman, dan berita dari Kelurahan Gunung Sugih</p>
+            <p class="subtitle">Kelurahan Gunung Sugih</p>
         </div>
 </header>
 

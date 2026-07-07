@@ -33,7 +33,7 @@ class BatasWilayahController extends Controller
             
             // Read shapefile using Python script
             $pythonScript = resource_path('views/BatasWilayah.py');
-            $outputFile = storage_path('app/shapefile/wilayah_citangkil.geojson');
+            $outputFile = storage_path('app/shapefile/wilayah_bulakan.geojson');
             
             // Ensure output directory exists
             if (!file_exists(storage_path('app/shapefile'))) {
@@ -75,7 +75,7 @@ class BatasWilayahController extends Controller
     {
         try {
             // Check for cached GeoJSON first
-            $geojsonPath = storage_path('app/shapefile/citangkil_boundaries.geojson');
+            $geojsonPath = storage_path('app/shapefile/bulakan_boundaries.geojson');
             
             if (file_exists($geojsonPath)) {
                 $geojson = file_get_contents($geojsonPath);
@@ -83,7 +83,7 @@ class BatasWilayahController extends Controller
             }
             
             // Read from pre-generated HTML file in resources/views
-            $htmlGeoJSONPath = resource_path('views/peta_batas_wilayah_citangkil.html');
+            $htmlGeoJSONPath = resource_path('views/peta_batas_wilayah_bulakan.html');
             
             if (!file_exists($htmlGeoJSONPath)) {
                 return response()->json([
@@ -94,37 +94,35 @@ class BatasWilayahController extends Controller
             
             $htmlContent = file_get_contents($htmlGeoJSONPath);
             
-            // Define village data to extract (id => [name, color, bats_direction, kecamatan])
+            // Define village data to extract (id => [name, color, batas_direction, kecamatan])
             $villages = [
                 'geo_json_839ea5eba30299f74736676182436a8c' => [
-                    'name' => 'MASIGIT', 
+                    'name' => 'KARANGASEM', 
                     'color' => 'green', 
                     'direction' => 'Timur',
-                    'kecamatan' => 'JOMBANG'
+                    'kecamatan' => 'CIWANDAN',
+                    'kab_kota' => 'KOTA CILEGON'
                 ],
                 'geo_json_cec97c609cce24353cf7d89ccc52be08' => [
-                    'name' => 'TAMAN BARU', 
+                    'name' => 'KOSAMBIRONYOK', 
                     'color' => 'orange', 
                     'direction' => 'Selatan',
-                    'kecamatan' => 'CITANGKIL'
+                    'kecamatan' => 'ANYAR',
+                    'kab_kota' => 'SERANG'
                 ],
                 'geo_json_0ad582e32b76b47d0309eb49425dfa82' => [
-                    'name' => 'RAMANUJU', 
-                    'color' => 'blue', 
-                    'direction' => 'Utara',
-                    'kecamatan' => 'PURWAKARTA'
-                ],
-                'geo_json_31ef67ac104ca128a2e2f31092e5ae92' => [
-                    'name' => 'KEBONSARI', 
+                    'name' => 'ANYAR', 
                     'color' => 'purple', 
                     'direction' => 'Barat',
-                    'kecamatan' => 'CITANGKIL'
+                    'kecamatan' => 'ANYAR',
+                    'kab_kota' => 'SERANG'
                 ],
                 'geo_json_79b6f20bdc89596e008810ac6bbd0c0f' => [
-                    'name' => 'CITANGKIL', 
+                    'name' => 'GUNUNG SUGIH', 
                     'color' => 'red', 
                     'direction' => 'Pusat',
-                    'kecamatan' => 'CITANGKIL'
+                    'kecamatan' => 'CIWANDAN',
+                    'kab_kota' => 'KOTA CILEGON'
                 ]
             ];
             
@@ -146,7 +144,7 @@ class BatasWilayahController extends Controller
                                 'properties' => [
                                     'DESA' => $villageInfo['name'],
                                     'KECAMATAN' => $villageInfo['kecamatan'],
-                                    'KAB_KOTA' => 'KOTA CILEGON',
+                                    'KAB_KOTA' => $villageInfo['kab_kota'],
                                     'BATAS' => $villageInfo['direction'],
                                     'COLOR' => $villageInfo['color']
                                 ],
@@ -174,7 +172,7 @@ class BatasWilayahController extends Controller
                                     'properties' => [
                                         'DESA' => $villageInfo['name'],
                                         'KECAMATAN' => $villageInfo['kecamatan'],
-                                        'KAB_KOTA' => 'KOTA CILEGON',
+                                        'KAB_KOTA' => $villageInfo['kab_kota'],
                                         'BATAS' => $villageInfo['direction'],
                                         'COLOR' => $villageInfo['color']
                                     ],
@@ -207,3 +205,4 @@ class BatasWilayahController extends Controller
         }
     }
 }
+

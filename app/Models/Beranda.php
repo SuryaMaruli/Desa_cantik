@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Beranda extends Model
 {
+    use BelongsToVillage;
+
     protected $fillable = [
         'nama_kelurahan',
         'deskripsi',

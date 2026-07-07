@@ -18,9 +18,10 @@ class DataLurahSeeder extends Seeder
             'nip' => '196512311985031023',
             'pangkat' => 'Pembina Tingkat I',
             'golongan' => 'IV/b',
-            'jabatan' => 'Lurah Citangkil',
+            'jabatan' => 'Lurah Bulakan',
             'sambutan_lurah' => 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.',
             'foto_lurah' => null,
         ]);
     }
 }
+

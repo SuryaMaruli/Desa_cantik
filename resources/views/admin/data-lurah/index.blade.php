@@ -51,7 +51,7 @@
                 </div>
                 <div class="form-group">
                     <label>Jabatan</label>
-                    <div class="data-box" id="displayJabatanLurah">{{ $dataLurah->jabatan ?? 'Lurah Citangkil' }}</div>
+                    <div class="data-box" id="displayJabatanLurah">{{ $dataLurah->jabatan ?? 'Lurah Bulakan' }}</div>
                 </div>
                 <div class="form-group">
                     <label>NIP</label>
@@ -454,7 +454,7 @@ function loadDataLurahFromDB() {
 // Fungsi untuk update display dengan data dari database
 function updateDisplayWithData(dataLurah) {
     document.getElementById('displayNamaLurah').textContent = dataLurah.nama_lurah || 'M. ALI WAHIDI, S.Sos.M.Si';
-    document.getElementById('displayJabatanLurah').textContent = dataLurah.jabatan || 'Lurah Citangkil';
+    document.getElementById('displayJabatanLurah').textContent = dataLurah.jabatan || 'Lurah Bulakan';
     document.getElementById('displayNipLurah').textContent = dataLurah.nip || '196512311985031023';
     document.getElementById('displayPangkatLurah').textContent = dataLurah.pangkat || 'Pembina Tingkat I';
     document.getElementById('displayGolonganLurah').textContent = dataLurah.golongan || 'IV/b';
@@ -467,7 +467,7 @@ function updateModalWithData(dataLurah) {
     document.getElementById('nipLurah').value = dataLurah.nip || '196512311985031023';
     document.getElementById('pangkatLurah').value = dataLurah.pangkat || 'Pembina Tingkat I';
     document.getElementById('golonganLurah').value = dataLurah.golang || 'IV/b';
-    document.getElementById('jabatanLurah').value = dataLurah.jabatan || 'Lurah Citangkil';
+    document.getElementById('jabatanLurah').value = dataLurah.jabatan || 'Lurah Bulakan';
     document.getElementById('sambutanLurah').value = dataLurah.sambutan_lurah || 'Situs web ini kami hadirkan sebagai wadah untuk mempublikasi atau informasi kepada masyarakat. Dengan kemudahan yang diberikan, diharapkan dapat mempercepat proses pelayanan publik dan mempermudah masyarakat dalam memperoleh informasi terkini.';
     
     // Load foto jika ada
@@ -698,3 +698,4 @@ window.hapusSambutanLurah = function() {
 </script>
 @endpush
 @endsection
+

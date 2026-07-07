@@ -29,6 +29,9 @@
     .home-calendar-day { min-height: 66px; border-radius: 10px; border: 1px solid #edf1f5; color: #334155; background: #fbfcfe; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; padding: 9px; text-align: left; transition: all 0.2s ease; cursor: pointer; }
     .home-calendar-day:hover { border-color: #F6903A; box-shadow: 0 8px 18px rgba(246, 144, 58, 0.12); transform: translateY(-1px); }
     .home-calendar-day.is-empty { visibility: hidden; pointer-events: none; }
+    .home-calendar-day.is-past { opacity: 0.65; background: #f1f5f9; }
+    .home-calendar-day.is-past.has-agenda { opacity: 0.9; }
+    .home-calendar-day.is-past:hover { border-color: #cbd5e1; box-shadow: 0 8px 18px rgba(100, 116, 139, 0.1); transform: translateY(-1px); }
     .home-calendar-day.is-today { border-color: #94a3b8; background: #f8fafc; }
     .home-calendar-day.has-agenda { background: #fff7ed; border-color: #fed7aa; }
     .home-calendar-day.is-selected { background: #F6903A; border-color: #F6903A; color: #fff; }
@@ -86,7 +89,7 @@
 <section class="home-agenda-section" id="agenda-kegiatan">
     <div class="home-agenda-header">
         <h2>Agenda Kegiatan</h2>
-        <p>Jadwal kegiatan dan acara Kelurahan Citangkil.</p>
+        <p>Jadwal kegiatan dan acara Kelurahan Gunung Sugih.</p>
     </div>
 
     <div class="home-agenda-wrap" data-home-agenda-calendar>
@@ -182,6 +185,7 @@
                 button.type = 'button';
                 button.className = 'home-calendar-day';
                 if (dateKey === todayKey) button.classList.add('is-today');
+                if (dateKey < todayKey) button.classList.add('is-past');
                 if (dateKey === selectedDateKey) button.classList.add('is-selected');
                 if (dayAgendas.length) button.classList.add('has-agenda');
                 button.innerHTML = '<span class="home-calendar-number">' + day + '</span>' + (dayAgendas.length ? '<span class="home-agenda-count">' + dayAgendas.length + '</span>' : '');
@@ -189,7 +193,7 @@
                     selectedDateKey = dateKey;
                     renderCalendar();
                     renderDetail();
-                    if (canManageAgenda) {
+                    if (canManageAgenda && dateKey >= todayKey) {
                         openAddAgendaModal(dateKey);
                     }
                 });
@@ -241,6 +245,11 @@
         }
 
         function openAddAgendaModal(dateKey) {
+            if (dateKey < todayKey) {
+                showNotification('Kegiatan tidak bisa dijadwalkan pada tanggal sebelum hari ini.', 'warning');
+                return;
+            }
+
             closeAgendaModal();
             const modal = document.createElement('div');
             modal.className = 'home-agenda-modal-overlay';
@@ -296,7 +305,7 @@
                 '<input type="hidden" name="_token" value="' + csrfToken + '">' +
                 '<input type="hidden" name="_method" value="PUT">' +
                 '<div class="home-agenda-form-grid">' +
-                '<div class="home-agenda-field"><label>Tanggal Kegiatan</label><input type="date" name="tanggal_kegiatan" value="' + escapeAttribute(item.tanggal_kegiatan) + '" required></div>' +
+                '<div class="home-agenda-field"><label>Tanggal Kegiatan</label><input type="date" name="tanggal_kegiatan" value="' + escapeAttribute(item.tanggal_kegiatan) + '" min="' + todayKey + '" required><small style="display:block;margin-top:6px;color:#64748b;font-size:12px;line-height:1.35;">Ubah tanggal ini untuk memindahkan kegiatan.</small></div>' +
                 '<div class="home-agenda-field"><label>Nama Kegiatan</label><input type="text" name="nama_kegiatan" value="' + escapeAttribute(item.nama_kegiatan) + '" required></div>' +
                 '<div class="home-agenda-field"><label>Tempat Kegiatan</label><input type="text" name="tempat_kegiatan" value="' + escapeAttribute(item.tempat_kegiatan) + '" required></div>' +
                 '<div class="home-agenda-field"><label>Jam Kegiatan</label><div class="home-agenda-time-grid">' +
@@ -360,7 +369,52 @@
             });
         }
 
+        function timeToMinutes(value) {
+            const parts = String(value || '').split(':').map(Number);
+            return parts.length === 2 && parts.every(Number.isFinite) ? (parts[0] * 60) + parts[1] : null;
+        }
+
+        function validateAgendaDuration(form) {
+            const startInput = form.querySelector('[name="jam_mulai"]');
+            const endInput = form.querySelector('[name="jam_selesai"]');
+            const start = timeToMinutes(startInput ? startInput.value : '');
+            const end = timeToMinutes(endInput ? endInput.value : '');
+
+            if (start === null || end === null) {
+                return true;
+            }
+
+            const duration = end - start;
+
+            if (duration <= 0) {
+                showNotification('Jam mulai harus lebih awal daripada jam selesai.', 'warning');
+                return false;
+            }
+
+            if (duration < 60) {
+                showNotification('Lama pertemuan minimal 1 jam.', 'warning');
+                return false;
+            }
+
+            if (duration > 450) {
+                showNotification('Lama pertemuan maksimal 7 jam 30 menit.', 'warning');
+                return false;
+            }
+
+            return true;
+        }
+
         function submitAgendaForm(form, loadingText, fallbackMessage) {
+            const dateInput = form.querySelector('[name="tanggal_kegiatan"]');
+            if (dateInput && dateInput.value < todayKey) {
+                showNotification('Kegiatan tidak bisa dijadwalkan pada tanggal sebelum hari ini.', 'warning');
+                return;
+            }
+
+            if (!form.reportValidity() || !validateAgendaDuration(form)) {
+                return;
+            }
+
             const submitButton = form.querySelector('button[type="submit"]');
             const originalHtml = submitButton ? submitButton.innerHTML : '';
             if (submitButton) {

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Beranda - Kelurahan Citangkil')
+@section('title', 'Beranda - Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -548,13 +548,13 @@
                     <img src="{{ asset('storage/' . $beranda->logo) }}" alt="{{ $beranda->nama_kelurahan ?? 'Logo Kelurahan' }}">
                 </div>
             @endif
-            <h1>{{ $beranda->nama_kelurahan ?? 'Kelurahan Citangkil' }}</h1>
+            <h1>{{ $beranda->nama_kelurahan ?? 'Kelurahan Gunung Sugih' }}</h1>
             <div class="description">
                 <span>{{ $beranda->deskripsi ?? 'Dapori Pembuasan Desa Cantik oleh RPS Kota Cilegon' }}</span>
             </div>
             <div class="contacts">
                 <div><i class="fas fa-phone-alt"></i> {{ $beranda->no_hp ?? '(0254) 123-4567' }}</div>
-                <div><i class="far fa-envelope"></i> {{ $beranda->email ?? 'kelurahan@citangkil.go.id' }}</div>
+                <div><i class="far fa-envelope"></i> {{ str_ireplace('bulakan', 'gunungsugih', $beranda->email ?? 'kelurahan@gunungsugih.go.id') }}</div>
             </div>
         </div>
         <div class="wave-container">
@@ -573,7 +573,7 @@
             <div class="card">
                 <div class="icon-box"><i class="far fa-check-circle"></i></div>
                 <h3>Profil Kelurahan</h3>
-                <p>Informasi lengkap tentang sejarah, visi misi, dan struktur organisasi Kelurahan Citangkil.</p>
+                <p>Informasi lengkap tentang sejarah, visi misi, dan struktur organisasi Kelurahan Gunung Sugih.</p>
                 <a href="/profil-kelurahan" class="card-btn">Selengkapnya <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="card">
@@ -585,7 +585,7 @@
             <div class="card">
                 <div class="icon-box"><i class="far fa-chart-bar"></i></div>
                 <h3>Data</h3>
-                <p>Data statistik dan informasi kependudukan Kelurahan Citangkil yang transparan.</p>
+                <p>Data statistik dan informasi kependudukan Kelurahan Gunung Sugih yang transparan.</p>
                 <a href="/data" class="card-btn">Akses Data <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="card">
@@ -597,7 +597,7 @@
             <div class="card">
                 <div class="icon-box"><i class="far fa-newspaper"></i></div>
                 <h3>Berita & Informasi</h3>
-                <p>Update terkini seputar kegiatan, pengumuman, dan berita dari Kelurahan Citangkil.</p>
+                <p>Update terkini seputar kegiatan, pengumuman, dan berita dari Kelurahan Gunung Sugih.</p>
                 <a href="/berita" class="card-btn">Baca Berita <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
@@ -605,7 +605,7 @@
 
     <section class="lurah-section">
         <div class="section-header">
-            <h2 style="color: #e65100;">LURAH CITANGKIL</h2>
+            <h2 style="color: #e65100;">LURAH GUNUNG SUGIH</h2>
             <div class="underline" style="background-color: #e65100;"></div>
         </div>
         <div class="lurah-card">
@@ -618,7 +618,7 @@
                     @endif
                 </div>
                 <div class="name-container">
-                    <span>{{ $dataLurah->jabatan ?? 'Lurah Citangkil' }}</span>
+                    <span>{{ str_ireplace('Bulakan', 'Gunung Sugih', $dataLurah->jabatan ?? 'Lurah Gunung Sugih') }}</span>
                     <h3>{{ $dataLurah->nama_lurah ?? 'M. ALI WAHIDI, S.Sos.M.Si' }}</h3>
                 </div>
             </div>
@@ -640,7 +640,7 @@
             <h2>INFORMASI PUBLIK</h2>
         </div>
         <div class="info-grid">
-            @forelse($informasiPubliks ?? \App\Models\InformasiPublik::where('judul', 'not like', '%Agenda%')->get() as $index => $item)
+            @forelse($informasiPubliks ?? \App\Models\InformasiPublik::where('id', '!=', 4)->where('judul', 'not like', '%Agenda%')->get() as $index => $item)
             <div class="info-card">
                 <div class="info-icon">{{ $index + 1 }}</div>
                 <h4>{{ $item->judul }}</h4>
@@ -651,7 +651,7 @@
             <div class="info-card">
                 <div class="info-icon">1</div>
                 <h4>Lembaga Kemasyarakatan</h4>
-                <p>Informasi lengkap tentang lembaga-lembaga yang ada di Kelurahan Citangkil.</p>
+                <p>Informasi lengkap tentang lembaga-lembaga yang ada di Kelurahan Gunung Sugih.</p>
                 <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="info-card">
@@ -673,7 +673,7 @@
     <section class="prestasi-section">
         <div class="prestasi-header">
             <h2>Prestasi</h2>
-            <p>Prestasi dan penghargaan yang telah diraih Kelurahan Citangkil.</p>
+            <p>Prestasi dan penghargaan yang telah diraih Kelurahan Gunung Sugih.</p>
         </div>
 
         @if(($prestasi ?? collect())->count() > 0)
@@ -913,119 +913,5 @@
         });
     </script>
 
-    <style>
-        .visit-stats-section {
-            background: #ffffff;
-            padding: 20px 20px 36px;
-        }
-
-        .visit-stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .visit-stats-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 18px;
-        }
-
-.visit-stats-grid {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 14px;
-            overflow-x: auto;
-        }
-
-        @media (max-width: 575px) {
-            .visit-stats-grid .visit-stat-card {
-                min-width: calc(50% - 7px);
-                flex: 0 0 calc(50% - 7px);
-            }
-        }
-
-        @media (min-width: 576px) {
-            .visit-stats-grid .visit-stat-card {
-                min-width: calc(25% - 10.5px);
-                flex: 0 0 calc(25% - 10.5px);
-            }
-        }
-
-        .visit-stat-card {
-            border: 1px solid #f0f0f0;
-            border-radius: 12px;
-            padding: 18px;
-            background: #fff8f2;
-            box-shadow: 0 6px 18px rgba(248, 144, 57, 0.08);
-        }
-
-        .visit-stat-label {
-            font-size: 0.95rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
-        .visit-stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #F89039;
-            line-height: 1.2;
-        }
-
-    </style>
-
-@php
-        $uniqueStats = $visitStats['unique'] ?? ['daily' => 0, 'weekly' => 0, 'monthly' => 0, 'total' => 0];
-        $visitorStats = $visitStats['visitor'] ?? ['daily' => 0, 'weekly' => 0, 'monthly' => 0, 'total' => 0];
-    @endphp
-    <section class="visit-stats-section">
-        <div class="visit-stats-container">
-            <h2 class="visit-stats-title">Jumlah Pengunjung Unik</h2>
-            <div class="visit-stats-grid">
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Harian</p>
-                    <p class="visit-stat-value">{{ number_format($uniqueStats['daily'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Mingguan</p>
-                    <p class="visit-stat-value">{{ number_format($uniqueStats['weekly'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Bulanan</p>
-                    <p class="visit-stat-value">{{ number_format($uniqueStats['monthly'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Total</p>
-                    <p class="visit-stat-value">{{ number_format($uniqueStats['total'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="visit-stats-section">
-        <div class="visit-stats-container">
-            <h2 class="visit-stats-title">Jumlah Kunjungan Website</h2>
-
-            <div class="visit-stats-grid">
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Harian</p>
-                    <p class="visit-stat-value">{{ number_format($visitorStats['daily'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Mingguan</p>
-                    <p class="visit-stat-value">{{ number_format($visitorStats['weekly'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Bulanan</p>
-                    <p class="visit-stat-value">{{ number_format($visitorStats['monthly'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-                <div class="visit-stat-card">
-                    <p class="visit-stat-label">Total</p>
-                    <p class="visit-stat-value">{{ number_format($visitorStats['total'] ?? 0, 0, ',', '.') }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
 @endsection
+

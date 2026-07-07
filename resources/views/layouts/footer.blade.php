@@ -296,9 +296,9 @@
         <div class="footer-grid">
             
             <div>
-                <h3 class="footer-title">Kelurahan Citangkil</h3>
+                <h3 class="footer-title">Kelurahan Gunung Sugih</h3>
                 <p class="footer-description">
-                    Melayani dengan sepenuh hati untuk kemajuan dan kesejahteraan masyarakat Citangkil.
+                    Melayani dengan sepenuh hati untuk kemajuan dan kesejahteraan masyarakat Gunung Sugih.
                 </p>
                 <div class="footer-divider"></div>
             </div>
@@ -309,17 +309,17 @@
                     <li>
                         <div class="footer-map-wrap">
                             <iframe
-                                src="https://www.google.com/maps?q=Kantor+Kelurahan+Citangkil,+Cilegon&output=embed"
+                                src="https://www.google.com/maps?q=Kantor+Kelurahan+Gunung+Sugih,+Cilegon&output=embed"
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"
                                 allowfullscreen
-                                title="Peta Lokasi Kelurahan Citangkil">
+                                title="Peta Lokasi Kelurahan Gunung Sugih">
                             </iframe>
                         </div>
                     </li>
                     <li class="footer-list flex-item">
                         <i class="fas fa-map-marker-alt footer-icon mt-1"></i>
-                        <span>Jl. Raya Citangkil No. 123<br>Kec. Citangkil, Kota Cilegon<br>Banten 42441</span>
+                        <span>Jl. Raya Gunung Sugih No. 123<br>Kec. Gunung Sugih, Kota Cilegon<br>Banten 42447</span>
                     </li>
                     <li class="footer-list align-center">
                         <i class="fas fa-phone-alt footer-icon"></i>
@@ -327,7 +327,10 @@
                     </li>
                     <li class="footer-list align-center">
                         <i class="fas fa-envelope footer-icon"></i>
-                        <a href="mailto:{{ App\Models\Beranda::first()?->email ?? 'kelurahan@citangkil.go.id' }}" class="footer-link white-hover">{{ App\Models\Beranda::first()?->email ?? 'kelurahan@citangkil.go.id' }}</a>
+                        @php
+                            $footerEmail = str_ireplace('bulakan', 'gunungsugih', App\Models\Beranda::first()?->email ?? 'kelurahan@gunungsugih.go.id');
+                        @endphp
+                        <a href="mailto:{{ $footerEmail }}" class="footer-link white-hover">{{ $footerEmail }}</a>
                     </li>
                 </ul>
             </div>
@@ -362,7 +365,7 @@
         <hr class="footer-hr">
 
         <div class="footer-bottom">
-            <p>&copy; 2025 Kelurahan Citangkil. Hak Cipta Dilindungi.</p>
+            <p>&copy; 2026 Kelurahan Gunung Sugih. Hak Cipta Dilindungi.</p>
             <div class="footer-bottom-links">
                 <a href="#" class="footer-bottom-link">Kebijakan Privasi</a>
                 <a href="#" class="footer-bottom-link">Syarat & Ketentuan</a>
@@ -370,3 +373,4 @@
         </div>
     </div>
 </footer>
+

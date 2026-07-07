@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Prestasi - Admin Kelurahan Citangkil')
+@section('title', 'Prestasi - Admin Kelurahan Gunung Sugih')
 @section('page-title', 'Manajemen Prestasi')
 
 @section('content')
@@ -537,7 +537,7 @@
     <div class="page-header">
         <div class="header-content">
             <h1>Manajemen Prestasi</h1>
-            <p>Kelola data prestasi dan penghargaan Kelurahan Citangkil</p>
+            <p>Kelola data prestasi dan penghargaan Kelurahan Gunung Sugih</p>
         </div>
         @if($prestasi->count() > 0)
             <button class="btn-add" id="openModalBtn">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Struktur Organisasi - Kelurahan Citangkil')
+@section('title', 'Struktur Organisasi - Kelurahan Gunung Sugih')
 
 @section('content')
 <style>
@@ -151,7 +151,7 @@
             <i class="fas fa-sitemap"></i>
         </div>
         <h1>Struktur Organisasi</h1>
-        <p>Struktur organisasi kelurahan Citangkil</p>
+        <p>Struktur organisasi kelurahan Gunung Sugih</p>
         <div class="breadcrumb">
             <a href="{{ route('home') }}">Beranda</a>
             <span>/</span>

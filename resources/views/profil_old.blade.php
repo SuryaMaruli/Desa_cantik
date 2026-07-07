@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Kelurahan Citangkil')
+@section('title', 'Profil Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -170,19 +170,19 @@
     <header class="header-section">
         <div class="container">
             <h1>Profil Kelurahan</h1>
-            <p>Mengenal lebih dekat Kelurahan Citangkil, sejarah, visi misi, dan struktur organisasi</p>
+            <p>Mengenal lebih dekat Kelurahan Gunung Sugih, sejarah, visi misi, dan struktur organisasi</p>
         </div>
     </header>
 
     <main class="container main-content">
         
         <div class="card">
-            <h2 class="profile-title">Kelurahan Citangkil</h2>
+            <h2 class="profile-title">Kelurahan Gunung Sugih</h2>
             <div class="info-list">
                 <div class="info-row">
                     <div class="label">Nama Kelurahan</div>
                     <div class="separator">:</div>
-                    <div class="value">Citangkil</div>
+                    <div class="value">Ciwandan</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Tahun Pembentukan</div>

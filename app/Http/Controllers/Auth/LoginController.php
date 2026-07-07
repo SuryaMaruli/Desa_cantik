@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use App\Models\Village;
 
 class LoginController extends Controller
 {
@@ -65,7 +66,7 @@ class LoginController extends Controller
                 Auth::login($user, $request->filled('remember'));
                 $request->session()->regenerate();
 
-                return redirect()->intended(route('admin.dashboard'))
+                return redirect()->intended($this->adminDashboardUrlFor($user))
                     ->with('success', 'Login berhasil! Selamat datang kembali, ' . Auth::user()->name);
             }
         }
@@ -84,11 +85,56 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = Auth::user();
+        $redirectTo = $this->homeUrlForLogout($request, $user);
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('status', 'Anda telah berhasil keluar.');
+        return redirect($redirectTo)->with('status', 'Anda telah berhasil keluar.');
+    }
+
+    private function adminDashboardUrlFor(User $user): string
+    {
+        if ($user->role !== 'admin') {
+            return '/admin/dashboard';
+        }
+
+        $village = $user->village_id ? Village::find($user->village_id) : null;
+
+        return $village ? '/admin/' . $village->slug . '/dashboard' : '/admin/dashboard';
+    }
+    private function homeUrlForLogout(Request $request, ?User $user): string
+    {
+        $defaultSlug = config('villages.default');
+        $villages = config('villages.items', []);
+        $slug = $request->input('village');
+
+        if (!$slug && app()->bound('currentVillageSlug')) {
+            $slug = app('currentVillageSlug');
+        }
+
+        $slug = is_string($slug) && array_key_exists($slug, $villages) ? $slug : null;
+        $slug = $slug === $defaultSlug ? null : $slug;
+
+        if (!$slug && $user && $user->role !== 'super_admin') {
+            $village = $user->village_id
+                ? Village::find($user->village_id)
+                : Village::where('is_default', true)->first();
+
+            $slug = $village?->slug;
+        }
+
+        if (!$slug && $user?->role === 'super_admin') {
+            $slug = $request->session()->get('admin_active_village');
+        }
+
+        if (!$slug || $slug === $defaultSlug || !array_key_exists($slug, $villages)) {
+            return '/';
+        }
+
+        return '/' . $slug;
     }
 }

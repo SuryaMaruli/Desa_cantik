@@ -76,6 +76,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" id="villageRow">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="village_id" class="form-label">Kelurahan <span class="text-danger">*</span></label>
+                            <select class="form-select" id="village_id" name="village_id">
+                                <option value="" selected disabled>Pilih kelurahan untuk admin...</option>
+                                @foreach($villages as $village)
+                                    <option value="{{ $village->id }}" {{ old('village_id') == $village->id ? 'selected' : '' }}>
+                                        {{ $village->official_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text text-info">
+                                Admin biasa hanya dapat mengelola konten kelurahan yang dipilih.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card-footer">
@@ -225,6 +243,23 @@ document.addEventListener('DOMContentLoaded', function() {
     @if($errors->any())
         showNotification('{{ $errors->first() }}', 'error');
     @endif
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const roleSelect = document.getElementById('role');
+    const villageSelect = document.getElementById('village_id');
+    const villageRow = document.getElementById('villageRow');
+
+    function syncVillageField() {
+        const isAdmin = roleSelect.value === 'admin';
+        villageRow.style.display = isAdmin ? '' : 'none';
+        villageSelect.required = isAdmin;
+        if (!isAdmin) villageSelect.value = '';
+    }
+
+    roleSelect.addEventListener('change', syncVillageField);
+    syncVillageField();
 });
 </script>
 @endsection

@@ -1,8 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Kelurahan Citangkil')
+@section('title', 'Profil Kelurahan Gunung Sugih')
 
 @section('content')
+    @php
+        $villageText = fn ($value) => $value;
+    @endphp
     <style>
         /* --- CSS RESET & GLOBAL --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -188,19 +191,19 @@
     <header class="header-section">
         <div class="container">
             <h1>Profil Kelurahan</h1>
-            <p>Mengenal lebih dekat Kelurahan Citangkil, sejarah, visi misi, dan struktur organisasi</p>
+            <p>Mengenal lebih dekat Kelurahan Gunung Sugih, sejarah, visi misi, dan struktur organisasi</p>
         </div>
     </header>
 
     <main class="container main-content">
         
         <div class="card">
-            <h2 class="profile-title">{{ $profilKelurahan->nama_kelurahan ?? 'Kelurahan Citangkil' }}</h2>
+            <h2 class="profile-title">{{ $villageText($profilKelurahan->nama_kelurahan ?? 'Kelurahan Gunung Sugih') }}</h2>
             <div class="info-list">
                 <div class="info-row">
                     <div class="label">Nama Kelurahan</div>
                     <div class="separator">:</div>
-                    <div class="value">{{ $profilKelurahan->nama_kelurahan ?? '-' }}</div>
+                    <div class="value">{{ $villageText($profilKelurahan->nama_kelurahan ?? '-') }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Tahun Pembentukan</div>
@@ -210,7 +213,7 @@
                 <div class="info-row">
                     <div class="label">Dasar Hukum Pembentukan</div>
                     <div class="separator">:</div>
-                    <div class="value">{{ $profilKelurahan->dasar_hukum_pembentukan ?? '-' }}</div>
+                    <div class="value">{{ $villageText($profilKelurahan->dasar_hukum_pembentukan ?? '-') }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Nomor Kode Wilayah</div>
@@ -225,26 +228,31 @@
                 <div class="info-row">
                     <div class="label">Kecamatan</div>
                     <div class="separator">:</div>
-                    <div class="value">{{ $profilKelurahan->kecamatan ?? '-' }}</div>
+                    <div class="value">{{ $villageText($profilKelurahan->kecamatan ?? '-') }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Kabupaten/Kota</div>
                     <div class="separator">:</div>
-                    <div class="value">{{ $profilKelurahan->kabupaten_kota ?? '-' }}</div>
+                    <div class="value">{{ $villageText($profilKelurahan->kabupaten_kota ?? '-') }}</div>
                 </div>
                 <div class="info-row">
                     <div class="label">Provinsi</div>
                     <div class="separator">:</div>
-                    <div class="value">{{ $profilKelurahan->provinsi ?? '-' }}</div>
+                    <div class="value">{{ $villageText($profilKelurahan->provinsi ?? '-') }}</div>
                 </div>
             </div>
         </div>
 
-        <h2 class="section-title">Sejarah Kelurahan Citangkil</h2>
+        <h2 class="section-title">Sejarah Kelurahan Gunung Sugih</h2>
         <div class="card history-text">
-            <p>Kelurahan Citangkil merupakan salah satu kelurahan di Kecamatan Citangkil, Kota Cilegon, Provinsi Banten. Kelurahan ini memiliki sejarah panjang yang berkaitan erat dengan perkembangan industri di Kota Cilegon.</p>
-            <p>Sejak didirikan, Kelurahan Citangkil terus berkembang dan bertransformasi menjadi salah satu Kelurahan yang maju dengan berbagai fasilitas publik dan pelayanan yang baik untuk masyarakat.</p>
-            <p>Dengan komitmen untuk terus meningkatkan kualitas pelayanan dan pembangunan, Kelurahan Citangkil senantiasa berinovasi dalam berbagai program dan kegiatan demi kesejahteraan masyarakat.</p>
+            <p>Kelurahan
+                Gunung Sugih sebelum menjadi kelurahan adalah sebuah Desa bernama Desa Gunung
+                Sugih yang merupakan hasil pemekaran dari Desa Gunung Sugih pada tahun 2006,
+                seiring dengan ditetapan dan disahkannya UU No.15 Tahun 1999 tanggal 27 April
+                1999 tentang pembentukan Kotamadya Daerah Tingkat II Depok dan Kota Madya
+                daerah Tingkat II Cilegon, status Kota Administratif Cilegon berubah menjadi
+                Kotamadya Cilegon.
+            </p>
         </div>
 
         <div class="vm-grid">
@@ -256,7 +264,7 @@
                     <h3 class="vm-title text-green">Visi</h3>
                 </div>
                 <div class="vm-content visi-text">
-                    "{{ $profilKelurahan->visi ?? 'Belum ada visi' }}"
+                    "{{ $villageText($profilKelurahan->visi ?? 'Belum ada visi') }}"
                 </div>
             </div>
 
@@ -271,7 +279,7 @@
                     <ul class="misi-list">
                         @if($profilKelurahan->misi && count($profilKelurahan->misi) > 0)
                             @foreach($profilKelurahan->misi as $misi)
-                                <li>{{ $misi }}</li>
+                                <li>{{ $villageText($misi) }}</li>
                             @endforeach
                         @else
                             <li>Belum ada misi</li>
@@ -321,7 +329,7 @@
             </div>
         </div>
 
-<h2 class="section-title">Perbatasan Wilayah Kelurahan Citangkil</h2>
+<h2 class="section-title">Perbatasan Wilayah Kelurahan Gunung Sugih</h2>
         <div class="card">
             <div class="map-placeholder" id="mapLoading">
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; background: #f8f9fa; border-radius: 12px;">
@@ -453,19 +461,24 @@
             
             // Define colors from Python code
             var warna = {
-                "CITANGKIL": "red",
-                "RAMANUJU": "blue",
-                "MASIGIT": "green",
-                "TAMAN BARU": "orange",
-                "KEBONSARI": "purple"
+                "GUNUNG SUGIH": "red",
+                "ANYAR": "purple",
+                "KOSAMBIRONYOK": "orange",
+                "KARANGASEM": "green"
             };
             
-            // Boundary direction info (from Python code)
+            // Boundary info shown in map popups
             var keteranganBatas = {
-                "RAMANUJU": "Utara",
-                "MASIGIT": "Timur",
-                "TAMAN BARU": "Selatan",
-                "KEBONSARI": "Barat"
+                "ANYAR": "Barat: Berbatasan dengan Desa Anyar di wilayah Kabupaten Serang.",
+                "KOSAMBIRONYOK": "Selatan: Berbatasan dengan Desa Kosambi dan Ronyok di wilayah Kabupaten Serang.",
+                "KARANGASEM": "Timur: Berbatasan dengan Kelurahan Karangasem."
+            };
+
+            var namaTampil = {
+                "GUNUNG SUGIH": "KELURAHAN GUNUNG SUGIH",
+                "ANYAR": "DESA ANYAR",
+                "KOSAMBIRONYOK": "DESA KOSAMBI DAN RONYOK",
+                "KARANGASEM": "KELURAHAN KARANGASEM"
             };
             
             // Style function for GeoJSON layers
@@ -483,20 +496,21 @@
 // Popup function
             function onEachFeature(feature, layer) {
                 var desa = feature.properties.DESA;
+                var displayDesa = namaTampil[desa] || desa;
                 var kecamatan = feature.properties.KECAMATAN || '-';
                 var kabKota = feature.properties.KAB_KOTA || '-';
                 
                 // Build popup content
                 var popupContent;
-                if (desa === "CITANGKIL") {
+                if (desa === "GUNUNG SUGIH") {
                     popupContent = '<h4 style="color:' + warna[desa] + '">' + 
-                        '<b>'+'KELURAHAN ' + desa + '</b><br>' +
+                        '<b>' + displayDesa + '</b><br>' +
                         'Kecamatan : ' + kecamatan + '<br>' +'</h4>';
                 } else {
-                    var arah = keteranganBatas[desa] || '-';
+                    var batas = keteranganBatas[desa] || '-';
                     popupContent = '<h4 style="color:' + warna[desa] + '">' + 
-                        '<b>' + 'Batas Bagian ' + arah + '</b><br>' +
-                        'KELURAHAN: ' + desa + '<br>' +
+                        '<b>' + batas + '</b><br>' +
+                        'KELURAHAN: ' + displayDesa + '<br>' +
                         'KECAMATAN: ' + kecamatan + '<br>'+'</h4>';
                 }
                 
@@ -514,7 +528,7 @@
                 });
                 
                 // Add tooltip on hover
-                layer.bindTooltip(desa, {
+                layer.bindTooltip(displayDesa, {
                     permanent: false,
                     direction: 'center',
                     className: 'village-tooltip',
@@ -526,7 +540,7 @@
             var geoJsonLayer = null;
             
 // Load GeoJSON from public folder
-            var geoJsonUrl = '{{ asset("shapefile/citangkil_boundaries.geojson") }}';
+            var geoJsonUrl = '{{ asset("shapefile/bulakan_boundaries.geojson") }}';
             console.log('Loading GeoJSON from:', geoJsonUrl);
             
             fetch(geoJsonUrl)
@@ -555,6 +569,30 @@
                     if (bounds.isValid()) {
                         map.fitBounds(bounds, {padding: [50, 50]});
                     }
+
+                    var gunungSugihFeature = data.features.find(function(feature) {
+                        return feature.properties && feature.properties.DESA === 'GUNUNG SUGIH';
+                    });
+
+                    if (gunungSugihFeature) {
+                        var gunungSugihBounds = L.geoJSON(gunungSugihFeature).getBounds();
+                        var center = gunungSugihBounds.getCenter();
+                        var northPoint = L.latLng(gunungSugihBounds.getNorth() + 0.01, center.lng);
+
+                        L.polyline([center, northPoint], {
+                            color: 'blue',
+                            weight: 3,
+                            dashArray: '8, 8'
+                        }).addTo(map).bindTooltip('Utara: Berbatasan langsung dengan Perairan Selat Sunda.');
+
+                        L.circleMarker(northPoint, {
+                            radius: 7,
+                            color: 'blue',
+                            fillColor: 'blue',
+                            fillOpacity: 0.75,
+                            weight: 2
+                        }).addTo(map).bindPopup('<b>Utara: Perairan Selat Sunda</b>');
+                    }
                 })
                 .catch(error => {
                     console.error('Error loading GeoJSON:', error);
@@ -576,23 +614,23 @@
                         <strong style="display:block;margin-bottom:8px;">Legenda Batas Wilayah</strong>
                         <div style="display:flex;align-items:center;margin-bottom:4px;">
                             <span style="width:16px;height:16px;background:blue;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Utara (Ramanuju)</span>
+                            <span>Utara: Perairan Selat Sunda</span>
                         </div>
                         <div style="display:flex;align-items:center;margin-bottom:4px;">
                             <span style="width:16px;height:16px;background:purple;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Barat (Kebonsari)</span>
+                            <span>Barat: Desa Anyar, Kabupaten Serang</span>
                         </div>
                         <div style="display:flex;align-items:center;margin-bottom:4px;">
                             <span style="width:16px;height:16px;background:green;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Timur (Masigit)</span>
+                            <span>Timur: Kelurahan Karangasem</span>
                         </div>
                         <div style="display:flex;align-items:center;margin-bottom:4px;">
                             <span style="width:16px;height:16px;background:orange;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Selatan (Taman Baru)</span>
+                            <span>Selatan: Desa Kosambi dan Ronyok, Kabupaten Serang</span>
                         </div>
                         <div style="display:flex;align-items:center;margin-top:6px;padding-top:6px;border-top:1px solid #eee;">
                             <span style="width:16px;height:16px;background:red;opacity:0.3;margin-right:8px;border-radius:3px;border:2px solid red;"></span>
-                            <span>Citangkil</span>
+                            <span>Gunung Sugih</span>
                         </div>
                     </div>
                 `;
@@ -626,7 +664,7 @@
             }
         </script>
 
-<h2 class="section-title-center">MONOGRAFI KELURAHAN CITANGKIL</h2>
+<h2 class="section-title-center">MONOGRAFI KELURAHAN GUNUNG SUGIH</h2>
 @if($monografis->count() > 0)
             @foreach($monografis as $monografi)
             <div class="card">
@@ -667,3 +705,5 @@
 
     </main>
 @endsection
+
+

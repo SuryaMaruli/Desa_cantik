@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kata Sambutan Lurah - Kelurahan Citangkil')
+@section('title', 'Kata Sambutan Lurah - Kelurahan Gunung Sugih')
 
 @section('content')
 <style>
@@ -132,7 +132,7 @@
     <div class="sambutan-container">
         <div class="sambutan-header">
             <h1>Kata Sambutan Lurah</h1>
-            <p>Kelurahan Citangkil</p>
+            <p>Kelurahan Gunung Sugih</p>
         </div>
 
         <div class="sambutan-card">
@@ -145,7 +145,7 @@
                     @endif
                 </div>
                 <div class="name-box">
-                    <span>{{ $dataLurah->jabatan ?? 'Lurah Citangkil' }}</span>
+                    <span>{{ $dataLurah->jabatan ?? 'Lurah Bulakan' }}</span>
                     <h2>{{ $dataLurah->nama_lurah ?? 'M. ALI WAHIDI, S.Sos.M.Si' }}</h2>
                 </div>
             </div>
@@ -160,3 +160,4 @@
     </div>
 </section>
 @endsection
+

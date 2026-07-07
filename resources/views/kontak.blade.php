@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kontak - Kelurahan Citangkil')
+@section('title', 'Kontak - Kelurahan Gunung Sugih')
 
 @section('content')
     <!-- Hero Section -->
@@ -22,7 +22,7 @@
                                 <div class="contact-item">
                                     <i class="bi bi-geo-alt text-success" style="font-size: 2rem;"></i>
                                     <h5 class="mt-3">Alamat</h5>
-                                    <p>Jl. Raya Citangkil No. 123<br>Citangkil, Cilegon</p>
+                                    <p>Jl. Sunan Kalijaga No.36, Gunungsugih<br>Ciwandan, Cilegon</p>
                                 </div>
                             </div>
                             <div class="col-md-4 text-center mb-4">
@@ -36,7 +36,7 @@
                                 <div class="contact-item">
                                     <i class="bi bi-envelope text-success" style="font-size: 2rem;"></i>
                                     <h5 class="mt-3">Email</h5>
-                                    <p>{{ App\Models\Beranda::first()?->email ?? 'info@citangkil.go.id' }}</p>
+                                    <p>{{ App\Models\Beranda::first()?->email ?? 'info@bulakan.go.id' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -50,3 +50,4 @@
         </div>
     </section>
 @endsection
+

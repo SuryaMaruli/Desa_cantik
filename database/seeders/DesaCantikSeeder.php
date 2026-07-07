@@ -50,15 +50,15 @@ class DesaCantikSeeder extends Seeder
             ],
             [
                 'judul_program' => 'MEDIA PENGELOLAAN DATA KEPENDUDUKAN',
-                'deskripsi_program' => 'Website Kelurahan Citangkil'
+                'deskripsi_program' => 'Website Kelurahan Gunung Sugih'
             ],
             [
                 'judul_program' => 'PENINGKATAN KAPABILITAS & LITERASI STATISTIK AGEN STATISTIK DAN MASYARAKAT',
-                'deskripsi_program' => 'Booklet Kelurahan Citangkil'
+                'deskripsi_program' => 'Booklet Kelurahan Gunung Sugih'
             ],
             [
-                'judul_program' => 'SEGMENTASI DEMOGRAFIS KELUARGA KELURAHAN CITANGKIL',
-                'deskripsi_program' => 'Buku Segmentasi Demografis Keluarga Kelurahan Citangkil'
+                'judul_program' => 'SEGMENTASI DEMOGRAFIS KELUARGA KELURAHAN BULAKAN',
+                'deskripsi_program' => 'Buku Segmentasi Demografis Keluarga Kelurahan Gunung Sugih'
             ]
         ];
 
@@ -67,3 +67,4 @@ class DesaCantikSeeder extends Seeder
         }
     }
 }
+

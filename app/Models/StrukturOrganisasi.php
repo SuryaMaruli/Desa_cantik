@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
+
 use Illuminate\Database\Eloquent\Model;
 
 class StrukturOrganisasi extends Model
 {
+    use BelongsToVillage;
+
     protected $table = 'struktur_organisasis';
 
     protected $fillable = [

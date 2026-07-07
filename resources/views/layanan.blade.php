@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Layanan Masyarakat - Kelurahan Citangkil')
+@section('title', 'Layanan Masyarakat - Kelurahan Gunung Sugih')
 
 @section('content')
     <style>
@@ -200,7 +200,7 @@
     <header class="hero-header">
         <div class="container">
             <h1>Layanan Masyarakat</h1>
-            <p>Berbagai layanan administrasi dan pelayanan publik untuk kemudahan masyarakat Kelurahan Citangkil</p>
+            <p>Berbagai layanan administrasi dan pelayanan publik untuk kemudahan masyarakat Kelurahan Gunung Sugih</p>
         </div>
     </header>
 
@@ -240,14 +240,15 @@
             
             <div class="info-item">
                 <strong>Lokasi:</strong>
-                Kantor Kelurahan Citangkil, Jl. Raya Citangkil No. 123, Kota Cilegon
+                Kantor Kelurahan Gunung Sugih, Jl. Raya Bulakan No. 123, Kota Cilegon
             </div>
             
             <div class="info-item">
                 <strong>Kontak:</strong>
-                Telp: (0254) 123-4567 | Email: kelurahan@citangkil.go.id
+                Telp: (0254) 123-4567 | Email: kelurahan@bulakan.go.id
             </div>
         </section>
 
     </main>
 @endsection
+

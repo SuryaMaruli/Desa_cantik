@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Informasi Publik - Admin Kelurahan Citangkil')
+@section('title', 'Edit Informasi Publik - Admin Kelurahan Gunung Sugih')
 @section('page-title', 'Edit Informasi Publik')
 
 @section('content')
