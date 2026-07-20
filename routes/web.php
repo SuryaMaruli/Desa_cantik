@@ -337,15 +337,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::put('/desa-cantik/output/{id}', [DesaCantikController::class, 'updateOutput'])->name('desa-cantik.update-output');
     Route::delete('/desa-cantik/output/{id}', [DesaCantikController::class, 'deleteOutput'])->name('desa-cantik.delete-output');
 
-    Route::get('/informasi-publik', [InformasiPublikController::class, 'index'])->name('informasi-publik.index');
-    Route::get('/informasi-publik/create', [InformasiPublikController::class, 'create'])->name('informasi-publik.create');
-    Route::post('/informasi-publik', [InformasiPublikController::class, 'store'])->name('informasi-publik.store');
     Route::post('/informasi-publik/agenda', [InformasiPublikController::class, 'storeAgenda'])->name('informasi-publik.agenda.store');
     Route::put('/informasi-publik/agenda/{id}', [InformasiPublikController::class, 'updateAgenda'])->name('informasi-publik.agenda.update');
     Route::delete('/informasi-publik/agenda/{id}', [InformasiPublikController::class, 'destroyAgenda'])->name('informasi-publik.agenda.destroy');
-    Route::get('/informasi-publik/{id}/edit', [InformasiPublikController::class, 'edit'])->name('informasi-publik.edit');
-    Route::put('/informasi-publik/{id}', [InformasiPublikController::class, 'update'])->name('informasi-publik.update');
-    Route::delete('/informasi-publik/{id}', [InformasiPublikController::class, 'destroy'])->name('informasi-publik.destroy');
 
     Route::resource('prestasi', PrestasiController::class)->except(['show']);
 

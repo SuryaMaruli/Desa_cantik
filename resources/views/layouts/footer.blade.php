@@ -1,341 +1,311 @@
 <style>
-    /* --- FOOTER STYLES --- */
     .footer-section {
-        background-color: #F89039;
-        color: #f7f7f7;
+        background:
+            radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.36), transparent 28%),
+            radial-gradient(circle at 88% 4%, rgba(14, 165, 233, 0.26), transparent 26%),
+            linear-gradient(135deg, #f97316 0%, #fb923c 42%, #0ea5e9 100%);
+        color: #ffffff;
         font-family: 'Roboto', sans-serif;
-        padding: 48px 24px;
+        overflow: hidden;
+        padding: 58px 24px 28px;
+        position: relative;
+    }
+
+    .footer-section::before {
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        content: '';
+        height: 220px;
+        position: absolute;
+        right: -90px;
+        top: -120px;
+        transform: rotate(18deg);
+        width: 360px;
     }
 
     .footer-container {
-        max-width: 1280px;
         margin: 0 auto;
+        max-width: 1280px;
+        position: relative;
+        z-index: 1;
     }
 
     .footer-grid {
         display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 32px;
+        gap: 24px;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 
     @media (min-width: 768px) {
-        .footer-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+        .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
-    @media (min-width: 1024px) {
-        .footer-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
+    @media (min-width: 1120px) {
+        .footer-grid { grid-template-columns: 1.2fr 1.55fr 0.9fr 0.95fr; }
     }
 
-    .footer-title {
-        color: white;
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 16px;
+    .footer-col {
+        min-height: 100%;
+        padding: 0;
     }
 
+    .footer-title,
     .footer-subtitle {
-        color: white;
-        font-size: 1.125rem;
-        font-weight: 600;
-        margin-bottom: 16px;
+        align-items: center;
+        color: #ffffff;
+        display: flex;
+        font-weight: 800;
+        gap: 10px;
+        letter-spacing: 0;
+        margin: 0 0 14px;
+    }
+
+    .footer-title { font-size: 1.35rem; line-height: 1.25; }
+    .footer-subtitle { font-size: 1.08rem; }
+
+    .footer-title::before,
+    .footer-subtitle::before {
+        background: #ffffff;
+        border-radius: 999px;
+        content: '';
+        height: 10px;
+        width: 10px;
     }
 
     .footer-description {
-        font-size: 0.875rem;
-        line-height: 1.625;
-        margin-bottom: 16px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.92rem;
+        line-height: 1.75;
+        margin: 0 0 16px;
     }
 
     .footer-divider {
-        width: 48px;
+        background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.28));
+        border-radius: 999px;
         height: 4px;
-        background-color: #F89039;
-        border-radius: 2px;
+        width: 86px;
     }
 
-    .footer-map-wrap {
-        margin-bottom: 12px;
-    }
+    .footer-map-wrap { margin-bottom: 12px; }
 
     .footer-map-wrap iframe {
-        width: 100%;
-        max-width: 260px;
-        height: 140px;
+        aspect-ratio: 16 / 9;
         border: 0;
-        border-radius: 10px;
+        border-radius: 12px;
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.22);
         display: block;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-    }
-
-    .footer-map-link {
-        display: inline-block;
-        margin-top: 8px;
-        color: #ffffff;
-        font-size: 0.8rem;
-        text-decoration: underline;
-    }
-
-    .footer-map-link:hover {
-        color: #ffe6d1;
+        height: auto;
+        max-width: 100%;
+        width: 100%;
     }
 
     .footer-list {
         list-style: none;
-        padding: 0;
         margin: 0;
+        padding: 0;
     }
 
     .footer-list li {
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 0.9rem;
+        line-height: 1.6;
         margin-bottom: 12px;
-        font-size: 0.875rem;
     }
 
-    .footer-list.flex-item {
-        display: flex;
-        align-items: flex-start;
-    }
-
+    .footer-list.flex-item,
     .footer-list.align-center {
+        align-items: flex-start;
         display: flex;
-        align-items: center;
+        gap: 11px;
     }
+
+    .footer-list.align-center { align-items: center; }
 
     .footer-icon {
-        color: #F89039;
-        margin-right: 12px;
-        font-size: 1rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.22);
+        border-radius: 9px;
+        color: #ffffff;
+        display: inline-flex;
+        flex: 0 0 34px;
+        height: 34px;
+        justify-content: center;
+        margin-right: 0;
+        width: 34px;
     }
 
-    .footer-icon.mt-1 {
-        margin-top: 4px;
-    }
+    .footer-icon.mt-1 { margin-top: 2px; }
 
-    .footer-link {
+    .footer-link,
+    .footer-bottom-link,
+    .footer-map-link {
         color: #ffffff;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition: color .2s ease, transform .2s ease;
     }
 
-    .footer-link:hover {
-        color: #F89039;
-        padding-left: 4px;
+    .footer-link:hover,
+    .footer-map-link:hover,
+    .footer-bottom-link:hover {
+        color: #fff7ed;
     }
 
-    .footer-link.white-hover:hover {
-        color: white;
+    .footer-list li > .footer-link {
+        display: inline-flex;
+        font-weight: 700;
+        padding: 4px 0;
+    }
+
+    .footer-list li > .footer-link:hover { transform: translateX(4px); }
+    .footer-link.white-hover:hover { color: #ffffff; }
+
+    .footer-map-link {
+        align-items: center;
+        display: inline-flex;
+        font-size: 0.84rem;
+        font-weight: 800;
+        gap: 8px;
+        margin-top: 4px;
     }
 
     .social-links {
         display: flex;
         gap: 12px;
-        margin-top: 16px;
+        margin-top: 18px;
     }
 
     .social-link {
-        width: 40px;
-        height: 40px;
-        display: flex;
         align-items: center;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+        color: #f97316;
+        display: flex;
+        height: 44px;
         justify-content: center;
-        border-radius: 50%;
-        background-color: #cc5500;
-        color: white;
         text-decoration: none;
-        transition: background-color 0.3s ease;
+        transition: transform .2s ease, background .2s ease, color .2s ease;
+        width: 44px;
     }
 
     .social-link:hover {
-        background-color: #F89039;
+        background: #fff7ed;
+        color: #0ea5e9;
+        transform: translateY(-3px);
     }
 
     .footer-hr {
         border: none;
-        border-top: 1px solid #cc5500;
-        margin: 32px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.28);
+        margin: 28px 0 18px;
     }
 
     .footer-bottom {
+        align-items: center;
+        color: rgba(255, 255, 255, 0.92);
         display: flex;
         flex-direction: column;
+        font-size: 0.82rem;
+        gap: 12px;
         justify-content: space-between;
-        align-items: center;
-        font-size: 0.75rem;
-        color: #ffffff;
+        padding: 0;
     }
 
-    @media (min-width: 768px) {
-        .footer-bottom {
-            flex-direction: row;
-            align-items: center;
-        }
-    }
+    .footer-bottom p { margin: 0; }
 
     .footer-bottom-links {
         display: flex;
-        gap: 24px;
-        margin-top: 16px;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: center;
+    }
+
+    .footer-bottom-link {
+        font-weight: 700;
+        padding: 0;
     }
 
     @media (min-width: 768px) {
-        .footer-bottom-links {
-            margin-top: 0;
-        }
-}
-
-    .footer-bottom-link {
-        color: #9ca3af;
-        text-decoration: none;
-        transition: color 0.3s ease;
+        .footer-bottom { flex-direction: row; }
     }
 
-    .footer-bottom-link:hover {
-        color: white;
-    }
-
-    /* ============================================
-       MOBILE OPTIMIZATION FOOTER
-       ============================================ */
     @media (max-width: 767px) {
-        .footer-section {
-            padding: 40px 16px;
-        }
-
-        .footer-grid {
-            gap: 28px;
-        }
-
-        .footer-title {
-            font-size: 1.15rem;
-            margin-bottom: 12px;
-        }
-
-        .footer-subtitle {
-            font-size: 1.05rem;
-            margin-bottom: 14px;
-        }
-
-        .footer-description {
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .footer-map-wrap iframe {
-            width: 100%;
-            max-width: 100%;
-            height: 160px;
-        }
-
-        .footer-list li {
-            margin-bottom: 14px;
-            font-size: 0.95rem;
-            min-height: 44px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .footer-link {
-            padding: 8px 0;
-            display: block;
-            min-height: 44px;
-            line-height: 1.4;
-        }
-
-        .social-link {
-            width: 48px;
-            height: 48px;
-        }
-
-        .social-links {
-            gap: 16px;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            gap: 12px;
-        }
-
-        .footer-bottom-links {
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 16px;
-        }
-
-        /* Prevent horizontal scroll */
-        .footer-container {
-            overflow-x: hidden;
-        }
-    }
-
-    /* Extra small screens */
-    @media (max-width: 375px) {
-        .footer-section {
-            padding: 32px 14px;
-        }
-
-        .footer-title {
-            font-size: 1.1rem;
-        }
-
-        .footer-subtitle {
-            font-size: 1rem;
-        }
-
-        .social-link {
-            width: 44px;
-            height: 44px;
-        }
+        .footer-section { padding: 44px 16px 24px; }
+        .footer-title { font-size: 1.18rem; }
+        .footer-description, .footer-list li { font-size: 0.95rem; }
+        .footer-list li > .footer-link { display: flex; justify-content: flex-start; min-height: 0; }
+        .social-link { height: 48px; width: 48px; }
+        .footer-bottom { text-align: center; }
     }
 </style>
+
+@php
+    $footerVillage = $currentVillage ?? config('villages.items.gunung-sugih', []);
+    $footerSlug = $currentVillageSlug ?? config('villages.default', 'gunung-sugih');
+    $footerOfficialName = $footerVillage['official_name'] ?? 'Kelurahan Gunung Sugih';
+    $footerName = $footerVillage['name'] ?? 'Gunung Sugih';
+    $footerDistrict = $footerVillage['district'] ?? 'Ciwandan';
+    $footerCity = $footerVillage['city'] ?? 'Kota Cilegon';
+    $footerProvince = $footerVillage['province'] ?? 'Banten';
+    $footerPostalCode = $footerVillage['postal_code'] ?? '42447';
+    $footerAddress = $footerVillage['address'] ?? 'Jl. Raya Gunung Sugih No. 123';
+    $footerBeranda = App\Models\Beranda::first();
+    $footerPhone = $footerBeranda?->no_hp ?? ($footerVillage['phone'] ?? '(0254) 123-4567');
+    $footerEmail = $footerVillage['email'] ?? ($footerBeranda?->email ?? 'kelurahan@gunungsugih.go.id');
+    $footerMapUrls = [
+        'karangasem' => 'https://maps.app.goo.gl/dT9KcyktwJwvw9Mn6',
+        'bulakan' => 'https://maps.app.goo.gl/iT9Qgtzg9PiHTrhz8',
+    ];
+    $footerMapQuery = $footerVillage['map_query'] ?? ('Kantor ' . $footerOfficialName . ', Cilegon');
+    $footerMapEmbed = 'https://www.google.com/maps?q=' . rawurlencode($footerMapQuery) . '&output=embed';
+    $footerMapUrl = $footerMapUrls[$footerSlug] ?? ('https://www.google.com/maps/search/?api=1&query=' . rawurlencode($footerMapQuery));
+@endphp
 
 <footer class="footer-section">
     <div class="footer-container">
         <div class="footer-grid">
-            
-            <div>
-                <h3 class="footer-title">Kelurahan Gunung Sugih</h3>
+            <div class="footer-col">
+                <h3 class="footer-title">{{ $footerOfficialName }}</h3>
                 <p class="footer-description">
-                    Melayani dengan sepenuh hati untuk kemajuan dan kesejahteraan masyarakat Gunung Sugih.
+                    Melayani dengan sepenuh hati untuk kemajuan dan kesejahteraan masyarakat {{ $footerName }}.
                 </p>
                 <div class="footer-divider"></div>
             </div>
 
-            <div>
+            <div class="footer-col">
                 <h3 class="footer-subtitle">Kontak</h3>
                 <ul class="footer-list">
                     <li>
                         <div class="footer-map-wrap">
                             <iframe
-                                src="https://www.google.com/maps?q=Kantor+Kelurahan+Gunung+Sugih,+Cilegon&output=embed"
+                                src="{{ $footerMapEmbed }}"
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade"
                                 allowfullscreen
-                                title="Peta Lokasi Kelurahan Gunung Sugih">
+                                title="Peta Lokasi {{ $footerOfficialName }}">
                             </iframe>
                         </div>
+                        <a href="{{ $footerMapUrl }}" class="footer-map-link" target="_blank" rel="noopener">
+                            <i class="fas fa-location-arrow"></i>
+                            Buka lokasi di Google Maps
+                        </a>
                     </li>
                     <li class="footer-list flex-item">
                         <i class="fas fa-map-marker-alt footer-icon mt-1"></i>
-                        <span>Jl. Raya Gunung Sugih No. 123<br>Kec. Gunung Sugih, Kota Cilegon<br>Banten 42447</span>
+                        <span>{{ $footerAddress }}<br>Kec. {{ $footerDistrict }}, {{ $footerCity }}<br>{{ $footerProvince }} {{ $footerPostalCode }}</span>
                     </li>
                     <li class="footer-list align-center">
                         <i class="fas fa-phone-alt footer-icon"></i>
-                        <span>{{ App\Models\Beranda::first()?->no_hp ?? '(0254) 123-4567' }}</span>
+                        <span>{{ $footerPhone }}</span>
                     </li>
                     <li class="footer-list align-center">
                         <i class="fas fa-envelope footer-icon"></i>
-                        @php
-                            $footerEmail = str_ireplace('bulakan', 'gunungsugih', App\Models\Beranda::first()?->email ?? 'kelurahan@gunungsugih.go.id');
-                        @endphp
                         <a href="mailto:{{ $footerEmail }}" class="footer-link white-hover">{{ $footerEmail }}</a>
                     </li>
                 </ul>
             </div>
 
-            <div>
+            <div class="footer-col">
                 <h3 class="footer-subtitle">Tautan Cepat</h3>
                 <ul class="footer-list">
                     <li><a href="/profil-kelurahan" class="footer-link">Tentang Kami</a></li>
@@ -345,17 +315,17 @@
                 </ul>
             </div>
 
-            <div>
+            <div class="footer-col">
                 <h3 class="footer-subtitle">Media Sosial</h3>
                 <p class="footer-description">Ikuti kami untuk update terbaru seputar kegiatan kelurahan.</p>
                 <div class="social-links">
-                    <a href="#" class="social-link">
+                    <a href="#" class="social-link" aria-label="Facebook">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="social-link">
+                    <a href="#" class="social-link" aria-label="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a href="#" class="social-link">
+                    <a href="#" class="social-link" aria-label="Twitter">
                         <i class="fab fa-twitter"></i>
                     </a>
                 </div>
@@ -365,7 +335,7 @@
         <hr class="footer-hr">
 
         <div class="footer-bottom">
-            <p>&copy; 2026 Kelurahan Gunung Sugih. Hak Cipta Dilindungi.</p>
+            <p>&copy; 2026 {{ $footerOfficialName }}. Hak Cipta Dilindungi.</p>
             <div class="footer-bottom-links">
                 <a href="#" class="footer-bottom-link">Kebijakan Privasi</a>
                 <a href="#" class="footer-bottom-link">Syarat & Ketentuan</a>
@@ -373,4 +343,3 @@
         </div>
     </div>
 </footer>
-

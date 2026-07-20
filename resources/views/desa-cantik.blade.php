@@ -69,25 +69,59 @@
 
         /* --- KARTU DESKRIPSI UTAMA --- */
         .main-card {
-            background-color: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8ef 48%, #f0f9ff 100%);
+            padding: 42px;
+            border-radius: 16px;
+            box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(246, 144, 58, 0.18);
+            margin-bottom: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .main-card::before {
+            background: linear-gradient(180deg, #F6903A, #38bdf8, #22c55e);
+            border-radius: 999px;
+            content: '';
+            height: calc(100% - 48px);
+            left: 20px;
+            position: absolute;
+            top: 24px;
+            width: 5px;
         }
 
         .main-card h2 {
             color: #c75310ff;
-            font-size: 1.8rem;
-            font-weight: 400;
-            margin-bottom: 25px;
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            margin-bottom: 22px;
+            padding-left: 18px;
+            position: relative;
         }
 
         .main-card p {
-            color: #555;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            text-align: justify;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(246, 144, 58, 0.14);
+            border-radius: 12px;
+            color: #475569;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 14px;
+            padding: 16px 18px 16px 22px;
+            position: relative;
+            text-align: left;
+        }
+
+        .main-card p::before {
+            background: #F6903A;
+            border-radius: 999px;
+            content: '';
+            height: 8px;
+            left: 8px;
+            position: absolute;
+            top: 24px;
+            width: 8px;
         }
 
         /* --- GRID SYSTEMS --- */
@@ -798,10 +832,24 @@
             padding: 40px 30px;
             text-align: left;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card::before {
+            background: linear-gradient(90deg, #F6903A, #38bdf8, #22c55e);
+            content: '';
+            height: 5px;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
         }
 
         .card:hover {
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.10);
             transform: translateY(-5px);
         }
 
@@ -840,9 +888,13 @@
         }
 
         .card p {
-            color: #666;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(246, 144, 58, 0.12);
+            border-radius: 12px;
+            color: #4b5563;
             font-size: 15px;
-            line-height: 1.6;
+            line-height: 1.7;
+            padding: 14px 15px;
         }
 
         /* Output Desa Cantik Section */
@@ -915,10 +967,15 @@
         }
 
         .grid-wrapper .card p {
+            background: linear-gradient(135deg, rgba(255,255,255,0.78), rgba(255,247,237,0.72));
+            border: 1px solid rgba(200, 78, 48, 0.12);
+            border-left: 4px solid #F6903A;
+            border-radius: 12px;
+            color: #4b5563;
             font-size: 14px;
-            color: #666;
-            line-height: 1.5;
+            line-height: 1.72;
             margin-bottom: 16px;
+            padding: 14px 15px;
         }
 
         .detail-btn {
@@ -1039,7 +1096,10 @@
         @media (max-width: 768px) {
             .main-header { padding: 40px 0; }
             .main-header h1 { font-size: 2rem; }
-            .main-card { padding: 25px; }
+            .main-card { padding: 28px 22px 28px 30px; }
+            .main-card::before { left: 12px; }
+            .main-card h2 { font-size: 1.55rem; padding-left: 8px; }
+            .main-card p { font-size: 0.95rem; padding: 14px 14px 14px 20px; }
             .section-title { font-size: 1.5rem; margin-top: 50px; }
             
             /* Grid menjadi 1 kolom di HP */

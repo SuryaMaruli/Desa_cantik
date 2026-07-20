@@ -686,12 +686,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.informasi-publik.index') }}" class="{{ request()->is('admin/informasi-publik*') ? 'active' : '' }}">
-                    <i class='bx bx-info-circle'></i>
-                    <span class="links_name">Informasi Publik</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('admin.prestasi.index') }}" class="{{ request()->is('admin/prestasi*') ? 'active' : '' }}">
                     <i class='bx bx-trophy'></i>
                     <span class="links_name">Prestasi</span>

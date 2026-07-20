@@ -331,15 +331,36 @@
             </div>
         </div>
 
-<h2 class="section-title">Perbatasan Wilayah Kelurahan Gunung Sugih</h2>
-        <div class="card">
-            <div class="map-placeholder" id="mapLoading">
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; background: #f8f9fa; border-radius: 12px;">
-                    <i class="fas fa-map-marked-alt" style="font-size: 48px; color: #F6903A; margin-bottom: 15px;"></i>
-                    <p style="color: #666;">Memuat peta wilayah...</p>
+@php
+    $profileVillageSlug = $currentVillageSlug ?? config('villages.default', 'gunung-sugih');
+    $boundaryTargetMap = [
+        'gunung-sugih' => 'GUNUNG SUGIH',
+        'karangasem' => 'KARANGASEM',
+        'bulakan' => 'BULAKAN',
+    ];
+    $boundaryTarget = $boundaryTargetMap[$profileVillageSlug] ?? 'GUNUNG SUGIH';
+@endphp
+
+<h2 class="section-title">Perbatasan Wilayah {{ $profileVillageName }}</h2>
+        <div class="card boundary-map-card">
+            <div class="map-header-panel">
+                <div>
+                    <span class="map-eyebrow">Visualisasi Wilayah</span>
+                    <h3>{{ $profileVillageName }}</h3>
+                </div>
+                <div class="map-focus-badge">
+                    <i class="fas fa-location-crosshairs"></i>
+                    <span>Fokus peta aktif</span>
                 </div>
             </div>
-<div class="map-container" style="display: none;">
+
+            <div class="map-placeholder" id="mapLoading">
+                <div class="map-loading-state">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>Memuat peta wilayah...</p>
+                </div>
+            </div>
+            <div class="map-container" style="display: none;">
                 <div id="villageMap"></div>
             </div>
         </div>
@@ -349,28 +370,89 @@
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         
         <style>
-            .map-container {
-                width: 100%;
-                height: 450px;
-                border-radius: 12px;
+            .boundary-map-card {
+                background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 48%, #eff6ff 100%);
+                border: 1px solid #dbeafe;
                 overflow: hidden;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                padding: 24px;
+            }
+
+            .map-header-panel {
+                align-items: center;
+                display: flex;
+                gap: 16px;
+                justify-content: space-between;
+                margin-bottom: 18px;
+            }
+
+            .map-header-panel h3 {
+                color: #0f766e;
+                font-size: 1.45rem;
+                font-weight: 800;
+                margin: 4px 0 0;
+            }
+
+            .map-eyebrow {
+                color: #2563eb;
+                font-size: 0.78rem;
+                font-weight: 800;
+                letter-spacing: 0;
+                text-transform: uppercase;
+            }
+
+            .map-focus-badge {
+                align-items: center;
+                background: #ffffff;
+                border: 1px solid #bae6fd;
+                border-radius: 999px;
+                color: #0369a1;
+                display: inline-flex;
+                font-size: 0.86rem;
+                font-weight: 800;
+                gap: 8px;
+                padding: 10px 14px;
+                white-space: nowrap;
+            }
+
+            .map-loading-state {
+                align-items: center;
+                background: #f8fafc;
+                border: 1px dashed #7dd3fc;
+                border-radius: 16px;
+                color: #475569;
+                display: flex;
+                flex-direction: column;
+                height: 280px;
+                justify-content: center;
+            }
+
+            .map-loading-state i {
+                color: #F6903A;
+                font-size: 48px;
+                margin-bottom: 15px;
+            }
+
+            .map-container {
+                border: 1px solid #bfdbfe;
+                border-radius: 18px;
+                box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+                height: 540px;
+                overflow: hidden;
+                width: 100%;
             }
             
             #villageMap {
-                width: 100%;
                 height: 100%;
+                width: 100%;
             }
             
-            /* Custom marker styles */
             .custom-marker {
                 background: #F6903A;
-                border-radius: 50%;
                 border: 3px solid white;
+                border-radius: 50%;
                 box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             }
             
-            /* Map controls styling */
             .leaflet-control-zoom {
                 border: none !important;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
@@ -381,288 +463,263 @@
                 color: #333 !important;
             }
             
-            .leaflet-control-zoom a:hover {
-                background: #f5f5f5 !important;
+            .leaflet-control-zoom a:hover { background: #f5f5f5 !important; }
+            .leaflet-popup-content-wrapper { background: #fff !important; border-radius: 10px; box-shadow: 0 8px 22px rgba(15,23,42,0.24); color: #333 !important; }
+            .leaflet-popup-tip { background: #fff !important; box-shadow: none; }
+            .leaflet-popup-content { background: transparent; color: #333; line-height: 1.45; margin: 12px 14px; }
+            .leaflet-popup-content h4 { color: inherit; font-size: 13px; font-weight: 700; margin: 0 0 4px; }
+            .leaflet-popup-content p { color: #555; font-size: 11px; margin: 0; }
+            .leaflet-popup-close-button { color: #333 !important; }
+            .leaflet-popup-close-button:hover { color: #666 !important; }
+
+            .map-legend {
+                background: #ffffff;
+                border: 1px solid #dbeafe;
+                border-radius: 12px;
+                box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+                color: #334155;
+                font-size: 12px;
+                max-width: 280px;
+                padding: 12px;
             }
-            
-/* Popup styling - Override Leaflet default dark styles */
-            .leaflet-popup-content-wrapper {
-                border-radius: 8px;
-                box-shadow: 0 3px 14px rgba(0,0,0,0.3);
-                background: #fff !important;
-                color: #333 !important;
+
+            .map-legend strong {
+                color: #0f172a;
+                display: block;
+                margin-bottom: 8px;
             }
-            
-            .leaflet-popup-tip {
-                background: #fff !important;
-                box-shadow: none;
+
+            .map-legend-row {
+                align-items: center;
+                display: flex;
+                gap: 8px;
+                margin-bottom: 6px;
             }
-            
-            .leaflet-popup-tip:after {
-                background: #fff !important;
+
+            .map-legend-swatch {
+                border-radius: 4px;
+                display: inline-flex;
+                flex: 0 0 16px;
+                height: 16px;
+                opacity: 0.72;
+                width: 16px;
             }
-            
-            .leaflet-popup-content {
-                margin: 10px 12px;
-                line-height: 1.4;
-                background: transparent;
-                color: #333;
+
+            .village-tooltip {
+                background: #ffffff;
+                border: 1px solid #93c5fd;
+                border-radius: 999px;
+                box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+                color: #0f172a;
+                font-weight: 800;
+                padding: 4px 8px;
             }
-            
-            .leaflet-popup-content h4 {
-                color: inherit;
-                margin: 0 0 4px 0;
-                font-size: 13px;
-                font-weight: 600;
-            }
-            
-            .leaflet-popup-content p {
-                margin: 0;
-                color: #555;
-                font-size: 11px;
-            }
-            
-            .leaflet-popup-close-button {
-                color: #333 !important;
-            }
-            
-            .leaflet-popup-close-button:hover {
-                color: #666 !important;
+
+            @media (max-width: 767px) {
+                .boundary-map-card { padding: 18px; }
+                .map-header-panel { align-items: flex-start; flex-direction: column; }
+                .map-container { height: 420px; }
+                .map-focus-badge { white-space: normal; }
             }
         </style>
         
 <script>
-            // Initialize map - with error handling
             try {
-            var map = L.map('villageMap').setView([-5.9825, 106.0515], 14);
-            
-            // Add OpenStreetMap tiles
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 18,
-            }).addTo(map);
-            
-            // Custom village marker icon
-            var villageIcon = L.divIcon({
-                className: 'custom-marker',
-                html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>',
-                iconSize: [40, 40],
-                iconAnchor: [20, 40],
-                popupAnchor: [0, -40]
-            });
-            
-            // Add scale control
-            L.control.scale({
-                imperial: false,
-                metric: true
-            }).addTo(map);
-            
-// =========================================================
-            // BATAS WILAYAH - LOAD GEOJSON FROM STORAGE (BatasWilayah.py output)
-            // =========================================================
-            
-            // Define colors from Python code
-            var warna = {
-                "GUNUNG SUGIH": "red",
-                "ANYAR": "purple",
-                "KOSAMBIRONYOK": "orange",
-                "KARANGASEM": "green"
-            };
-            
-            // Boundary info shown in map popups
-            var keteranganBatas = {
-                "ANYAR": "Barat: Berbatasan dengan Desa Anyar di wilayah Kabupaten Serang.",
-                "KOSAMBIRONYOK": "Selatan: Berbatasan dengan Desa Kosambi dan Ronyok di wilayah Kabupaten Serang.",
-                "KARANGASEM": "Timur: Berbatasan dengan Kelurahan Karangasem."
-            };
+                var activeVillageName = @json($profileVillageName);
+                var targetVillage = @json($boundaryTarget);
+                var map = L.map('villageMap').setView([-5.9825, 106.0515], 14);
+                var standardLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 18
+                }).addTo(map);
+                var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: '&copy; Esri'
+                });
 
-            var namaTampil = {
-                "GUNUNG SUGIH": "KELURAHAN GUNUNG SUGIH",
-                "ANYAR": "DESA ANYAR",
-                "KOSAMBIRONYOK": "DESA KOSAMBI DAN RONYOK",
-                "KARANGASEM": "KELURAHAN KARANGASEM"
-            };
-            
-            // Style function for GeoJSON layers
-            function getStyle(feature) {
-                var desaName = feature.properties.DESA;
-                var color = warna[desaName] || 'gray';
-                return {
-                    color: color,
-                    weight: 2,
-                    fillColor: color,
-                    fillOpacity: 0.35
+                L.control.scale({ imperial: false, metric: true }).addTo(map);
+
+                var colors = {
+                    'GUNUNG SUGIH': '#ef4444',
+                    'KARANGASEM': '#16a34a',
+                    'BULAKAN': '#0ea5e9',
+                    'ANYAR': '#8b5cf6',
+                    'KOSAMBIRONYOK': '#f97316'
                 };
-            }
-            
-// Popup function
-            function onEachFeature(feature, layer) {
-                var desa = feature.properties.DESA;
-                var displayDesa = namaTampil[desa] || desa;
-                var kecamatan = feature.properties.KECAMATAN || '-';
-                var kabKota = feature.properties.KAB_KOTA || '-';
-                
-                // Build popup content
-                var popupContent;
-                if (desa === "GUNUNG SUGIH") {
-                    popupContent = '<h4 style="color:' + warna[desa] + '">' + 
-                        '<b>' + displayDesa + '</b><br>' +
-                        'Kecamatan : ' + kecamatan + '<br>' +'</h4>';
-                } else {
-                    var batas = keteranganBatas[desa] || '-';
-                    popupContent = '<h4 style="color:' + warna[desa] + '">' + 
-                        '<b>' + batas + '</b><br>' +
-                        'KELURAHAN: ' + displayDesa + '<br>' +
-                        'KECAMATAN: ' + kecamatan + '<br>'+'</h4>';
-                }
-                
-                // Bind popup and show on mouseover (hover) immediately
-                layer.bindPopup(popupContent);
-                
-                // Add mouseover event to show popup immediately on hover
-                layer.on({
-                    mouseover: function(e) {
-                        this.openPopup();
-                    },
-                    mouseout: function(e) {
-                        this.closePopup();
-                    }
-                });
-                
-                // Add tooltip on hover
-                layer.bindTooltip(displayDesa, {
-                    permanent: false,
-                    direction: 'center',
-                    className: 'village-tooltip',
-                    sticky: true
-                });
-            }
-            
-// Variable to store GeoJSON data for later use
-            var geoJsonLayer = null;
-            
-// Load GeoJSON from public folder
-            var geoJsonUrl = '{{ asset("shapefile/bulakan_boundaries.geojson") }}';
-            console.log('Loading GeoJSON from:', geoJsonUrl);
-            
-            fetch(geoJsonUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('HTTP error! status: ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('GeoJSON loaded successfully, features:', data.features.length);
-                    
-                    // Add GeoJSON layer to map
-                    geoJsonLayer = L.geoJSON(data, {
-                        style: getStyle,
-                        onEachFeature: onEachFeature
-                    }).addTo(map);
-                    
-                    // Hide loading, show map container
-                    document.getElementById('mapLoading').style.display = 'none';
-                    document.querySelector('.map-container').style.display = 'block';
-                    
-                    // Fit map bounds to GeoJSON data
-                    map.invalidateSize();
-                    var bounds = L.geoJSON(data).getBounds();
-                    if (bounds.isValid()) {
-                        map.fitBounds(bounds, {padding: [50, 50]});
-                    }
 
-                    var gunungSugihFeature = data.features.find(function(feature) {
-                        return feature.properties && feature.properties.DESA === 'GUNUNG SUGIH';
+                var displayNames = {
+                    'GUNUNG SUGIH': 'KELURAHAN GUNUNG SUGIH',
+                    'KARANGASEM': 'KELURAHAN KARANGASEM',
+                    'BULAKAN': 'KELURAHAN BULAKAN',
+                    'ANYAR': 'DESA ANYAR',
+                    'KOSAMBIRONYOK': 'DESA KOSAMBI DAN RONYOK'
+                };
+
+                var boundaryPresets = {
+                    'GUNUNG SUGIH': [
+                        { name: 'Perairan Selat Sunda', direction: 'Utara', color: '#2563eb' },
+                        { name: 'Desa Anyar, Kabupaten Serang', direction: 'Barat', color: colors.ANYAR },
+                        { name: 'Kelurahan Karangasem', direction: 'Timur', color: colors.KARANGASEM },
+                        { name: 'Desa Kosambi dan Ronyok, Kabupaten Serang', direction: 'Selatan', color: colors.KOSAMBIRONYOK }
+                    ],
+                    'KARANGASEM': [
+                        { name: 'Kelurahan Gunung Sugih', direction: 'Barat', color: colors['GUNUNG SUGIH'] },
+                        { name: 'Data batas lain mengikuti polygon Karangasem pada peta', direction: 'Sekitar', color: colors.KARANGASEM }
+                    ],
+                    'BULAKAN': [
+                        { name: 'Data polygon Bulakan belum tersedia pada file GeoJSON saat ini', direction: 'Catatan', color: colors.BULAKAN },
+                        { name: 'Area sekitar Gunung Sugih dan Karangasem ditampilkan sebagai referensi', direction: 'Referensi', color: colors['GUNUNG SUGIH'] }
+                    ]
+                };
+
+                function featureName(feature) {
+                    return feature.properties && feature.properties.DESA ? feature.properties.DESA : '';
+                }
+
+                function isTarget(feature) {
+                    return featureName(feature) === targetVillage;
+                }
+
+                function getStyle(feature) {
+                    var desa = featureName(feature);
+                    var target = isTarget(feature);
+                    var color = colors[desa] || '#64748b';
+                    return {
+                        color: color,
+                        fillColor: color,
+                        fillOpacity: target ? 0.62 : 0.2,
+                        opacity: target ? 1 : 0.72,
+                        weight: target ? 4 : 2
+                    };
+                }
+
+                function popupFor(feature) {
+                    var desa = featureName(feature);
+                    var color = colors[desa] || '#64748b';
+                    var display = displayNames[desa] || desa;
+                    var kecamatan = feature.properties.KECAMATAN || '-';
+                    var kabKota = feature.properties.KAB_KOTA || '-';
+                    var luas = feature.properties.LUAS_WILAY ? Number(feature.properties.LUAS_WILAY).toLocaleString('id-ID') + ' km2' : '-';
+                    var prefix = desa === targetVillage ? 'Wilayah aktif' : 'Wilayah sekitar';
+
+                    return '<h4 style="color:' + color + '"><b>' + display + '</b></h4>' +
+                        '<p><b>' + prefix + '</b><br>' +
+                        'Kecamatan: ' + kecamatan + '<br>' +
+                        'Kab/Kota: ' + kabKota + '<br>' +
+                        'Luas: ' + luas + '</p>';
+                }
+
+                function onEachFeature(feature, layer) {
+                    var desa = featureName(feature);
+                    var display = displayNames[desa] || desa;
+                    layer.bindPopup(popupFor(feature));
+                    layer.bindTooltip(display, {
+                        permanent: isTarget(feature),
+                        direction: 'center',
+                        className: 'village-tooltip',
+                        sticky: true
+                    });
+                    layer.on({
+                        mouseover: function() {
+                            this.setStyle({ fillOpacity: isTarget(feature) ? 0.72 : 0.36, weight: isTarget(feature) ? 5 : 3 });
+                            this.openPopup();
+                        },
+                        mouseout: function() {
+                            if (geoJsonLayer) geoJsonLayer.resetStyle(this);
+                            this.closePopup();
+                        }
+                    });
+                }
+
+                function showUnavailableNotice() {
+                    var notice = L.control({ position: 'topright' });
+                    notice.onAdd = function() {
+                        var div = L.DomUtil.create('div', 'map-legend');
+                        div.innerHTML = '<strong>Data batas Bulakan</strong><div>Polygon Kelurahan Bulakan belum tersedia pada GeoJSON lokal. Peta menampilkan wilayah rujukan terdekat.</div>';
+                        return div;
+                    };
+                    notice.addTo(map);
+                }
+
+                function addNorthBoundary(feature) {
+                    if (!feature || targetVillage !== 'GUNUNG SUGIH') return;
+                    var bounds = L.geoJSON(feature).getBounds();
+                    var center = bounds.getCenter();
+                    var northPoint = L.latLng(bounds.getNorth() + 0.01, center.lng);
+
+                    L.polyline([center, northPoint], {
+                        color: '#2563eb',
+                        dashArray: '8, 8',
+                        weight: 3
+                    }).addTo(map).bindTooltip('Utara: Berbatasan langsung dengan Perairan Selat Sunda.');
+
+                    L.circleMarker(northPoint, {
+                        color: '#2563eb',
+                        fillColor: '#2563eb',
+                        fillOpacity: 0.8,
+                        radius: 7,
+                        weight: 2
+                    }).addTo(map).bindPopup('<b>Utara: Perairan Selat Sunda</b>');
+                }
+
+                var geoJsonLayer = null;
+                var geoJsonUrl = '{{ asset("shapefile/bulakan_boundaries.geojson") }}';
+
+                fetch(geoJsonUrl)
+                    .then(function(response) {
+                        if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        var targetFeature = data.features.find(function(feature) { return isTarget(feature); });
+
+                        geoJsonLayer = L.geoJSON(data, {
+                            filter: function(feature) {
+                                return targetVillage === 'BULAKAN' || ['GUNUNG SUGIH', 'KARANGASEM', 'ANYAR', 'KOSAMBIRONYOK'].includes(featureName(feature));
+                            },
+                            style: getStyle,
+                            onEachFeature: onEachFeature
+                        }).addTo(map);
+
+                        document.getElementById('mapLoading').style.display = 'none';
+                        document.querySelector('.map-container').style.display = 'block';
+                        map.invalidateSize();
+
+                        if (targetFeature) {
+                            map.fitBounds(L.geoJSON(targetFeature).getBounds(), { padding: [42, 42] });
+                            addNorthBoundary(targetFeature);
+                        } else {
+                            var bounds = geoJsonLayer.getBounds();
+                            if (bounds.isValid()) map.fitBounds(bounds, { padding: [50, 50] });
+                            showUnavailableNotice();
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error loading GeoJSON:', error);
+                        document.getElementById('mapLoading').innerHTML =
+                            '<div class="map-loading-state">' +
+                            '<i class="fas fa-exclamation-triangle"></i>' +
+                            '<p>Gagal memuat data batas wilayah</p>' +
+                            '<p style="color:#94a3b8;font-size:11px;margin-top:5px;">Error: ' + error.message + '</p></div>';
                     });
 
-                    if (gunungSugihFeature) {
-                        var gunungSugihBounds = L.geoJSON(gunungSugihFeature).getBounds();
-                        var center = gunungSugihBounds.getCenter();
-                        var northPoint = L.latLng(gunungSugihBounds.getNorth() + 0.01, center.lng);
+                var legend = L.control({ position: 'bottomright' });
+                legend.onAdd = function() {
+                    var div = L.DomUtil.create('div', 'map-legend');
+                    var rows = boundaryPresets[targetVillage] || boundaryPresets['GUNUNG SUGIH'];
+                    div.innerHTML = '<strong>Legenda Batas Wilayah</strong>' + rows.map(function(item) {
+                        return '<div class="map-legend-row"><span class="map-legend-swatch" style="background:' + item.color + '"></span><span>' + item.direction + ': ' + item.name + '</span></div>';
+                    }).join('') + '<div class="map-legend-row" style="border-top:1px solid #e2e8f0;margin-top:8px;padding-top:8px;"><span class="map-legend-swatch" style="background:' + (colors[targetVillage] || '#0ea5e9') + ';border:2px solid ' + (colors[targetVillage] || '#0ea5e9') + '"></span><span>' + activeVillageName + '</span></div>';
+                    return div;
+                };
+                legend.addTo(map);
 
-                        L.polyline([center, northPoint], {
-                            color: 'blue',
-                            weight: 3,
-                            dashArray: '8, 8'
-                        }).addTo(map).bindTooltip('Utara: Berbatasan langsung dengan Perairan Selat Sunda.');
-
-                        L.circleMarker(northPoint, {
-                            radius: 7,
-                            color: 'blue',
-                            fillColor: 'blue',
-                            fillOpacity: 0.75,
-                            weight: 2
-                        }).addTo(map).bindPopup('<b>Utara: Perairan Selat Sunda</b>');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading GeoJSON:', error);
-                    document.getElementById('mapLoading').innerHTML = 
-                        '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:250px;background:#f8f9fa;border-radius:12px;">' +
-                        '<i class="fas fa-exclamation-triangle" style="font-size:48px;color:#F6903A;margin-bottom:15px;"></i>' +
-                        '<p style="color:#666;">Gagal memuat data batas wilayah</p>' +
-                        '<p style="color:#999;font-size:11px;margin-top:5px;">Error: ' + error.message + '</p></div>';
-                });
-            
-// =========================================================
-            // ADD LEGEND
-            // =========================================================
-            var legend = L.control({position: 'bottomright'});
-            legend.onAdd = function(map) {
-                var div = L.DomUtil.create('div', 'map-legend');
-                div.innerHTML = `
-                    <div style="background:white;padding:10px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.15);font-size:12px;">
-                        <strong style="display:block;margin-bottom:8px;">Legenda Batas Wilayah</strong>
-                        <div style="display:flex;align-items:center;margin-bottom:4px;">
-                            <span style="width:16px;height:16px;background:blue;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Utara: Perairan Selat Sunda</span>
-                        </div>
-                        <div style="display:flex;align-items:center;margin-bottom:4px;">
-                            <span style="width:16px;height:16px;background:purple;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Barat: Desa Anyar, Kabupaten Serang</span>
-                        </div>
-                        <div style="display:flex;align-items:center;margin-bottom:4px;">
-                            <span style="width:16px;height:16px;background:green;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Timur: Kelurahan Karangasem</span>
-                        </div>
-                        <div style="display:flex;align-items:center;margin-bottom:4px;">
-                            <span style="width:16px;height:16px;background:orange;opacity:0.5;margin-right:8px;border-radius:3px;"></span>
-                            <span>Selatan: Desa Kosambi dan Ronyok, Kabupaten Serang</span>
-                        </div>
-                        <div style="display:flex;align-items:center;margin-top:6px;padding-top:6px;border-top:1px solid #eee;">
-                            <span style="width:16px;height:16px;background:red;opacity:0.3;margin-right:8px;border-radius:3px;border:2px solid red;"></span>
-                            <span>Gunung Sugih</span>
-                        </div>
-                    </div>
-                `;
-                return div;
-            };
-            legend.addTo(map);
-            
-// =========================================================
-            // MAP LAYER CONTROLS
-            // =========================================================
-            var baseLayers = {
-                'Peta Standard': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap'
-                }),
-                'Peta Satelit': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: '&copy; Esri'
-                }),
-                'Peta Gelap': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; CartoDB'
-                })
-            };
-            
-            L.control.layers(baseLayers).addTo(map);
-            
+                L.control.layers({
+                    'Peta Standard': standardLayer,
+                    'Peta Satelit': satelliteLayer
+                }).addTo(map);
             } catch(e) {
                 console.error('Error initializing map:', e);
-                document.getElementById('villageMap').innerHTML = 
-                    '<div style="padding:20px;text-align:center;color:red;">' +
-                    'Error loading map. Please refresh the page.' +
-                    '</div>';
+                document.getElementById('villageMap').innerHTML = '<div style="padding:20px;text-align:center;color:red;">Error loading map. Please refresh the page.</div>';
             }
         </script>
 
