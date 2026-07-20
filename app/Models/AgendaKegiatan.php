@@ -15,6 +15,7 @@ class AgendaKegiatan extends Model
         'tanggal_kegiatan',
         'tempat_kegiatan',
         'jam_kegiatan',
+        'keterangan',
         'surat_pendukung',
     ];
 

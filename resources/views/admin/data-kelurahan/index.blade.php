@@ -4,1277 +4,207 @@
 
 @push('styles')
 <style>
-    /* --- 1. RESET & GLOBAL --- */
-    :root {
-        --header-height: 80px;
-        --text-dark: #333;
-        --primary-green: #008C6E;
-    }
-
-    /* --- 3. MAIN CONTENT --- */
-    .home-content { 
-        padding: 30px; 
-        background-color: #fcfcfc;
-        min-height: calc(100vh - var(--header-height));
-    }
-
-    /* --- 4. KONTEN KHUSUS DATA KELURAHAN --- */
-    /* A. Header Section (Judul & Tombol) */
+    .data-page { padding: 24px; }
     .data-header-card {
-        background: #fff; 
-        border-radius: 12px; 
-        padding: 25px 30px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
-        border: 1px solid #eee;
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center;
-        margin-bottom: 30px;
-    }
-    .header-text h3 { 
-        font-size: 20px; 
-        font-weight: 600; 
-        color: #333; 
-        margin-bottom: 5px; 
-    }
-    .header-text p { 
-        font-size: 14px; 
-        color: #666; 
-        margin: 0; 
-    }
-
-    /* E. Tabel Data Penduduk */
-.table-container {
-        background: #fff;
+        background: linear-gradient(135deg, #f97316, #0f766e);
         border-radius: 12px;
-        padding: 25px 30px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        border: 1px solid #eee;
-        margin-bottom: 30px;
-        overflow-x: auto;
-    }
-    .table-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    .btn-tambah {
-        background: #28a745;
-        color: white;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: all 0.2s;
-        font-weight: 500;
-    }
-    .btn-tambah:hover {
-        background: #218838;
-        transform: translateY(-1px);
-    }
-    .table-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #333;
-    }
-    .search-box {
-        position: relative;
-        display: flex;
-        align-items: center;
-        width: min(100%, 460px);
-        min-height: 46px;
-        padding: 4px;
-        background: #fff;
-        border: 1px solid #d9e4df;
-        border-radius: 8px;
-        box-shadow: 0 8px 24px rgba(0, 140, 110, 0.08);
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-    }
-    .search-box:hover {
-        border-color: rgba(0, 140, 110, 0.45);
-        box-shadow: 0 12px 28px rgba(0, 140, 110, 0.12);
-    }
-    .search-box:focus-within {
-        border-color: var(--primary-green);
-        box-shadow: 0 0 0 4px rgba(0, 140, 110, 0.12), 0 14px 30px rgba(0, 140, 110, 0.14);
-        transform: translateY(-1px);
-    }
-    .search-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 8px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: #ecfdf5;
-        color: var(--primary-green);
-        font-size: 20px;
-        flex: 0 0 auto;
-    }
-    .search-input {
-        height: 38px;
-        min-width: 180px;
-        flex: 1;
-        padding: 0 8px 0 12px;
-        border: 0;
-        outline: none;
-        background: transparent;
-        color: #1f2937;
-        font-size: 14px;
-        font-weight: 500;
-    }
-    .search-input::placeholder {
-        color: #9ca3af;
-        font-weight: 400;
-    }
-    .btn-clear-search {
-        width: 30px;
-        height: 30px;
-        border: none;
-        border-radius: 8px;
-        background: #f3f4f6;
-        color: #6b7280;
-        cursor: pointer;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        transition: all 0.2s ease;
-        flex: 0 0 auto;
-    }
-    .btn-clear-search:hover {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-    .btn-edit-data {
-        min-width: 84px;
-        height: 38px;
-        padding: 0 14px;
-        border: none;
-        border-radius: 8px;
-        background: linear-gradient(135deg, #008C6E, #00a77f);
         color: #fff;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 8px 18px rgba(0, 140, 110, 0.22);
-        transition: all 0.2s ease;
-        flex: 0 0 auto;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 14px 32px rgba(15, 118, 110, 0.18);
     }
-    .btn-edit-data:hover {
-        background: linear-gradient(135deg, #00785f, #00966f);
-        transform: translateY(-1px);
-        box-shadow: 0 10px 22px rgba(0, 140, 110, 0.28);
-    }
-    .btn-edit-data:active {
-        transform: translateY(0);
-    }
-    .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    .data-table th {
-        background: #f8f9fa;
-        padding: 12px 15px;
-        text-align: left;
-        font-weight: 600;
-        color: #333;
-        border-bottom: 2px solid #e9ecef;
-        font-size: 14px;
-    }
-    .data-table td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f1f3f4;
-        font-size: 14px;
-        color: #555;
-    }
-    .data-table tbody tr:hover {
-        background: #f8f9fa;
-    }
-    .badge-status {
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    .badge-menikah {
-        background: #d4edda;
-        color: #155724;
-    }
-    .badge-belum {
-        background: #fff3cd;
-        color: #856404;
-    }
-    .action-buttons {
-        display: flex;
-        gap: 8px;
-    }
-    .btn-action {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        transition: all 0.2s;
-    }
-    .btn-edit {
-        background: #007bff;
-        color: white;
-    }
-    .btn-edit:hover {
-        background: #0056b3;
-    }
-    .btn-delete {
-        background: #dc3545;
-        color: white;
-    }
-    .btn-delete:hover {
-        background: #c82333;
-    }
-    
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.0.5);
-        animation: fadeIn 0.3s;
-    }
-    .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 0;
-        border: 1px solid #888;
-        border-radius: 12px;
-        width: 500px;
-        max-width: 90%;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        animation: slideIn 0.3s;
-    }
-    .modal-header {
-        background: linear-gradient(135deg, #F6903A, #E57A2A);
-        color: white;
-        padding: 20px 25px;
-        border-radius: 12px 12px 0 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .modal-header h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 600;
-    }
-    .modal-close {
-        background: none;
-        border: none;
-        font-size: 24px;
-        color: white;
-        cursor: pointer;
-        padding: 0;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: background 0.2s;
-    }
-    .modal-close:hover {
-        background: rgba(255,255,255,0.2);
-    }
-    .form-group {
-        margin-bottom: 20px;
-        padding: 0 25px;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 500;
-        color: #333;
-    }
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        transition: border-color 0.2s;
-        box-sizing: border-box;
-    }
-    .form-group input:focus,
-    .form-group select:focus {
-        outline: none;
-        border-color: #F6903A;
-        box-shadow: 0 0 0 3px rgba(246, 144, 58, 0.1);
-    }
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        padding: 20px 25px;
-        background: #f8f9fa;
-        border-radius: 0 0 12px 12px;
-        margin: 0;
-    }
-    .btn-cancel {
-        background: #6c757d;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background 0.2s;
-    }
-    .btn-cancel:hover {
-        background: #5a6268;
-    }
-    .btn-submit {
-        background: #F6903A;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: background 0.2s;
-    }
-    .btn-submit:hover {
-        background: #E57A2A;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    @keyframes slideIn {
-        from { transform: translateY(-50px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
-    .header-text p { 
-        font-size: 14px; 
-        color: #666; 
-    }
-    
-    /* B. Statistik Cards (4 Kotak Warna-warni) */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 25px; 
-        margin-bottom: 30px;
-    }
-    
-    .stat-card {
-        background: #fff; 
-        border-radius: 12px; 
-        padding: 25px;
-    }
+    .data-header-card h3 { margin: 0 0 8px; font-size: 24px; font-weight: 700; }
+    .data-header-card p { margin: 0; max-width: 760px; color: rgba(255, 255, 255, 0.9); }
+    .alert-success { background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; color: #166534; margin-bottom: 18px; padding: 12px 14px; }
 
-    /* Varian Warna Card */
-    .card-green { background-color: #ecfdf5; }
-    .card-blue { background-color: #eff6ff; }
-    .card-purple { background-color: #faf5ff; }
-    .card-orange { background-color: #fff7ed; }
+    .subject-picker { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06); margin-bottom: 18px; padding: 18px; }
+    .subject-picker-top { align-items: flex-start; display: flex; gap: 14px; justify-content: space-between; margin-bottom: 14px; }
+    .subject-picker-title { align-items: center; display: flex; gap: 10px; }
+    .subject-picker-title i { align-items: center; background: #ecfdf5; border-radius: 8px; color: #0f766e; display: inline-flex; font-size: 22px; height: 40px; justify-content: center; width: 40px; }
+    .subject-picker-title h4 { color: #111827; font-size: 17px; font-weight: 750; margin: 0; }
+    .subject-picker-title p { color: #64748b; font-size: 14px; line-height: 1.5; margin: 3px 0 0; }
+    .subject-picker-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+    .subject-mini-btn { align-items: center; background: #f8fafc; border: 1px solid #dbe3ee; border-radius: 8px; color: #334155; cursor: pointer; display: inline-flex; font-size: 13px; font-weight: 700; gap: 6px; min-height: 36px; padding: 8px 11px; }
+    .subject-mini-btn:hover { background: #ecfdf5; border-color: #0f766e; color: #0f766e; }
+    .subject-choice-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+    .subject-choice { align-items: flex-start; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; color: #111827; cursor: pointer; display: flex; gap: 12px; min-height: 92px; padding: 14px; position: relative; text-align: left; transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease, background .2s ease; width: 100%; }
+    .subject-choice:hover, .subject-choice:focus { background: #fff; border-color: #f97316; box-shadow: 0 12px 26px rgba(249, 115, 22, 0.14); outline: none; transform: translateY(-2px); }
+    .subject-choice.is-active { background: #fff7ed; border-color: #f97316; box-shadow: inset 0 0 0 1px #f97316, 0 12px 26px rgba(15, 118, 110, 0.10); }
+    .subject-choice.is-active::after { align-items: center; background: #0f766e; border-radius: 999px; color: #fff; content: '\2713'; display: inline-flex; font-size: 12px; font-weight: 800; height: 22px; justify-content: center; position: absolute; right: 10px; top: 10px; width: 22px; }
+    .subject-choice-icon { align-items: center; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; color: #0f766e; display: inline-flex; flex: 0 0 42px; font-size: 23px; height: 42px; justify-content: center; width: 42px; }
+    .subject-choice.is-active .subject-choice-icon { background: #0f766e; border-color: #0f766e; color: #fff; }
+    .subject-choice-name { display: block; font-size: 14px; font-weight: 750; line-height: 1.35; padding-right: 20px; }
+    .subject-choice-meta { color: #64748b; display: block; font-size: 12px; font-weight: 600; margin-top: 6px; }
+    .subject-choice.is-active .subject-choice-meta { color: #9a3412; }
 
-    .stat-icon {
-        width: 45px; 
-        height: 45px; 
-        border-radius: 10px;
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        font-size: 24px; 
-        margin-bottom: 15px;
-    }
-    /* Icon Colors */
-    .icon-green { background: #10b981; color: white; }
-    .icon-blue { background: #3b82f6; color: white; }
-    .icon-purple { background: #a855f7; color: white; }
-    .icon-orange { background: #f97316; color: white; }
+    .empty-state { align-items: center; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; color: #64748b; display: flex; gap: 10px; min-height: 112px; padding: 20px; }
+    .empty-state i { color: #0f766e; font-size: 25px; }
 
-    .stat-title { 
-        font-size: 14px; 
-        color: #555; 
-        margin-bottom: 8px; 
-        font-weight: 500; 
-    }
-    .stat-value { 
-        font-size: 28px; 
-        font-weight: 600; 
-        color: #333; 
-        margin-bottom: 5px; 
-    }
-    .stat-unit { 
-        font-size: 13px; 
-        font-weight: 500; 
-    }
-    
-    .text-green { color: #10b981; }
-    .text-blue { color: #3b82f6; }
-    .text-purple { color: #a855f7; }
-    .text-orange { color: #f97316; }
+    .subject-stack { display: grid; gap: 18px; }
+    .subject-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06); display: none; overflow: hidden; }
+    .subject-panel.is-active { display: block; animation: subjectReveal .22s ease; }
+    @keyframes subjectReveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .subject-header { align-items: center; background: #f8fafc; border-bottom: 1px solid #e5e7eb; display: flex; gap: 12px; padding: 16px 18px; }
+    .subject-icon { align-items: center; background: #fff7ed; border-radius: 8px; color: #ea580c; display: inline-flex; flex: 0 0 42px; font-size: 23px; height: 42px; justify-content: center; width: 42px; }
+    .subject-title { color: #111827; font-size: 18px; font-weight: 700; line-height: 1.35; margin: 0; }
+    .dataset-list { display: grid; gap: 0; }
+    .dataset-row { border-bottom: 1px solid #eef2f7; display: grid; gap: 14px; grid-template-columns: minmax(260px, 1fr) minmax(180px, 240px); padding: 16px 18px; }
+    .dataset-row:last-child { border-bottom: 0; }
+    .dataset-name { color: #1f2937; font-size: 15px; font-weight: 650; line-height: 1.45; }
+    .dataset-children { display: grid; gap: 10px; margin-top: 12px; }
+    .child-row { align-items: center; display: grid; gap: 12px; grid-template-columns: minmax(180px, 1fr) minmax(160px, 220px); }
+    .child-label { color: #64748b; font-size: 14px; line-height: 1.4; padding-left: 14px; position: relative; }
+    .child-label::before { background: #cbd5e1; border-radius: 999px; content: ''; height: 5px; left: 0; position: absolute; top: 8px; width: 5px; }
+    .value-input { border: 1px solid #d1d5db; border-radius: 8px; color: #111827; font-size: 14px; height: 42px; padding: 9px 12px; width: 100%; }
+    .value-input:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.14); outline: none; }
+    .form-footer { display: none; justify-content: flex-end; margin-top: 22px; }
+    .form-footer.is-active { display: flex; }
+    .btn-save-data { align-items: center; background: #0f766e; border: 0; border-radius: 8px; color: #fff; cursor: pointer; display: inline-flex; font-size: 15px; font-weight: 700; gap: 8px; min-height: 44px; padding: 10px 18px; }
+    .btn-save-data:hover { background: #115e59; }
 
-    /* C. Sebaran Penduduk (Progress Bars) */
-    .distribution-card {
-        background: #fff; 
-        border-radius: 12px; 
-        padding: 30px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02); 
-        border: 1px solid #eee;
-    }
-    .distribution-card h3 { 
-        font-size: 18px; 
-        font-weight: 600; 
-        color: #333; 
-        margin-bottom: 25px; 
-    }
-
-    .rw-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 50px;
-        row-gap: 25px;
-    }
-
-    .rw-item { 
-        margin-bottom: 5px; 
-    }
-    
-    .rw-info {
-        display: flex; 
-        justify-content: space-between; 
-        margin-bottom: 8px; 
-        font-size: 14px;
-    }
-    .rw-name { 
-        font-weight: 500; 
-        color: #333; 
-    }
-    .rw-count { 
-        font-weight: 600; 
-        color: #333; 
-    }
-    .rw-unit { 
-        font-weight: 400; 
-        color: #999; 
-        font-size: 12px; 
-        margin-left: 4px;
-    }
-
-    .progress-bg {
-        width: 100%; 
-        height: 8px; 
-        background-color: #f3f4f6; 
-        border-radius: 10px; 
-        overflow: hidden;
-    }
-    .progress-fill {
-        height: 100%; 
-        background-color: #009669; 
-        border-radius: 10px;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .stats-grid { 
-            grid-template-columns: repeat(2, 1fr); 
-        }
-        .rw-grid { 
-            grid-template-columns: 1fr; 
-        }
-    }
-    
-@media (max-width: 768px) {
-        .stats-grid { 
-            grid-template-columns: 1fr; 
-        }
-        .data-header-card { 
-            flex-direction: column; 
-            align-items: flex-start; 
-            gap: 15px; 
-        }
-        .rw-grid {
-            grid-template-columns: 1fr;
-            column-gap: 20px;
-        }
-    }
-
-    /* Mobile Responsive Table & Buttons */
-    @media (max-width: 480px) {
-        .home-content {
-            padding: 15px;
-        }
-        .table-container {
-            padding: 15px;
-        }
-        .table-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
-        }
-        .header-actions {
-            width: 100%;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .btn-tambah {
-            width: 100%;
-            justify-content: center;
-            padding: 12px 16px;
-            min-height: 44px;
-        }
-        .search-box {
-            width: 100%;
-        }
-        .search-input {
-            min-width: 0;
-        }
-        .btn-edit-data span {
-            display: none;
-        }
-        .btn-edit-data {
-            min-width: 42px;
-            padding: 0 12px;
-        }
-        .data-table {
-            display: block;
-            overflow-x: auto;
-        }
-        .data-table th,
-        .data-table td {
-            padding: 10px 8px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-        .btn-action {
-            padding: 8px 12px;
-            min-height: 44px;
-            min-width: 44px;
-            font-size: 11px;
-        }
-        .action-buttons {
-            gap: 6px;
-        }
-        .modal-content {
-            width: 95%;
-            max-width: 95%;
-            margin: 5% auto;
-        }
-        .form-group {
-            padding: 0 15px;
-        }
-        .form-group input,
-        .form-group select {
-            font-size: 16px;
-            padding: 12px;
-        }
-        .form-actions {
-            flex-direction: column;
-            gap: 10px;
-        }
-        .btn-cancel,
-        .btn-submit {
-            width: 100%;
-            justify-content: center;
-            padding: 12px;
-            min-height: 44px;
-        }
+    @media (max-width: 768px) {
+        .data-page { padding: 16px; }
+        .subject-picker-top { flex-direction: column; }
+        .subject-picker-actions { justify-content: flex-start; }
+        .dataset-row, .child-row { grid-template-columns: 1fr; }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="home-content">
+<div class="data-page">
     <div class="data-header-card">
-        <div class="header-text">
-            <h3>Data Kependudukan</h3>
-            <p>Kelola data statistik penduduk kelurahan</p>
-        </div>
+        <h3>Data Kelurahan</h3>
+        <p>Pilih satu atau beberapa subjek, lalu isi nilai dataset statistik yang tersedia.</p>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card card-green">
-            <div class="stat-icon icon-green"><i class='bx bx-group'></i></div>
-            <div class="stat-title">Total Penduduk</div>
-            <div class="stat-value">{{ $data['total_penduduk'] }}</div>
-            <div class="stat-unit text-green">Jiwa</div>
-        </div>
+    @if(session('success'))
+        <div class="alert-success">{{ session('success') }}</div>
+    @endif
 
-        <div class="stat-card card-blue">
-            <div class="stat-icon icon-blue"><i class='bx bx-male'></i></div>
-            <div class="stat-title">Laki-Laki</div>
-            <div class="stat-value">{{ $data['laki_laki'] }}</div>
-            <div class="stat-unit text-blue">Jiwa</div>
-        </div>
+    <form action="{{ route('admin.data-kelurahan.store') }}" method="POST">
+        @csrf
 
-        <div class="stat-card card-purple">
-            <div class="stat-icon icon-purple"><i class='bx bx-female'></i></div>
-            <div class="stat-title">Perempuan</div>
-            <div class="stat-value">{{ $data['perempuan'] }}</div>
-            <div class="stat-unit text-purple">Jiwa</div>
-        </div>
-
-        <div class="stat-card card-orange">
-            <div class="stat-icon icon-orange"><i class='bx bx-home-heart'></i></div>
-            <div class="stat-title">Kepala Keluarga</div>
-            <div class="stat-value">{{ $data['kepala_keluarga'] }}</div>
-            <div class="stat-unit text-orange">KK</div>
-        </div>
-    </div>
-
-    <div class="distribution-card">
-        <h3>Sebaran Penduduk per RW</h3>
-        
-        <div class="rw-grid">
-            <div class="rw-column">
-                @foreach(array_slice($data['rws'], 0, 5) as $rw)
-                <div class="rw-item">
-                    <div class="rw-info">
-                        <span class="rw-name">RW {{ $rw['no'] }}</span>
-                        <div><span class="rw-count">{{ $rw['jumlah'] }}</span> <span class="rw-unit">jiwa</span></div>
-                    </div>
-                    <div class="progress-bg">
-                        <div class="progress-fill" style="width: {{ $rw['persentase'] }}%;"></div>
+        <div class="subject-picker" aria-labelledby="adminSubjectPickerTitle">
+            <div class="subject-picker-top">
+                <div class="subject-picker-title">
+                    <i class='bx bx-category-alt'></i>
+                    <div>
+                        <h4 id="adminSubjectPickerTitle">Pilih Subjek Data</h4>
+                        <p>Aktifkan beberapa kartu subjek untuk mengisi banyak dataset sekaligus.</p>
                     </div>
                 </div>
-                @if(!$loop->last)<br>@endif
-                @endforeach
-            </div>
-
-            <div class="rw-column">
-                @foreach(array_slice($data['rws'], 5) as $rw)
-                <div class="rw-item">
-                    <div class="rw-info">
-                        <span class="rw-name">RW {{ $rw['no'] }}</span>
-                        <div><span class="rw-count">{{ $rw['jumlah'] }}</span> <span class="rw-unit">jiwa</span></div>
-                    </div>
-                    <div class="progress-bg">
-                        <div class="progress-fill" style="width: {{ $rw['persentase'] }}%;"></div>
-                    </div>
-                </div>
-                @if(!$loop->last)<br>@endif
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Tabel Data Penduduk -->
-    <div class="table-container">
-        <div class="table-header">
-            <h3 class="table-title">Data Penduduk</h3>
-            <div class="header-actions">
-                <button class="btn-tambah" onclick="tambahPenduduk()">
-                    <i class='bx bx-plus-circle'></i> Tambah Penduduk
-                </button>
-                <div class="search-box" role="search" aria-label="Pencarian penduduk">
-                    <span class="search-icon"><i class='bx bx-search'></i></span>
-                    <input type="text" class="search-input" id="searchPenduduk" placeholder="Cari nama penduduk..." autocomplete="off">
-                    <button type="button" class="btn-clear-search" aria-label="Bersihkan pencarian">
-                        <i class='bx bx-x'></i>
-                    </button>
-                    <button type="button" class="btn-edit-data" aria-label="Cari penduduk">
-                        <i class='bx bx-search'></i><span>Cari</span>
-                    </button>
+                <div class="subject-picker-actions">
+                    <button type="button" class="subject-mini-btn" id="adminSelectAllSubjects"><i class='bx bx-select-multiple'></i> Pilih Semua</button>
+                    <button type="button" class="subject-mini-btn" id="adminClearSubjects"><i class='bx bx-x'></i> Bersihkan</button>
                 </div>
             </div>
-        </div>
-        
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Jenis Kelamin</th>
-                    <th>Status</th>
-                    <th>RW</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($data['penduduk'] as $penduduk)
-                <tr>
-                    <td>{{ $penduduk['no'] }}</td>
-                    <td>{{ $penduduk['nama'] }}</td>
-                    <td>{{ $penduduk['jenis_kelamin'] }}</td>
-                    <td>
-                        <span class="badge-status {{ $penduduk['status'] == 'Menikah' ? 'badge-menikah' : 'badge-belum' }}">
-                            {{ $penduduk['status'] }}
+            <div class="subject-choice-grid" role="listbox" aria-label="Subjek Data" aria-multiselectable="true">
+                @foreach($subjects as $subject)
+                    @php($datasetCount = count($subject['datasets'] ?? []))
+                    <button type="button" class="subject-choice" data-subject-choice="{{ $subject['key'] }}" role="option" aria-selected="false" aria-pressed="false">
+                        <span class="subject-choice-icon"><i class='bx {{ $subject['icon'] ?? 'bx-data' }}'></i></span>
+                        <span>
+                            <span class="subject-choice-name">{{ $subject['name'] }}</span>
+                            <span class="subject-choice-meta">{{ $datasetCount }} dataset utama</span>
                         </span>
-                    </td>
-                    <td>{{ $penduduk['rw'] }}</td>
-                    <td>
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" onclick="editPenduduk({{ $penduduk['id'] }})">
-                                    <i class='bx bx-edit'></i> Edit
-                                </button>
-                                <button class="btn-action btn-delete" onclick="deletePenduduk({{ $penduduk['id'] }}, '{{ $penduduk['nama'] }}')">
-                                    <i class='bx bx-trash'></i> Delete
-                                </button>
-                            </div>
-                        </td>
-                </tr>
+                    </button>
                 @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Modal Edit Penduduk -->
-<div id="editPendudukModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Edit Penduduk</h3>
-            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
         </div>
-        <form id="formEditPenduduk" onsubmit="return updatePenduduk(event)">
-            @csrf
-            <input type="hidden" id="editPendudukId" name="id">
-            <div class="form-group">
-                <label for="editNama">Nama Lengkap</label>
-                <input type="text" id="editNama" name="nama" required>
-            </div>
-            <div class="form-group">
-                <label for="editJenisKelamin">Jenis Kelamin</label>
-                <select id="editJenisKelamin" name="jenis_kelamin" required>
-                    <option value="">-- Pilih Jenis Kelamin --</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="editStatus">Status Pernikahan</label>
-                <select id="editStatus" name="status" required>
-                    <option value="">-- Pilih Status --</option>
-                    <option value="Menikah">Menikah</option>
-                    <option value="Belum Menikah">Belum Menikah</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="editRw">RW</label>
-                <select id="editRw" name="rw" required>
-                    <option value="">-- Pilih RW --</option>
-                    @for($i = 1; $i <= 10; $i++)
-                        <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">RW {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="closeEditModal()">Batal</button>
-                <button type="submit" class="btn-submit">
-                    <i class='bx bx-save'></i> Update
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
-<!-- Modal Tambah Penduduk -->
-<div id="tambahPendudukModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Tambah Penduduk Baru</h3>
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="empty-state" id="adminEmptyState">
+            <i class='bx bx-pointer'></i>
+            <span>Silakan pilih satu atau beberapa subjek data untuk mulai mengisi.</span>
         </div>
-        <form id="formTambahPenduduk" onsubmit="return submitPenduduk(event)">
-            @csrf
-            <div class="form-group">
-                <label for="nama">Nama Lengkap</label>
-                <input type="text" id="nama" name="nama" required>
-            </div>
-            <div class="form-group">
-                <label for="jenis_kelamin">Jenis Kelamin</label>
-                <select id="jenis_kelamin" name="jenis_kelamin" required>
-                    <option value="">-- Pilih Jenis Kelamin --</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="status">Status Pernikahan</label>
-                <select id="status" name="status" required>
-                    <option value="">-- Pilih Status --</option>
-                    <option value="Menikah">Menikah</option>
-                    <option value="Belum Menikah">Belum Menikah</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="rw">RW</label>
-                <select id="rw" name="rw" required>
-                    <option value="">-- Pilih RW --</option>
-                    @for($i = 1; $i <= 10; $i++)
-                        <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">RW {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
-                <button type="submit" class="btn-submit">
-                    <i class='bx bx-save'></i> Simpan
-                </button>
-            </div>
-        </form>
-    </div>
+
+        <div class="subject-stack">
+            @foreach($subjects as $subject)
+                <section class="subject-panel" data-subject-panel="{{ $subject['key'] }}">
+                    <div class="subject-header">
+                        <span class="subject-icon"><i class='bx {{ $subject['icon'] ?? 'bx-data' }}'></i></span>
+                        <h4 class="subject-title">{{ $subject['name'] }}</h4>
+                    </div>
+
+                    <div class="dataset-list">
+                        @foreach($subject['datasets'] as $dataset)
+                            @php($datasetValue = optional($values->get($dataset['key']))->value)
+                            <div class="dataset-row">
+                                <div>
+                                    <div class="dataset-name">{{ $dataset['name'] }}</div>
+
+                                    @if(!empty($dataset['children']))
+                                        <div class="dataset-children">
+                                            @foreach($dataset['children'] as $child)
+                                                @php($childValue = optional($values->get($child['key']))->value)
+                                                <div class="child-row">
+                                                    <label class="child-label" for="value_{{ $child['key'] }}">{{ $child['name'] }}</label>
+                                                    <input class="value-input" id="value_{{ $child['key'] }}" type="number" min="0" step="0.01" name="values[{{ $child['key'] }}]" value="{{ old('values.' . $child['key'], $childValue) }}" placeholder="0">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+
+                                @if(empty($dataset['children']))
+                                    <input class="value-input" id="value_{{ $dataset['key'] }}" type="number" min="0" step="0.01" name="values[{{ $dataset['key'] }}]" value="{{ old('values.' . $dataset['key'], $datasetValue) }}" placeholder="0" aria-label="{{ $dataset['name'] }}">
+                                @else
+                                    <input type="hidden" name="values[{{ $dataset['key'] }}]" value="{{ old('values.' . $dataset['key'], $datasetValue) }}">
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endforeach
+        </div>
+
+        <div class="form-footer" id="adminFormFooter">
+            <button class="btn-save-data" type="submit"><i class='bx bx-save'></i> Simpan Data</button>
+        </div>
+    </form>
 </div>
+@endsection
 
 @push('scripts')
 <script>
-    // ========== 1. REALTIME SEARCH FUNCTIONALITY ==========
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.querySelector('.search-input');
-        const clearSearchBtn = document.querySelector('.btn-clear-search');
-        const tableRows = document.querySelectorAll('.data-table tbody tr');
-        
-        if (searchInput) {
-            const toggleClearButton = () => {
-                if (clearSearchBtn) {
-                    clearSearchBtn.style.display = searchInput.value.trim() ? 'inline-flex' : 'none';
-                }
-            };
+    document.addEventListener('DOMContentLoaded', function () {
+        const emptyState = document.getElementById('adminEmptyState');
+        const footer = document.getElementById('adminFormFooter');
+        const panels = document.querySelectorAll('[data-subject-panel]');
+        const choices = document.querySelectorAll('[data-subject-choice]');
+        const activeSubjects = new Set();
 
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase().trim();
-                toggleClearButton();
-                
-                tableRows.forEach(row => {
-                    const namaCell = row.querySelector('td:nth-child(2)');
-                    if (namaCell) {
-                        const namaText = namaCell.textContent.toLowerCase();
-                        if (namaText.includes(searchTerm)) {
-                            row.style.display = '';
-                            row.style.animation = 'fadeInRow 0.3s ease';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-                
-                // Show/hide "no results" message
-                const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
-                const tableBody = document.querySelector('.data-table tbody');
-                let noResultMsg = document.getElementById('no-result-message');
-                
-                if (visibleRows.length === 0 && searchTerm !== '') {
-                    if (!noResultMsg) {
-                        noResultMsg = document.createElement('tr');
-                        noResultMsg.id = 'no-result-message';
-                        const noResultCell = document.createElement('td');
-                        const noResultIcon = document.createElement('i');
-                        const noResultStrong = document.createElement('strong');
-
-                        noResultCell.colSpan = 6;
-                        noResultCell.style.cssText = 'text-align: center; padding: 30px; color: #888;';
-                        noResultIcon.className = 'bx bx-search';
-                        noResultIcon.style.cssText = 'font-size: 48px; margin-bottom: 10px;';
-                        noResultStrong.textContent = searchTerm;
-
-                        noResultCell.appendChild(noResultIcon);
-                        noResultCell.appendChild(document.createElement('br'));
-                        noResultCell.append('Tidak ada data yang cocok dengan "');
-                        noResultCell.appendChild(noResultStrong);
-                        noResultCell.append('"');
-                        noResultMsg.appendChild(noResultCell);
-                        tableBody.appendChild(noResultMsg);
-                    }
-                    noResultMsg.querySelector('strong').textContent = searchTerm;
-                    noResultMsg.style.display = '';
-                } else if (noResultMsg) {
-                    noResultMsg.style.display = 'none';
-                }
+        function renderSubjects() {
+            choices.forEach(choice => {
+                const isActive = activeSubjects.has(choice.dataset.subjectChoice);
+                choice.classList.toggle('is-active', isActive);
+                choice.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                choice.setAttribute('aria-pressed', isActive ? 'true' : 'false');
             });
+            panels.forEach(panel => panel.classList.toggle('is-active', activeSubjects.has(panel.dataset.subjectPanel)));
+            emptyState.style.display = activeSubjects.size ? 'none' : 'flex';
+            footer.classList.toggle('is-active', activeSubjects.size > 0);
+        }
 
-            clearSearchBtn?.addEventListener('click', function() {
-                searchInput.value = '';
-                searchInput.dispatchEvent(new Event('input'));
-                searchInput.focus();
+        choices.forEach(choice => {
+            choice.addEventListener('click', () => {
+                const subjectKey = choice.dataset.subjectChoice;
+                activeSubjects.has(subjectKey) ? activeSubjects.delete(subjectKey) : activeSubjects.add(subjectKey);
+                renderSubjects();
             });
-
-            toggleClearButton();
-        }
-    });
-
-    // ========== 2. ENHANCED NOTIFICATION SYSTEM ==========
-    function showNotification(message, type = 'success') {
-        // Remove existing notifications first
-        document.querySelectorAll('.custom-notification').forEach(n => n.remove());
-        
-        const notification = document.createElement('div');
-        const config = {
-            success: { icon: 'bx-check-circle', bg: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff' },
-            error: { icon: 'bx-x-circle', bg: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff' },
-            warning: { icon: 'bx-exclamation-circle', bg: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff' },
-            info: { icon: 'bx-info-circle', bg: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff' }
-        };
-        
-        const c = config[type] || config.success;
-        
-        notification.className = 'custom-notification';
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px;
-            background: ${c.bg}; color: ${c.color};
-            padding: 16px 24px; border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000;
-            font-family: 'Poppins', sans-serif; font-size: 14px;
-            display: flex; align-items: center; gap: 12px;
-            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            min-width: 280px; max-width: 400px;
-        `;
-        notification.innerHTML = `
-            <i class="bx ${c.icon}" style="font-size: 24px;"></i>
-            <span style="font-weight: 500;">${message}</span>
-        `;
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight { 
-                from { transform: translateX(120%); opacity: 0; } 
-                to { transform: translateX(0); opacity: 1; } 
-            }
-            @keyframes fadeInRow {
-                from { opacity: 0.5; transform: translateX(-10px); }
-                to { opacity: 1; transform: translateX(0); }
-            }
-        `;
-        document.head.appendChild(style);
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.style.transform = 'translateX(120%)';
-            notification.style.opacity = '0';
-            notification.style.transition = 'all 0.4s ease';
-            setTimeout(() => { notification.remove(); style.remove(); }, 400);
-        }, 3500);
-    }
-
-    // ========== 3. BUTTON FEEDBACK TOASTS ==========
-    function showButtonFeedback(btn, message, type = 'info') {
-        const originalHTML = btn.innerHTML;
-        
-        // Show temporary feedback
-        btn.innerHTML = `<i class="bx bx-check" style="margin-right: 4px;"></i>${message}`;
-        btn.style.transition = 'all 0.3s ease';
-        
-        setTimeout(() => {
-            btn.innerHTML = originalHTML;
-        }, 1500);
-    }
-
-    // ========== 4. INTERACTIVE TOAST FOR DELETE ==========
-    function showDeleteConfirm(id, nama) {
-        const modal = document.createElement('div');
-        modal.id = 'delete-confirm-modal';
-        modal.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            animation: fadeIn 0.3s ease;
-        `;
-        
-        modal.innerHTML = `
-            <div style="background: white; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%;
-                        box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: scaleIn 0.3s ease;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef2f2; 
-                                display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                        <i class="bx bx-trash" style="font-size: 36px; color: #ef4444;"></i>
-                    </div>
-                    <h3 style="margin: 0 0 8px; font-size: 20px; color: #1f2937;">Konfirmasi Hapus</h3>
-                    <p style="margin: 0; color: #6b7280; font-size: 14px;">
-                        Apakah Anda yakin ingin menghapus<br>
-                        <strong style="color: #1f2937; font-size: 16px;">"${nama}"</strong>?
-                    </p>
-                </div>
-                <div style="display: flex; gap: 12px; justify-content: center;">
-                    <button onclick="closeDeleteModal()" style="flex: 1; padding: 12px 24px; border: none; 
-                                border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 500;
-                                cursor: pointer; transition: all 0.2s;">Batal</button>
-                    <button onclick="confirmDelete(${id})" style="flex: 1; padding: 12px 24px; border: none; 
-                                border-radius: 10px; background: #ef4444; color: white; font-weight: 500;
-                                cursor: pointer; transition: all 0.2s;">Ya, Hapus</button>
-                </div>
-            </div>
-        `;
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-            @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        `;
-        document.head.appendChild(style);
-        modal.onclick = function(e) { if(e.target === modal) closeDeleteModal(); };
-        document.body.appendChild(modal);
-    }
-
-    function closeDeleteModal() {
-        const modal = document.getElementById('delete-confirm-modal');
-        if (modal) {
-            modal.style.opacity = '0';
-            modal.style.transform = 'scale(0.9)';
-            setTimeout(() => modal.remove(), 300);
-        }
-    }
-
-    window.closeDeleteModal = closeDeleteModal;
-
-    function tambahPenduduk() {
-        // Tampilkan modal tambah penduduk
-        document.getElementById('tambahPendudukModal').style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        // Sembunyikan modal
-        document.getElementById('tambahPendudukModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-        
-        // Reset form
-        document.getElementById('formTambahPenduduk').reset();
-    }
-
-    function submitPenduduk(event) {
-        event.preventDefault();
-        
-        const form = document.getElementById('formTambahPenduduk');
-        const formData = new FormData(form);
-        
-        // Tampilkan loading
-        const submitBtn = form.querySelector('.btn-submit');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Menyimpan...';
-        submitBtn.disabled = true;
-        
-        // Kirim data ke server
-        fetch('/admin/data-kelurahan/store', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showNotification('Data penduduk berhasil ditambahkan!', 'success');
-                closeModal();
-                // Reload halaman untuk melihat data terbaru
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                showNotification(data.message || 'Terjadi kesalahan saat menyimpan data', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
-        })
-        .finally(() => {
-            // Kembalikan button ke state semula
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
         });
-    }
 
-    function closeEditModal() {
-        // Sembunyikan modal edit
-        document.getElementById('editPendudukModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-        
-        // Reset form
-        document.getElementById('formEditPenduduk').reset();
-    }
-
-    function editPenduduk(id) {
-        // Ambil data penduduk berdasarkan ID database
-        const pendudukData = @json($data['penduduk']);
-        const penduduk = pendudukData.find(p => p.id === id);
-        
-        if (penduduk) {
-            // Isi form dengan data yang ada
-            document.getElementById('editNama').value = penduduk.nama;
-            document.getElementById('editJenisKelamin').value = penduduk.jenis_kelamin;
-            document.getElementById('editStatus').value = penduduk.status;
-            document.getElementById('editRw').value = penduduk.rw;
-            
-            // Tampilkan modal edit
-            document.getElementById('editPendudukModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Simpan ID untuk update
-            document.getElementById('editPendudukId').value = penduduk.id;
-        } else {
-            showNotification('Data penduduk tidak ditemukan', 'error');
-        }
-    }
-
-    function updatePenduduk(event) {
-        event.preventDefault();
-        
-        const form = document.getElementById('formEditPenduduk');
-        const id = document.getElementById('editPendudukId').value;
-        
-        // Ambil data form sebagai object
-        const formData = {
-            _method: 'PUT',
-            _token: form.querySelector('input[name="_token"]').value,
-            nama: form.querySelector('#editNama').value,
-            jenis_kelamin: form.querySelector('#editJenisKelamin').value,
-            status: form.querySelector('#editStatus').value,
-            rw: form.querySelector('#editRw').value
-        };
-        
-        // Tampilkan loading
-        const submitBtn = form.querySelector('.btn-submit');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Mengupdate...';
-        submitBtn.disabled = true;
-        
-        // Kirim data ke server sebagai JSON
-        fetch(`/admin/data-kelurahan/update/${id}`, {
-            method: 'PUT',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showNotification('Data penduduk berhasil diupdate!', 'success');
-                closeEditModal();
-                // Reload halaman untuk melihat data terbaru
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                showNotification(data.message || 'Terjadi kesalahan saat mengupdate data', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
-        })
-        .finally(() => {
-            // Kembalikan button ke state semula
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
+        document.getElementById('adminSelectAllSubjects')?.addEventListener('click', () => {
+            choices.forEach(choice => activeSubjects.add(choice.dataset.subjectChoice));
+            renderSubjects();
         });
-    }
 
-    // Update window onclick untuk handle kedua modal
-    window.onclick = function(event) {
-        const tambahModal = document.getElementById('tambahPendudukModal');
-        const editModal = document.getElementById('editPendudukModal');
-        
-        if (event.target === tambahModal) {
-            closeModal();
-        } else if (event.target === editModal) {
-            closeEditModal();
-        }
-    }
-
-// ========== 5. DELETE FUNCTIONS WITH INTERACTIVE CONFIRM ==========
-    function deletePenduduk(id, nama) {
-        // Use interactive modal instead of basic confirm
-        showDeleteConfirm(id, nama);
-    }
-
-    function confirmDelete(id) {
-        // Tutup modal konfirmasi
-        closeDeleteModal();
-        
-        // Kirim request delete ke server
-        fetch(`/admin/data-kelurahan/delete/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Hapus baris dari tabel dengan animasi
-                const row = document.querySelector(`tr:nth-child(${id + 1})`);
-                if (row) {
-                    row.style.transition = 'opacity 0.3s, transform 0.3s';
-                    row.style.opacity = '0';
-                    row.style.transform = 'translateX(-20px)';
-                    setTimeout(() => row.remove(), 300);
-                }
-                
-                // Tampilkan notifikasi sukses
-                showNotification('🎉 Data penduduk berhasil dihapus!', 'success');
-                
-                // Reload halaman setelah 1.5 detik untuk update statistik
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
-            } else {
-                showNotification(data.message || 'Terjadi kesalahan saat menghapus data', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Terjadi kesalahan jaringan. Silakan coba lagi.', 'error');
+        document.getElementById('adminClearSubjects')?.addEventListener('click', () => {
+            activeSubjects.clear();
+            renderSubjects();
         });
-    }
 
-    window.confirmDelete = confirmDelete;
-
-    // ========== 6. BUTTON CLICK FEEDBACK ==========
-    // Add nice ripple effect to add button
-    document.querySelector('.btn-tambah')?.addEventListener('click', function() {
-        this.innerHTML = '<i class="bx bx Loader-alt bx-spin" style="font-size: 18px;"></i> Membuka...';
-        setTimeout(() => {
-            this.innerHTML = '<i class="bx bx-plus-circle"></i> Tambah Penduduk';
-        }, 500);
-    });
-
-// Add search feedback
-    document.querySelector('.btn-edit-data')?.addEventListener('click', function() {
-        const searchInput = document.querySelector('.search-input');
-        if (searchInput && searchInput.value.trim() !== '') {
-            this.innerHTML = '<i class="bx bx-check"></i> Ditemukan!';
-            showNotification(`Mencari: "${searchInput.value}"`, 'info');
-            setTimeout(() => {
-                this.innerHTML = '<i class="bx bx-search"></i><span>Cari</span>';
-            }, 1500);
-        } else {
-            showNotification('Mohon masukkan nama yang ingin dicari', 'warning');
-        }
+        renderSubjects();
     });
 </script>
 @endpush
-@endsection

@@ -592,7 +592,13 @@
                 <div class="icon-box"><i class="fas fa-home"></i></div>
                 <h3>Desa Cantik</h3>
                 <p>Program pembangunan dan pengembangan desa untuk meningkatkan kualitas lingkungan.</p>
-                <a href="/desa-cantik" class="card-btn">Lihat Galeri <i class="fas fa-arrow-right"></i></a>
+                <a href="/desa-cantik" class="card-btn">Buka Desa Cantik <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="card">
+                <div class="icon-box"><i class="far fa-images"></i></div>
+                <h3>Galeri Kegiatan</h3>
+                <p>Dokumentasi kegiatan dan aktivitas Kelurahan Gunung Sugih yang dapat dilihat masyarakat.</p>
+                <a href="/galeri-kegiatan" class="card-btn">Lihat Galeri <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="card">
                 <div class="icon-box"><i class="far fa-newspaper"></i></div>
@@ -632,41 +638,6 @@
                 @endif
                 <a href="{{ route('kata-sambutan') }}" class="btn-sambutan">Baca Sambutan Lengkap</a>
             </div>
-        </div>
-    </section>
-
-    <section class="info-section">
-        <div class="info-header">
-            <h2>INFORMASI PUBLIK</h2>
-        </div>
-        <div class="info-grid">
-            @forelse($informasiPubliks ?? \App\Models\InformasiPublik::where('id', '!=', 4)->where('judul', 'not like', '%Agenda%')->get() as $index => $item)
-            <div class="info-card">
-                <div class="info-icon">{{ $index + 1 }}</div>
-                <h4>{{ $item->judul }}</h4>
-                <p>{{ $item->sub_deskripsi }}</p>
-                <a href="{{ route('informasi-publik.detail', $item->id) }}" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
-            </div>
-            @empty
-            <div class="info-card">
-                <div class="info-icon">1</div>
-                <h4>Lembaga Kemasyarakatan</h4>
-                <p>Informasi lengkap tentang lembaga-lembaga yang ada di Kelurahan Gunung Sugih.</p>
-                <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">2</div>
-                <h4>Lembaga Pemberdayaan Masyarakat</h4>
-                <p>Program pemberdayaan untuk meningkatkan kesejahteraan masyarakat.</p>
-                <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">3</div>
-                <h4>Dokumen Publik</h4>
-                <p>Akses dokumen dan peraturan yang dapat diakses oleh masyarakat.</p>
-                <a href="#" class="info-link">Pelajari lebih lanjut <i class="fas fa-arrow-right"></i></a>
-            </div>
-            @endforelse
         </div>
     </section>
 
@@ -750,6 +721,7 @@
             </div>
         @endif
     </section>
+
 
     @include('partials.agenda-calendar', ['agendaKegiatans' => $agendaKegiatans ?? collect()])
 

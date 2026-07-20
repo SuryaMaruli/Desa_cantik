@@ -137,21 +137,24 @@ class IdentifyVillage
 
     private function prefixPublicLinks(string $html, string $basePath): string
     {
-        $excluded = '(?:admin|login|logout|api|storage|build|css|js|images|img|assets|shapefile|favicon\.ico|robots\.txt)\b';
+        $excludedPrefixes = array_merge(
+            ['admin', 'login', 'logout', 'api', 'storage', 'build', 'css', 'js', 'images', 'img', 'assets', 'shapefile', 'favicon\.ico', 'robots\.txt'],
+            array_map(fn (string $slug) => preg_quote($slug, '/'), array_keys(config('villages.items', [])))
+        );
+        $excluded = '(?:' . implode('|', $excludedPrefixes) . ')\b';
 
         $html = preg_replace_callback(
-            '/\b(href|action)=([\'"])\/(?!\/|' . $excluded . ')([^\'"]*)\2/i',
+            '/\b(href|action)=([\'\"])\/(?!\/|' . $excluded . ')([^\'\"]*)\2/i',
             fn (array $matches) => $matches[1] . '=' . $matches[2] . $basePath . '/' . ltrim($matches[3], '/') . $matches[2],
             $html
         );
 
         return preg_replace_callback(
-            '/\b(href|action)=([\'"])\/\2/i',
+            '/\b(href|action)=([\'\"])\/\2/i',
             fn (array $matches) => $matches[1] . '=' . $matches[2] . $basePath . $matches[2],
             $html
         );
     }
-
     private function prefixAdminLinks(string $html, string $slug): string
     {
         return preg_replace_callback(

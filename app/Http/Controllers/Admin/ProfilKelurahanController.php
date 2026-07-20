@@ -38,14 +38,15 @@ class ProfilKelurahanController extends Controller
             'wilayah_barat'           => 'nullable|string',
         ]);
 
-        // 2. Simpan Data
-        // Kita gunakan id => 1 sebagai patokan karena ini Single Record
-        // Jika belum ada, dia buat baru. Jika ada, dia update.
+        // 2. Simpan Data untuk kelurahan aktif.
         try {
-            $profil = ProfilKelurahan::updateOrCreate(
-                ['id' => 1], // Kondisi pencarian (bisa diganti logic lain jika perlu)
-                $validated   // Data yang disimpan
-            );
+            $profil = ProfilKelurahan::first();
+
+            if ($profil) {
+                $profil->update($validated);
+            } else {
+                $profil = ProfilKelurahan::create($validated);
+            }
 
             // 3. Return Response JSON untuk AJAX
             return response()->json([

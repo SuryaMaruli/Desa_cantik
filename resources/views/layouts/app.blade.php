@@ -790,7 +790,13 @@
             <li><a href="/layanan">Layanan</a></li>
             <li><a href="/data">Data</a></li>
             <li><a href="/desa-cantik">Desa Cantik</a></li>
-            <li><a href="/berita">Berita dan Informasi</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Dokumentasi Kegiatan <i class="fas fa-chevron-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/berita">Berita dan Informasi</a></li>
+                    <li><a href="/galeri-kegiatan">Galeri Kegiatan</a></li>
+                </ul>
+            </li>
 
             @guest
                 <li>

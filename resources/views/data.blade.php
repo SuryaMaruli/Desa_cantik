@@ -1,444 +1,74 @@
 @extends('layouts.app')
 
-@section('title', 'Data Kelurahan - Dashboard')
+@section('title', 'Data Kelurahan')
 
 @section('content')
-    <style>
-        /* Reset & Base Styles */
-        :root {
-            --primary-green: #F6903A;
-            --light-green-bg: #e0f2f1;
-            --text-color: #333;
-            --text-muted: #666;
-            --card-bg: #ffffff;
-            --blue-accent: #039be5;
-            --pink-accent: #f06292;
-            --bg-color: #f4f6f8;
-        }
+<style>
+    .viz-page{background:#f0fbff;color:#1f2937;min-height:100vh;padding-bottom:56px}.viz-hero{background:radial-gradient(circle at 15% 20%,rgba(125,211,252,.7),transparent 28%),radial-gradient(circle at 82% 12%,rgba(253,224,71,.72),transparent 26%),linear-gradient(135deg,#bae6fd 0%,#bbf7d0 52%,#fde68a 100%);color:#1f2937;overflow:hidden;padding:50px 20px 44px;position:relative}.viz-hero:after{background:rgba(14,165,233,.18);content:'';height:170px;position:absolute;right:-70px;top:-80px;transform:rotate(18deg);width:280px}.viz-container{margin:0 auto;max-width:1180px;width:min(100% - 32px,1180px)}.viz-hero-content{align-items:center;display:grid;gap:28px;grid-template-columns:1fr;position:relative;z-index:1}.viz-hero h1{font-size:36px;font-weight:800;line-height:1.12;margin:0 0 12px}.viz-hero p{color:rgba(31,41,55,.86);font-size:16px;line-height:1.65;margin:0;max-width:780px}.viz-hero-kicker{align-items:center;background:rgba(255,255,255,.62);border:1px solid rgba(14,165,233,.24);border-radius:999px;display:inline-flex;font-size:12px;font-weight:800;gap:8px;letter-spacing:.08em;margin-bottom:16px;padding:8px 12px;text-transform:uppercase}
+    .subject-picker{background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 14px 32px rgba(14,165,233,.10);margin-top:28px;padding:18px}.subject-picker-top{align-items:flex-start;display:flex;gap:14px;justify-content:space-between;margin-bottom:14px}.subject-picker-title{align-items:center;display:flex;gap:10px}.subject-picker-title i{align-items:center;background:#ecfeff;border-radius:8px;color:#06b6d4;display:inline-flex;font-size:22px;height:40px;justify-content:center;width:40px}.subject-picker-title h2{color:#1f2937;font-size:18px;font-weight:780;line-height:1.3;margin:0}.subject-picker-title p{color:#64748b;font-size:14px;line-height:1.5;margin:3px 0 0}.subject-picker-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.subject-mini-btn,.viz-toggle{align-items:center;background:#f8fdff;border:1px solid #dbe3ee;border-radius:8px;color:#475569;cursor:pointer;display:inline-flex;font-size:13px;font-weight:800;gap:6px;min-height:36px;padding:8px 11px}.subject-mini-btn:hover,.viz-toggle:hover{background:#ecfeff;border-color:#06b6d4;color:#06b6d4}.subject-search{align-items:center;background:#f8fdff;border:1px solid #dbe3ee;border-radius:8px;display:flex;gap:8px;min-height:42px;margin-bottom:14px;padding:0 12px}.subject-search i{color:#64748b;font-size:18px}.subject-search input{background:transparent;border:0;color:#1f2937;flex:1;font-size:14px;font-weight:650;min-width:0;outline:0}.subject-search input::placeholder{color:#94a3b8}.subject-choice-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}.subject-choice{align-items:flex-start;background:#f8fdff;border:1px solid #e5e7eb;border-radius:8px;color:#1f2937;cursor:pointer;display:flex;gap:12px;min-height:104px;padding:14px;position:relative;text-align:left;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease;width:100%}.subject-choice:hover,.subject-choice:focus{background:#fff;border-color:#38bdf8;box-shadow:0 12px 26px rgba(14,165,233,.16);outline:0;transform:translateY(-2px)}.subject-choice.is-active{background:#ecfeff;border-color:#38bdf8;box-shadow:inset 0 0 0 1px #38bdf8,0 12px 26px rgba(249,115,22,.10)}.subject-choice.is-active:after{align-items:center;background:#fb923c;border-radius:999px;color:#fff;content:'\2713';display:inline-flex;font-size:12px;font-weight:800;height:22px;justify-content:center;position:absolute;right:10px;top:10px;width:22px}.subject-choice-icon{align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:8px;color:#f97316;display:inline-flex;flex:0 0 42px;font-size:23px;height:42px;justify-content:center;width:42px}.subject-choice.is-active .subject-choice-icon{background:#38bdf8;border-color:#38bdf8;color:#fff}.subject-choice-name{display:block;font-size:14px;font-weight:750;line-height:1.35;padding-right:20px}.subject-choice-meta{color:#64748b;display:block;font-size:12px;font-weight:650;margin-top:6px}.subject-choice.is-active .subject-choice-meta{color:#0369a1}    .empty-state{align-items:center;background:#fff;border:1px dashed #cbd5e1;border-radius:8px;color:#64748b;display:flex;gap:12px;margin-top:18px;min-height:118px;padding:22px}.empty-state i{color:#38bdf8;font-size:28px}.viz-dashboard{display:none;margin-top:18px}.viz-dashboard.is-active{display:block}.featured-stat-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));padding:18px 18px 0}.featured-stat{align-items:center;border:1px solid #dbeafe;border-radius:8px;display:grid;gap:16px;grid-template-columns:auto 1fr auto;min-height:150px;overflow:hidden;padding:22px;position:relative}.featured-stat:before{background:linear-gradient(90deg,#2563eb,#f97316,#16a34a,#db2777,#eab308);content:'';height:5px;left:0;position:absolute;top:0;width:100%}.featured-stat--population{background:linear-gradient(135deg,#dbeafe 0%,#dcfce7 58%,#fef3c7 100%)}.featured-stat--family{background:linear-gradient(135deg,#fff7d6 0%,#dcfce7 52%,#dbeafe 100%)}.featured-stat--unemployment{background:linear-gradient(135deg,#fee2e2 0%,#ffedd5 48%,#fef9c3 100%)}.featured-stat--education{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#dcfce7 100%)}.featured-stat--health{background:linear-gradient(135deg,#cffafe 0%,#dcfce7 48%,#fef3c7 100%)}.featured-stat--economy{background:linear-gradient(135deg,#fef3c7 0%,#dcfce7 52%,#dbeafe 100%)}.featured-stat--civic{background:linear-gradient(135deg,#e0f2fe 0%,#ede9fe 48%,#fee2e2 100%)}.featured-stat-icon{align-items:center;background:#fff;border-radius:8px;box-shadow:0 12px 24px rgba(14,165,233,.14);color:#06b6d4;display:inline-flex;font-size:34px;height:68px;justify-content:center;width:68px}.featured-stat--family .featured-stat-icon{color:#f97316}.featured-stat--unemployment .featured-stat-icon{color:#ef4444}.featured-stat--education .featured-stat-icon{color:#7c3aed}.featured-stat--health .featured-stat-icon{color:#0891b2}.featured-stat--economy .featured-stat-icon{color:#16a34a}.featured-stat--civic .featured-stat-icon{color:#db2777}.featured-stat h3{color:#1f2937;font-size:18px;font-weight:800;line-height:1.25;margin:0 0 8px}.featured-stat strong{color:#06b6d4;display:block;font-size:52px;font-weight:850;line-height:1;margin-bottom:6px}.featured-stat--family strong{color:#f97316}.featured-stat--unemployment strong{color:#ef4444}.featured-stat--education strong{color:#7c3aed}.featured-stat--health strong{color:#0891b2}.featured-stat--economy strong{color:#16a34a}.featured-stat--civic strong{color:#db2777}.featured-stat span{color:#475569;display:block;font-size:14px;font-weight:800}.featured-stat-visual{align-items:center;color:rgba(6,182,212,.22);display:flex;font-size:82px;justify-content:center}.featured-stat--family .featured-stat-visual{color:rgba(249,115,22,.24)}.featured-stat--unemployment .featured-stat-visual{color:rgba(239,68,68,.22)}.featured-stat--education .featured-stat-visual{color:rgba(124,58,237,.22)}.featured-stat--health .featured-stat-visual{color:rgba(8,145,178,.22)}.featured-stat--economy .featured-stat-visual{color:rgba(22,163,74,.22)}.featured-stat--civic .featured-stat-visual{color:rgba(219,39,119,.20)}@media(max-width:720px){.featured-stat-grid{grid-template-columns:1fr;padding:14px 14px 0}.featured-stat{grid-template-columns:auto 1fr;min-height:132px;padding:18px}.featured-stat strong{font-size:40px}.featured-stat-visual{display:none}}
+    .dataset-sections{display:grid;gap:18px}.subject-dataset-section{background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 12px 30px rgba(14,165,233,.10);overflow:hidden}.subject-dataset-head{align-items:center;background:#f8fdff;border-bottom:1px solid #e5e7eb;display:flex;gap:12px;padding:16px 18px}.subject-dataset-head i{align-items:center;background:#fff7d6;border-radius:8px;color:#f97316;display:inline-flex;flex:0 0 44px;font-size:25px;height:44px;justify-content:center;width:44px}.subject-dataset-head h2{color:#1f2937;font-size:18px;font-weight:800;line-height:1.3;margin:0 0 4px}.subject-dataset-head p{color:#64748b;font-size:13px;font-weight:650;line-height:1.45;margin:0}.dataset-card-grid{align-items:start;display:grid;gap:18px;grid-template-columns:repeat(2,minmax(0,1fr));padding:18px}.dataset-card-grid.has-odd .dataset-card:last-child{grid-column:1/-1;justify-self:center;width:min(100%,calc((100% - 18px)/2))}.dataset-card{border:1px solid #e8edf3;border-radius:8px;overflow:hidden;padding:14px;position:relative;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}.dataset-card.is-compact{align-self:start;padding:10px 12px 12px}.dataset-card.is-compact .dataset-head{align-items:center;margin-bottom:8px}.dataset-card.is-compact .dataset-icon{flex-basis:32px;font-size:17px;height:32px;width:32px}.dataset-card.is-compact .dataset-head h3{font-size:15px;line-height:1.25}.dataset-card.is-compact .single-value{gap:10px;min-height:72px;padding:10px 12px}.dataset-card.is-compact .single-value i{flex-basis:38px;font-size:21px;height:38px;width:38px}.dataset-card.is-compact .single-value strong{font-size:30px;margin-bottom:2px}.dataset-card.is-compact .single-value span{font-size:12px;line-height:1.2}.dataset-card.is-compact .single-value.population,.dataset-card.is-compact .single-value.family{min-height:72px;padding-right:76px}.dataset-card.is-compact .value-progress{height:6px;margin-top:8px;width:112px}.dataset-card.is-compact .population-visual{height:54px!important;right:10px!important;width:58px!important}.dataset-card.is-compact .population-dot.main{font-size:18px;height:34px;left:12px;top:0;width:34px}.dataset-card.is-compact .population-dot.side-a,.dataset-card.is-compact .population-dot.side-b{font-size:12px;height:23px;top:26px;width:23px}.dataset-card.is-compact .population-dot.mini{display:none}.dataset-card.is-compact .family-visual{font-size:28px!important;height:54px!important;right:10px!important;width:58px!important}.dataset-card:hover{border-color:#38bdf8;box-shadow:0 16px 34px rgba(14,165,233,.12);transform:translateY(-2px)}.dataset-card:before{background:linear-gradient(90deg,#2563eb,#f97316,#16a34a,#db2777,#9333ea,#eab308);content:'';height:4px;left:0;position:absolute;top:0;width:100%}.dataset-head{align-items:flex-start;display:flex;gap:10px;justify-content:space-between;margin-bottom:12px;padding-top:4px}.dataset-head h3{color:#1f2937;flex:1;font-size:15px;font-weight:760;line-height:1.42;margin:0}.dataset-icon{align-items:center;background:#fff7d6;border-radius:8px;color:#f97316;display:inline-flex;flex:0 0 34px;font-size:18px;height:34px;justify-content:center;width:34px}.dataset-mode-toggle{flex:0 0 auto;min-height:34px;padding:7px 9px}.single-value{align-items:center;background:linear-gradient(135deg,#ecfeff,#e0f7ff);border:1px solid #dbeafe;border-radius:8px;display:flex;gap:14px;min-height:104px;padding:14px;position:relative;overflow:hidden}.single-value i{align-items:center;background:#06b6d4;border-radius:8px;color:#fff;display:inline-flex;flex:0 0 44px;font-size:24px;height:44px;justify-content:center;width:44px}.single-value strong{color:#06b6d4;display:block;font-size:36px;line-height:.95;margin-bottom:4px}.single-value span{color:#475569;display:block;font-size:13px;font-weight:700;line-height:1.35}.mini-chart{height:340px;position:relative}.population-visual{display:none}.single-value.population{background:linear-gradient(135deg,#dbeafe 0%,#dcfce7 52%,#fef3c7 100%);min-height:104px;padding-right:104px}.single-value.population .population-visual{display:block;height:78px;position:absolute;right:12px;top:50%;transform:translateY(-50%);width:82px}.population-dot{align-items:center;border-radius:999px;color:#fff;display:inline-flex;justify-content:center;position:absolute}.population-dot.main{background:#2563eb;font-size:26px;height:50px;left:17px;top:5px;width:50px}.population-dot.side-a{background:#f97316;font-size:16px;height:32px;left:1px;top:35px;width:32px}.population-dot.side-b{background:#16a34a;font-size:16px;height:32px;right:0;top:35px;width:32px}.population-dot.mini{background:#db2777;font-size:13px;height:26px;left:30px;bottom:0;width:26px}.family-visual{display:none}.single-value.family{background:linear-gradient(135deg,#fff7d6 0%,#dcfce7 48%,#dbeafe 100%);min-height:104px;padding-right:104px}.single-value.family .family-visual{align-items:center;background:#fff;border:1px solid rgba(249,115,22,.22);border-radius:8px;box-shadow:0 10px 22px rgba(249,115,22,.12);color:#f97316;display:flex;font-size:38px;height:72px;justify-content:center;position:absolute;right:14px;top:50%;transform:translateY(-50%);width:78px}.value-progress{background:#e5e7eb;border-radius:999px;height:8px;margin-top:10px;overflow:hidden}.value-progress span{background:linear-gradient(90deg,#2563eb,#f97316,#16a34a,#db2777,#9333ea,#eab308);border-radius:inherit;display:block;height:100%;transition:width .45s ease;width:var(--progress-width,0%)}@media(max-width:980px){.viz-hero-content{grid-template-columns:1fr}.dataset-card-grid{grid-template-columns:1fr}.dataset-card-grid.has-odd .dataset-card:last-child{grid-column:auto;width:100%}}@media(max-width:720px){.viz-hero{padding-top:38px}.viz-hero h1{font-size:28px}.subject-picker-top{flex-direction:column}.subject-picker-actions{justify-content:flex-start}.subject-choice-grid,.dataset-card-grid{grid-template-columns:1fr}.mini-chart{height:280px}}
+</style>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@php
+    $valueMap = $values->mapWithKeys(function ($item, $key) {
+        return [$key => $item->value === null ? null : (float) $item->value];
+    });
+@endphp
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        .header {
-            background-color: var(--primary-green);
-            color: white;
-            padding: 40px 0 80px 0; /* Extra padding bottom for overlap effect */
-            margin-bottom: 20px;
-        }
-
-        .container {
-            width: 95%;
-            max-width: none;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .header p {
-            font-size: 1rem;
-            opacity: 0.9;
-            max-width: 600px;
-            line-height: 1.5;
-        }
-
-        /* Layout Grid & Flex */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* Cards */
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        /* Card background colors */
-        .card-green { background-color: #e8f5e9; }
-        .card-blue { background-color: #e3f2fd; }
-        .card-pink { background-color: #fce4ec; }
-
-        /* Summary Cards (Top Row) */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .stat-card .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .icon-box.green { background: #e0f2f1; color: var(--primary-green); }
-        .icon-box.blue { background: #e1f5fe; color: var(--blue-accent); }
-        .icon-box.pink { background: #fce4ec; color: var(--pink-accent); }
-
-        .badge {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .badge.green-text { color: var(--primary-green); }
-        .badge.blue-text { color: var(--blue-accent); }
-        .badge.pink-text { color: var(--pink-accent); }
-
-        .stat-card .card-body p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
-        .stat-card .card-body h2 {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        /* Charts Generic */
-        h3 {
-            color: var(--primary-green);
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-
-        /* Pie Charts Row */
-        .charts-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 24px;
-        }
-
-        .chart-container-pie {
-            position: relative;
-            height: 250px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .pie-legend {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            text-align: center;
-            padding: 0 40px;
-        }
-
-        .pie-legend h3 {
-            color: var(--text-color);
-            margin-bottom: 0;
-            font-size: 1.1rem;
-        }
-
-        .pie-legend span {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Additional Info Section */
-        .info-card-wrapper {
-            background-color: #e8f5e9; /* Light green bg */
-            border: none;
-            margin-bottom: 20px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .info-item {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .info-label {
-            font-size: 0.85rem;
-            color: var(--primary-green);
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .header {
-                padding-bottom: 60px;
-            }
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            .charts-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-
-    <header class="header">
-        <div class="container">
-            <h1>Data Kelurahan</h1>
-            <p>Data statistik dan informasi kependudukan Kelurahan Gunung Sugih yang transparan dan akurat</p>
-        </div>
-    </header>
-
-    <div class="container main-content">
-        
-        <section class="summary-cards">
-            <div class="card stat-card card-green">
-                <div class="card-header">
-                    <div class="icon-box green">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <span class="badge green-text"><i class="fas fa-arrow-up"></i> +2.5%</span>
-                </div>
-                <div class="card-body">
-                    <p>Total Penduduk</p>
-                    <h2>{{ number_format($totalPenduduk, 0, ',', '.') }}</h2>
-                </div>
-            </div>
-
-            <div class="card stat-card card-blue">
-                <div class="card-header">
-                    <div class="icon-box blue">
-                        <i class="fas fa-male"></i>
-                    </div>
-                    <span class="badge blue-text"><i class="fas fa-arrow-up"></i> +2.3%</span>
-                </div>
-                <div class="card-body">
-                    <p>Jumlah Penduduk Pria</p>
-                    <h2>{{ number_format($lakiLaki, 0, ',', '.') }}</h2>
-                </div>
-            </div>
-
-            <div class="card stat-card card-pink">
-                <div class="card-header">
-                    <div class="icon-box pink">
-                        <i class="fas fa-female"></i>
-                    </div>
-                    <span class="badge pink-text"><i class="fas fa-arrow-up"></i> +2.7%</span>
-                </div>
-                <div class="card-body">
-                    <p>Jumlah Penduduk Wanita</p>
-                    <h2>{{ number_format($perempuan, 0, ',', '.') }}</h2>
-                </div>
-            </div>
-        </section>
-
-        <section class="chart-section full-width">
-            <div class="card">
-                <h3>Data Penduduk per RW</h3>
-                <div class="chart-container">
-                    <canvas id="barChartRW"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section class="charts-row">
-            <div class="card">
-                <h3>Sebaran Berdasarkan Jenis Kelamin</h3>
-                <div class="chart-container-pie">
-                    <canvas id="pieChartGender"></canvas>
-                </div>
-                <div class="pie-legend">
-                    <div>
-                        <h3>{{ number_format($lakiLaki, 0, ',', '.') }}</h3>
-                        <span>Laki-laki</span>
-                    </div>
-                    <div>
-                        <h3>{{ number_format($perempuan, 0, ',', '.') }}</h3>
-                        <span>Perempuan</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Sebaran Berdasarkan RW</h3>
-                <div class="chart-container-pie">
-                    <canvas id="pieChartRW"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section class="info-section">
-            <div class="card info-card-wrapper">
-                <h3>Informasi Tambahan</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Kepadatan Penduduk</span>
-                        <span class="info-value">2,981 jiwa/km²</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Rata-rata Anggota KK</span>
-                        <span class="info-value">3.2 jiwa</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Tingkat Partisipasi</span>
-                        <span class="info-value">87.5%</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // --- Konfigurasi Warna ---
-            const colorBlue = '#039be5';
-            const colorPink = '#f06292';
-            const colorPiePalette = [
-                '#4caf50', '#2196f3', '#9c27b0', '#e91e63', '#00bcd4', '#f44336', '#ff9800', '#8bc34a'
-            ];
-
-            // --- 1. Bar Chart (Data Penduduk per RW) ---
-            const ctxBar = document.getElementById('barChartRW').getContext('2d');
-            new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: @json($rwLabels),
-                    datasets: [
-                        {
-                            label: 'Laki-laki',
-                            data: @json($rwLakiData),
-                            backgroundColor: colorBlue,
-                            borderRadius: 4,
-                            barPercentage: 0.7,
-                            categoryPercentage: 0.8
-                        },
-                        {
-                            label: 'Perempuan',
-                            data: @json($rwPerempuanData),
-                            backgroundColor: colorPink,
-                            borderRadius: 4,
-                            barPercentage: 0.7,
-                            categoryPercentage: 0.8
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { usePointStyle: true, padding: 20 }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { borderDash: [2, 4], color: '#eee' },
-                            ticks: { maxTicksLimit: 6 }
-                        },
-                        x: {
-                            grid: { display: false }
-                        }
-                    }
-                }
-            });
-
-            // --- 2. Pie Chart (Jenis Kelamin) ---
-            const ctxPieGender = document.getElementById('pieChartGender').getContext('2d');
-            new Chart(ctxPieGender, {
-                type: 'pie',
-                data: {
-                    labels: ['Laki-laki', 'Perempuan'],
-                    datasets: [{
-                        data: [{{ $lakiLaki }}, {{ $perempuan }}],
-                        backgroundColor: [colorBlue, colorPink],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ': ' + context.raw + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // --- 3. Pie Chart (Sebaran RW) ---
-            const ctxPieRW = document.getElementById('pieChartRW').getContext('2d');
-            new Chart(ctxPieRW, {
-                type: 'pie',
-                data: {
-                    labels: @json($rwPieLabels),
-                    datasets: [{
-                        data: @json($rwPieData),
-                        backgroundColor: colorPiePalette,
-                        borderWidth: 1,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                boxWidth: 10,
-                                font: { size: 10 }
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    </script>
+<div class="viz-page">
+    <header class="viz-hero"><div class="viz-container viz-hero-content"><div><span class="viz-hero-kicker"><i class="bi bi-activity"></i> Dashboard Dataset</span><h1>Data Kelurahan</h1></div></div></header>
+    <main class="viz-container">
+        <div class="subject-picker" aria-labelledby="publicSubjectPickerTitle"><div class="subject-picker-top"><div class="subject-picker-title"><i class="bi bi-sliders2"></i><div><h2 id="publicSubjectPickerTitle">Pilih Subjek Data</h2><p>Dataset dari subjek yang dipilih akan ditampilkan sebagai kartu visualisasi terpisah.</p></div></div><div class="subject-picker-actions"><button type="button" class="subject-mini-btn" id="publicSelectAllSubjects"><i class="bi bi-ui-checks-grid"></i> Pilih Semua</button><button type="button" class="subject-mini-btn" id="publicClearSubjects"><i class="bi bi-x-lg"></i> Bersihkan</button></div></div><label class="subject-search" for="subjectSearchInput"><i class="bi bi-search"></i><input type="search" id="subjectSearchInput" placeholder="Cari subjek data..." autocomplete="off"></label><div class="subject-choice-grid" role="listbox" aria-label="Subjek Data" aria-multiselectable="true">
+            @foreach($subjects as $subject)
+                @php($datasetCount = count($subject['datasets'] ?? []))
+                <button type="button" class="subject-choice" data-subject-card-choice="{{ $subject['key'] }}" role="option" aria-selected="false" aria-pressed="false"><span class="subject-choice-icon"><i class="bi bi-folder2-open"></i></span><span><span class="subject-choice-name">{{ $subject['name'] }}</span><span class="subject-choice-meta">{{ $datasetCount }} dataset</span></span></button>
+            @endforeach
+            </div></div>
+        <div class="empty-state" id="publicEmptyState"><i class="bi bi-bar-chart-line"></i><span>Pilih satu atau beberapa subjek untuk menampilkan dataset di dalamnya.</span></div>
+        <section class="viz-dashboard" id="vizDashboard" aria-live="polite"><div class="dataset-sections" id="datasetSections"></div></section>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+const subjects=@json($subjects);const values=@json($valueMap);const choices=document.querySelectorAll('[data-subject-card-choice]');const emptyState=document.getElementById('publicEmptyState');const dashboard=document.getElementById('vizDashboard');const datasetSections=document.getElementById('datasetSections');const subjectSearchInput=document.getElementById('subjectSearchInput');const activeSubjects=new Set();const charts=new Map();const datasetModes=new Map();const palette=['#2563eb','#f97316','#16a34a','#db2777','#9333ea','#eab308','#06b6d4','#ef4444','#84cc16','#0ea5e9','#f43f5e','#14b8a6'];
+function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));}
+function valueOf(key){const value=values[key];return value===null||value===undefined||value===''?null:Number(value);}
+function formatNumber(value){if(value===null||Number.isNaN(value))return '-';return new Intl.NumberFormat('id-ID',{maximumFractionDigits:Number.isInteger(value)?0:2}).format(value);}
+function selectedSubjects(){return subjects.filter(subject=>activeSubjects.has(subject.key));}
+function subjectDatasets(subject){return subject.datasets||[];}
+function datasetRows(dataset){const children=dataset.children||[];if(children.length){return children.map(child=>({label:child.name,key:child.key,value:valueOf(child.key)}));}return[{label:dataset.name,key:dataset.key,value:valueOf(dataset.key)}];}
+function allRows(selected){return selected.flatMap(subject=>subjectDatasets(subject).flatMap(dataset=>datasetRows(dataset)));}
+function destroyCharts(){charts.forEach(chart=>chart.destroy());charts.clear();}
+function createChart(id,config){const canvas=document.getElementById(id);if(!canvas||typeof Chart==='undefined')return;charts.set(id,new Chart(canvas,config));}
+function commonOptions(extra={}){return{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},animation:{duration:650,easing:'easeOutQuart'},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label||ctx.label}: ${formatNumber(ctx.raw)}`}}},...extra};}
+function isTotalPopulationDataset(dataset){return dataset.key==='jumlah_penduduk';}
+function isPopulationDataset(dataset){return isTotalPopulationDataset(dataset)||String(dataset.name||'').toLowerCase().includes('jumlah penduduk');}
+function isFamilyDataset(dataset){const name=String(dataset.name||'').toLowerCase();return dataset.key==='jumlah_kepala_keluarga'||(name.includes('jumlah kepala keluarga')&&!name.includes('jenis kelamin'));}
+function renderSingleDatasetValue(dataset){const rawValue=valueOf(dataset.key);const numericValues=Object.values(values).map(Number).filter(value=>!Number.isNaN(value)&&value>0);const maxValue=numericValues.length?Math.max(...numericValues):0;const progress=rawValue&&maxValue?Math.max(4,Math.min(100,(rawValue/maxValue)*100)):0;if(isPopulationDataset(dataset)){return`<div class="single-value population"><i class="bi bi-people-fill"></i><div><strong>${formatNumber(rawValue)}</strong><span>Jiwa</span><div class="value-progress" style="--progress-width:${progress}%"><span></span></div></div><div class="population-visual" aria-hidden="true"><span class="population-dot main"><i class="bi bi-person-fill"></i></span><span class="population-dot side-a"><i class="bi bi-person-fill"></i></span><span class="population-dot side-b"><i class="bi bi-person-fill"></i></span><span class="population-dot mini"><i class="bi bi-person-fill"></i></span></div></div>`;}if(isFamilyDataset(dataset)){return`<div class="single-value family"><i class="bi bi-house-heart-fill"></i><div><strong>${formatNumber(rawValue)}</strong><span>kepala keluarga</span><div class="value-progress" style="--progress-width:${progress}%"><span></span></div></div><div class="family-visual" aria-hidden="true"><i class="bi bi-house-heart-fill"></i></div></div>`;}return`<div class="single-value"><i class="bi bi-activity"></i><div><strong>${formatNumber(rawValue)}</strong><span>nilai dataset</span><div class="value-progress" style="--progress-width:${progress}%"><span></span></div></div></div>`;}
+function isUnemploymentDataset(dataset){return dataset.key==='jumlah_pengangguran'||String(dataset.name||'').toLowerCase().includes('pengangguran');}
+function isCompulsoryEducationDataset(dataset){return dataset.key==='anak_wajib_belajar_9_tahun'||String(dataset.name||'').toLowerCase().includes('wajib belajar 9 tahun');}
+function isHealthSingleDataset(dataset){return ['ibu_hamil','bayi_lahir_hidup','bayi_lahir_mati','kejadian_wabah_penyakit','angka_harapan_hidup'].includes(dataset.key);}
+function isEconomySingleDataset(dataset){return ['keluarga_prasejahtera','pendapatan_kepala_keluarga'].includes(dataset.key);}
+function isCivicSingleDataset(dataset){return ['konflik_sara','kasus_pertengkaran_perkelahian','kasus_perkelahian','kegiatan_pemantapan_pancasila','anggaran_belanja_penerimaan'].includes(dataset.key);}
+function isFeaturedStatDataset(dataset){return isTotalPopulationDataset(dataset)||isFamilyDataset(dataset)||isUnemploymentDataset(dataset)||isCompulsoryEducationDataset(dataset)||isHealthSingleDataset(dataset)||isEconomySingleDataset(dataset)||isCivicSingleDataset(dataset);}
+function datasetIcon(dataset,hasChildren){if(isPopulationDataset(dataset))return 'bi-people-fill';if(isFamilyDataset(dataset))return 'bi-house-heart-fill';if(isUnemploymentDataset(dataset))return 'bi-person-dash';if(isCompulsoryEducationDataset(dataset))return 'bi-mortarboard-fill';if(isHealthSingleDataset(dataset))return 'bi-heart-pulse-fill';if(isEconomySingleDataset(dataset))return 'bi-cash-coin';if(isCivicSingleDataset(dataset))return 'bi-shield-check';return hasChildren?'bi-pie-chart':'bi-graph-up-arrow';}
+function isGenderPopulationDataset(dataset){const name=String(dataset.name||'').toLowerCase();return dataset.key==='jumlah_penduduk_jenis_kelamin'||(name.includes('jumlah penduduk')&&name.includes('jenis kelamin'));}
+function isGenderFamilyDataset(dataset){const name=String(dataset.name||'').toLowerCase();return dataset.key==='jumlah_kepala_keluarga_jenis_kelamin'||(name.includes('jumlah kepala keluarga')&&name.includes('jenis kelamin'));}
+function isBarDonutOnlyDataset(dataset){return isGenderPopulationDataset(dataset)||isGenderFamilyDataset(dataset);}
+function featuredStatMeta(dataset){if(isFamilyDataset(dataset))return{tone:'family',icon:'bi-house-heart-fill',unit:'kepala keluarga',visual:'bi-house-heart-fill'};if(isUnemploymentDataset(dataset))return{tone:'unemployment',icon:'bi-person-dash',unit:'orang',visual:'bi-person-dash-fill'};if(isCompulsoryEducationDataset(dataset))return{tone:'education',icon:'bi-mortarboard-fill',unit:'anak',visual:'bi-journal-bookmark-fill'};if(isHealthSingleDataset(dataset)){const healthUnits={ibu_hamil:'orang',bayi_lahir_hidup:'bayi',bayi_lahir_mati:'bayi',kejadian_wabah_penyakit:'kejadian',angka_harapan_hidup:'tahun'};return{tone:'health',icon:'bi-heart-pulse-fill',unit:healthUnits[dataset.key]||'nilai',visual:'bi-heart-pulse-fill'};}if(isEconomySingleDataset(dataset)){const economyUnits={keluarga_prasejahtera:'keluarga',pendapatan_kepala_keluarga:'rupiah'};return{tone:'economy',icon:'bi-cash-coin',unit:economyUnits[dataset.key]||'nilai',visual:'bi-briefcase-fill'};}if(isCivicSingleDataset(dataset)){const civicUnits={konflik_sara:'konflik',kasus_pertengkaran_perkelahian:'kasus',kasus_perkelahian:'kasus',kegiatan_pemantapan_pancasila:'kegiatan',anggaran_belanja_penerimaan:'rupiah'};return{tone:'civic',icon:'bi-shield-check',unit:civicUnits[dataset.key]||'nilai',visual:'bi-building-fill-check'};}return{tone:'population',icon:'bi-people-fill',unit:'jiwa',visual:'bi-people-fill'};}
+function renderFeaturedStat(dataset){const value=valueOf(dataset.key);const meta=featuredStatMeta(dataset);const dataValue=value===null||Number.isNaN(value)?'':value;return`<article class="featured-stat featured-stat--${meta.tone}"><div class="featured-stat-icon"><i class="bi ${meta.icon}"></i></div><div><h3>${escapeHtml(dataset.name)}</h3><strong class="count-up" data-count-value="${dataValue}">${dataValue===''?'-':'0'}</strong><span>${meta.unit}</span></div><div class="featured-stat-visual" aria-hidden="true"><i class="bi ${meta.visual}"></i></div></article>`;}
+function chartIdFor(subject,dataset){return `datasetChart_${String(subject.key).replace(/[^a-zA-Z0-9_-]/g,'_')}_${String(dataset.key).replace(/[^a-zA-Z0-9_-]/g,'_')}`;}
+function renderDatasetCard(subject,dataset){const hasChildren=(dataset.children||[]).length>0;const chartId=chartIdFor(subject,dataset);const icon=datasetIcon(dataset,hasChildren);const limitedMode=isBarDonutOnlyDataset(dataset)?'bar-donut':'';return`<article class="dataset-card ${hasChildren?'has-chart':'is-compact'}"><div class="dataset-head"><span class="dataset-icon"><i class="bi ${icon}"></i></span><h3>${escapeHtml(dataset.name)}</h3>${hasChildren?`<button type="button" class="viz-toggle dataset-mode-toggle" data-chart-id="${chartId}" data-chart-limited="${limitedMode}" aria-label="Ubah tipe grafik"><i class="bi bi-arrow-repeat"></i></button>`:''}</div>${hasChildren?`<div class="mini-chart"><canvas id="${chartId}"></canvas></div>`:renderSingleDatasetValue(dataset)}</article>`;}
+function renderDatasetSections(selected){datasetSections.innerHTML=selected.map(subject=>{const datasets=subjectDatasets(subject);const featured=datasets.filter(isFeaturedStatDataset);const regular=datasets.map((dataset,datasetIndex)=>({dataset,datasetIndex})).filter(item=>!isFeaturedStatDataset(item.dataset));const featuredHtml=featured.length?`<div class="featured-stat-grid">${featured.map(renderFeaturedStat).join('')}</div>`:'';const regularGridClass=regular.length%2===1?'dataset-card-grid has-odd':'dataset-card-grid';const regularHtml=regular.length?`<div class="${regularGridClass}">${regular.map(item=>renderDatasetCard(subject,item.dataset)).join('')}</div>`:'';return`<section class="subject-dataset-section"><div class="subject-dataset-head"><i class="bi bi-folder2-open"></i><div><h2>${escapeHtml(subject.name)}</h2><p>${datasets.length} dataset ditampilkan dari subjek ini.</p></div></div>${featuredHtml}${regularHtml}</section>`;}).join('');}
+function animateCountUps(){document.querySelectorAll('.count-up').forEach(element=>{const target=Number(element.dataset.countValue);if(!Number.isFinite(target)){element.textContent='-';return;}const duration=1200;const start=performance.now();const decimals=Number.isInteger(target)?0:2;function tick(now){const progress=Math.min(1,(now-start)/duration);const eased=1-Math.pow(1-progress,3);element.textContent=formatNumber(Number((target*eased).toFixed(decimals)));if(progress<1)requestAnimationFrame(tick);else element.textContent=formatNumber(target);}requestAnimationFrame(tick);});}
+function settleCountUps(){document.querySelectorAll('.count-up').forEach(element=>{const target=Number(element.dataset.countValue);element.textContent=Number.isFinite(target)?formatNumber(target):'-';});}
+function renderOneDatasetChart(subject,dataset,datasetIndex){const children=dataset.children||[];if(!children.length)return;const chartId=chartIdFor(subject,dataset);if(!datasetModes.has(chartId))datasetModes.set(chartId,isBarDonutOnlyDataset(dataset)?'doughnut':(children.length<=4?'doughnut':(datasetIndex%2===0?'bar':'radar')));if(isBarDonutOnlyDataset(dataset)&&datasetModes.get(chartId)==='radar')datasetModes.set(chartId,'doughnut');const chartType=datasetModes.get(chartId);const labels=children.map(child=>child.name);const data=children.map(child=>valueOf(child.key)||0);if(charts.has(chartId)){charts.get(chartId).destroy();charts.delete(chartId);}if(chartType==='doughnut'){createChart(chartId,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:labels.map((_,i)=>palette[i%palette.length]),borderWidth:0}]},options:commonOptions({cutout:'56%'})});return;}if(chartType==='radar'){createChart(chartId,{type:'radar',data:{labels,datasets:[{label:dataset.name,data,backgroundColor:'rgba(14,165,233,.18)',borderColor:'#2563eb',pointBackgroundColor:'#f97316'}]},options:commonOptions({scales:{r:{beginAtZero:true,ticks:{backdropColor:'transparent'}}}})});return;}createChart(chartId,{type:'bar',data:{labels,datasets:[{label:dataset.name,data,backgroundColor:labels.map((_,i)=>palette[i%palette.length]),borderRadius:8}]},options:commonOptions({indexAxis:'y',scales:{x:{beginAtZero:true},y:{ticks:{autoSkip:false}}}})});}
+function findChartDataset(chartId){for(const subject of selectedSubjects()){const datasets=subjectDatasets(subject);for(let datasetIndex=0;datasetIndex<datasets.length;datasetIndex++){const dataset=datasets[datasetIndex];if(chartIdFor(subject,dataset)===chartId)return{subject,dataset,datasetIndex};}}return null;}
+function renderDatasetCharts(selected){selected.forEach(subject=>{subjectDatasets(subject).forEach((dataset,datasetIndex)=>renderOneDatasetChart(subject,dataset,datasetIndex));});}
+function bindVisualizationControls(){document.querySelectorAll('.dataset-mode-toggle').forEach(button=>{button.addEventListener('click',()=>{const id=button.dataset.chartId;const current=datasetModes.get(id)||'bar';if(button.dataset.chartLimited==='bar-donut'){datasetModes.set(id,current==='bar'?'doughnut':'bar');}else{datasetModes.set(id,current==='bar'?'radar':(current==='radar'?'doughnut':'bar'));}const target=findChartDataset(id);if(target)renderOneDatasetChart(target.subject,target.dataset,target.datasetIndex);});});}
+function renderDashboard(animateStats=true){const selected=selectedSubjects();choices.forEach(choice=>{const isActive=activeSubjects.has(choice.dataset.subjectCardChoice);choice.classList.toggle('is-active',isActive);choice.setAttribute('aria-selected',isActive?'true':'false');choice.setAttribute('aria-pressed',isActive?'true':'false');});emptyState.style.display=selected.length?'none':'flex';dashboard.classList.toggle('is-active',selected.length>0);destroyCharts();if(!selected.length){datasetSections.innerHTML='';return;}renderDatasetSections(selected);if(animateStats)animateCountUps();else settleCountUps();renderDatasetCharts(selected);bindVisualizationControls();}
+subjectSearchInput?.addEventListener('input',()=>{const query=subjectSearchInput.value.trim().toLowerCase();choices.forEach(choice=>{const matches=choice.textContent.toLowerCase().includes(query);choice.style.display=matches?'':'none';});});choices.forEach(choice=>{choice.addEventListener('click',()=>{const subjectKey=choice.dataset.subjectCardChoice;activeSubjects.has(subjectKey)?activeSubjects.delete(subjectKey):activeSubjects.add(subjectKey);renderDashboard();});});document.getElementById('publicSelectAllSubjects')?.addEventListener('click',()=>{choices.forEach(choice=>activeSubjects.add(choice.dataset.subjectCardChoice));renderDashboard();});document.getElementById('publicClearSubjects')?.addEventListener('click',()=>{activeSubjects.clear();renderDashboard();});renderDashboard();
+});
+</script>
 @endsection

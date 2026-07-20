@@ -6,6 +6,7 @@
             'tanggal_kegiatan' => $agenda->tanggal_kegiatan->format('Y-m-d'),
             'tempat_kegiatan' => $agenda->tempat_kegiatan,
             'jam_kegiatan' => $agenda->jam_kegiatan,
+            'keterangan' => $agenda->keterangan,
             'surat_pendukung' => $agenda->surat_pendukung,
         ];
     })->values();
@@ -62,8 +63,9 @@
     .home-agenda-modal-body { padding: 22px; }
     .home-agenda-form-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
     .home-agenda-field label { display: block; color: #475569; font-size: 0.9rem; font-weight: 700; margin-bottom: 7px; }
-    .home-agenda-field input { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 11px 12px; font-size: 0.95rem; }
-    .home-agenda-field input:focus { outline: none; border-color: #F6903A; box-shadow: 0 0 0 3px rgba(246, 144, 58, 0.12); }
+    .home-agenda-field input, .home-agenda-field textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 11px 12px; font-size: 0.95rem; }
+    .home-agenda-field textarea { min-height: 86px; resize: vertical; }
+    .home-agenda-field input:focus, .home-agenda-field textarea:focus { outline: none; border-color: #F6903A; box-shadow: 0 0 0 3px rgba(246, 144, 58, 0.12); }
     .home-agenda-time-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .home-agenda-time-field span { display: block; color: #64748b; font-size: 0.78rem; font-weight: 700; margin-bottom: 5px; }
     .home-agenda-form-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
@@ -211,6 +213,7 @@
 
             detailElement.innerHTML = selectedAgendas.map(function (item) {
                 const pdfUrl = item.surat_pendukung ? '{{ url('/storage') }}/' + item.surat_pendukung : '';
+                const keteranganMarkup = item.keterangan ? '<div class="home-agenda-info-item"><i class="fas fa-align-left"></i><span>' + escapeHtml(item.keterangan) + '</span></div>' : '';
                 const manageMarkup = canManageAgenda ? renderManageMarkup(item) : '';
                 return '<article class="home-agenda-card">' +
                     '<h4>' + escapeHtml(item.nama_kegiatan) + '</h4>' +
@@ -218,6 +221,7 @@
                     '<div class="home-agenda-info-item"><i class="fas fa-calendar-alt"></i><span>' + formatDisplayDate(item.tanggal_kegiatan) + '</span></div>' +
                     '<div class="home-agenda-info-item"><i class="fas fa-map-marker-alt"></i><span>' + escapeHtml(item.tempat_kegiatan) + '</span></div>' +
                     '<div class="home-agenda-info-item"><i class="fas fa-clock"></i><span>' + escapeHtml(item.jam_kegiatan) + '</span></div>' +
+                    keteranganMarkup +
                     '</div>' +
                     (pdfUrl ? '<a class="home-agenda-pdf" href="' + pdfUrl + '" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> Surat Pendukung PDF</a>' : '<span class="text-muted">Surat pendukung belum tersedia.</span>') +
                     manageMarkup +
@@ -267,6 +271,7 @@
                 '<div class="home-agenda-field"><label>Tanggal Kegiatan</label><input type="date" name="tanggal_kegiatan" value="' + escapeAttribute(dateKey) + '" readonly required></div>' +
                 '<div class="home-agenda-field"><label>Nama Kegiatan</label><input type="text" name="nama_kegiatan" required></div>' +
                 '<div class="home-agenda-field"><label>Tempat Kegiatan</label><input type="text" name="tempat_kegiatan" required></div>' +
+                '<div class="home-agenda-field"><label>Keterangan <small style="color:#94a3b8;font-weight:600;">(opsional)</small></label><textarea name="keterangan" placeholder="Tambahkan catatan kegiatan jika diperlukan"></textarea></div>' +
                 '<div class="home-agenda-field"><label>Jam Kegiatan</label><div class="home-agenda-time-grid">' +
                 '<div class="home-agenda-time-field"><span>Jam Mulai</span><input type="time" name="jam_mulai" required></div>' +
                 '<div class="home-agenda-time-field"><span>Jam Selesai</span><input type="time" name="jam_selesai" required></div>' +
@@ -308,6 +313,7 @@
                 '<div class="home-agenda-field"><label>Tanggal Kegiatan</label><input type="date" name="tanggal_kegiatan" value="' + escapeAttribute(item.tanggal_kegiatan) + '" min="' + todayKey + '" required><small style="display:block;margin-top:6px;color:#64748b;font-size:12px;line-height:1.35;">Ubah tanggal ini untuk memindahkan kegiatan.</small></div>' +
                 '<div class="home-agenda-field"><label>Nama Kegiatan</label><input type="text" name="nama_kegiatan" value="' + escapeAttribute(item.nama_kegiatan) + '" required></div>' +
                 '<div class="home-agenda-field"><label>Tempat Kegiatan</label><input type="text" name="tempat_kegiatan" value="' + escapeAttribute(item.tempat_kegiatan) + '" required></div>' +
+                '<div class="home-agenda-field"><label>Keterangan <small style="color:#94a3b8;font-weight:600;">(opsional)</small></label><textarea name="keterangan" placeholder="Tambahkan catatan kegiatan jika diperlukan">' + escapeHtml(item.keterangan || '') + '</textarea></div>' +
                 '<div class="home-agenda-field"><label>Jam Kegiatan</label><div class="home-agenda-time-grid">' +
                 '<div class="home-agenda-time-field"><span>Jam Mulai</span><input type="time" name="jam_mulai" value="' + escapeAttribute(timeRange.start) + '" required></div>' +
                 '<div class="home-agenda-time-field"><span>Jam Selesai</span><input type="time" name="jam_selesai" value="' + escapeAttribute(timeRange.end) + '" required></div>' +
@@ -382,6 +388,15 @@
 
             if (start === null || end === null) {
                 return true;
+            }
+
+            const dateInput = form.querySelector('[name="tanggal_kegiatan"]');
+            const now = new Date();
+            const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+
+            if (dateInput && dateInput.value === todayKey && start < currentMinutes) {
+                showNotification('Jam mulai tidak boleh lebih awal dari jam saat ini.', 'warning');
+                return false;
             }
 
             const duration = end - start;

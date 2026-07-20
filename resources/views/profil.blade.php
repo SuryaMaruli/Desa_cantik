@@ -5,6 +5,8 @@
 @section('content')
     @php
         $villageText = fn ($value) => $value;
+        $misiItems = $profilKelurahan?->misi ?? [];
+        $profileVillageName = $profilKelurahan?->nama_kelurahan ?? ($currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih');
     @endphp
     <style>
         /* --- CSS RESET & GLOBAL --- */
@@ -198,7 +200,7 @@
     <main class="container main-content">
         
         <div class="card">
-            <h2 class="profile-title">{{ $villageText($profilKelurahan->nama_kelurahan ?? 'Kelurahan Gunung Sugih') }}</h2>
+            <h2 class="profile-title">{{ $villageText($profileVillageName) }}</h2>
             <div class="info-list">
                 <div class="info-row">
                     <div class="label">Nama Kelurahan</div>
@@ -277,8 +279,8 @@
                 </div>
                 <div class="vm-content">
                     <ul class="misi-list">
-                        @if($profilKelurahan->misi && count($profilKelurahan->misi) > 0)
-                            @foreach($profilKelurahan->misi as $misi)
+                        @if(count($misiItems) > 0)
+                            @foreach($misiItems as $misi)
                                 <li>{{ $villageText($misi) }}</li>
                             @endforeach
                         @else
@@ -705,5 +707,6 @@
 
     </main>
 @endsection
+
 
 

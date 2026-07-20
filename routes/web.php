@@ -30,11 +30,10 @@ use App\Models\Berita;
 use App\Models\Galeri;
 use App\Models\TentangDesa;
 use App\Models\MetadataStatistik;
-use App\Models\InformasiPublik;
-use App\Models\AgendaKegiatan;
 use App\Models\OutputProgram;
 use App\Models\Prestasi;
 use App\Models\Penduduk;
+use App\Models\DataKelurahanStatistik;
 use App\Models\ProfilKelurahan;
 use App\Models\Monografi;
 
@@ -93,45 +92,12 @@ Route::get('/layanan-data', function () {
 });
 
 Route::get('/data', function () {
-    $pendudukData = Penduduk::orderBy('rw')->orderBy('nama')->get();
+    $subjects = config('data_kelurahan.subjects', []);
+    $values = DataKelurahanStatistik::query()
+        ->get()
+        ->keyBy('dataset_key');
 
-    $totalPenduduk = $pendudukData->count();
-    $lakiLaki = $pendudukData->where('jenis_kelamin', 'Laki-laki')->count();
-    $perempuan = $pendudukData->where('jenis_kelamin', 'Perempuan')->count();
-
-    $rws = [];
-    for ($i = 1; $i <= 10; $i++) {
-        $rwNo = str_pad($i, 2, '0', STR_PAD_LEFT);
-        $jumlahRw = $pendudukData->where('rw', $rwNo)->count();
-        $lakiRw = $pendudukData->where('rw', $rwNo)->where('jenis_kelamin', 'Laki-laki')->count();
-        $perempuanRw = $pendudukData->where('rw', $rwNo)->where('jenis_kelamin', 'Perempuan')->count();
-
-        if ($jumlahRw > 0) {
-            $rws[] = [
-                'no' => $rwNo,
-                'jumlah' => $jumlahRw,
-                'laki' => $lakiRw,
-                'perempuan' => $perempuanRw,
-                'persentase' => $totalPenduduk > 0 ? round(($jumlahRw / $totalPenduduk) * 100) : 0,
-            ];
-        }
-    }
-
-    $rwLabels = [];
-    $rwLakiData = [];
-    $rwPerempuanData = [];
-    $rwPieLabels = [];
-    $rwPieData = [];
-
-    foreach ($rws as $rw) {
-        $rwLabels[] = 'RW ' . $rw['no'];
-        $rwLakiData[] = $rw['laki'];
-        $rwPerempuanData[] = $rw['perempuan'];
-        $rwPieLabels[] = 'RW ' . $rw['no'];
-        $rwPieData[] = $rw['persentase'];
-    }
-
-    return view('data', compact('totalPenduduk', 'lakiLaki', 'perempuan', 'rws', 'rwLabels', 'rwLakiData', 'rwPerempuanData', 'rwPieLabels', 'rwPieData'));
+    return view('data', compact('subjects', 'values'));
 });
 
 Route::get('/cek-login', function () {
@@ -144,6 +110,15 @@ Route::get('/cek-login', function () {
 })->middleware('web');
 
 Route::get('/desa-cantik', function () {
+    $tentang = TentangDesa::first();
+    $metadata = MetadataStatistik::all();
+    $outputPrograms = OutputProgram::all();
+    $prestasi = Prestasi::latest()->get();
+    return view('desa-cantik', compact('tentang', 'metadata', 'outputPrograms', 'prestasi'));
+});
+Route::get('/desa-cantik/output/{id}', [DesaCantikController::class, 'showOutput'])->name('desa-cantik.show-output');
+
+Route::get('/galeri-kegiatan', function () {
     $allPhotos = Galeri::orderBy('position', 'asc')
         ->orderBy('grup_order', 'asc')
         ->orderBy('created_at', 'desc')
@@ -190,24 +165,10 @@ Route::get('/desa-cantik', function () {
         return $a->position - $b->position;
     });
 
-    $galeri = collect(array_slice($groupedGaleri, 0, 6));
+    $galeri = collect($groupedGaleri);
 
-    $tentang = TentangDesa::first();
-    $metadata = MetadataStatistik::all();
-    $outputPrograms = OutputProgram::all();
-    $prestasi = Prestasi::latest()->get();
-    return view('desa-cantik', compact('galeri', 'tentang', 'metadata', 'outputPrograms', 'prestasi'));
-});
-
-Route::get('/desa-cantik/output/{id}', [DesaCantikController::class, 'showOutput'])->name('desa-cantik.show-output');
-
-Route::get('/informasi-publik/{id}', function ($id) {
-    abort_if((int) $id === 4, 404);
-
-    $informasi = InformasiPublik::findOrFail($id);
-    $agendaKegiatans = AgendaKegiatan::orderBy('tanggal_kegiatan')->get();
-    return view('informasi-publik-detail', compact('informasi', 'agendaKegiatans'));
-})->name('informasi-publik.detail');
+    return view('galeri-kegiatan', compact('galeri'));
+})->name('galeri-kegiatan');
 
 Route::get('/kontak', function () {
     return view('kontak');

@@ -12,6 +12,7 @@
             'tanggal_kegiatan' => $agenda->tanggal_kegiatan->format('Y-m-d'),
             'tempat_kegiatan' => $agenda->tempat_kegiatan,
             'jam_kegiatan' => $agenda->jam_kegiatan,
+            'keterangan' => $agenda->keterangan,
             'surat_pendukung' => $agenda->surat_pendukung,
         ];
     })->values();
@@ -834,6 +835,7 @@
 
             detailElement.innerHTML = selectedAgendas.map(function (item) {
                 const pdfUrl = item.surat_pendukung ? '{{ url('/storage') }}/' + item.surat_pendukung : '';
+                const keteranganMarkup = item.keterangan ? '<div class="agenda-info-item"><i class="fas fa-align-left"></i><span>' + escapeHtml(item.keterangan) + '</span></div>' : '';
                 const timeRange = parseTimeRange(item.jam_kegiatan);
                 const manageMarkup = canManageAgenda ? renderManageMarkup(item, timeRange) : '';
                 return '<article class="agenda-card">' +
@@ -842,6 +844,7 @@
                     '<div class="agenda-info-item"><i class="fas fa-calendar-alt"></i><span>' + formatDisplayDate(item.tanggal_kegiatan) + '</span></div>' +
                     '<div class="agenda-info-item"><i class="fas fa-map-marker-alt"></i><span>' + escapeHtml(item.tempat_kegiatan) + '</span></div>' +
                     '<div class="agenda-info-item"><i class="fas fa-clock"></i><span>' + escapeHtml(item.jam_kegiatan) + '</span></div>' +
+                    keteranganMarkup +
                     '</div>' +
                     (pdfUrl ? '<a class="pdf-button" href="' + pdfUrl + '" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> Surat Pendukung PDF</a>' : '<span class="text-muted">Surat pendukung belum tersedia.</span>') +
                     manageMarkup +
@@ -895,6 +898,7 @@
                 '<div class="agenda-admin-field"><label>Tanggal Kegiatan</label><input type="date" name="tanggal_kegiatan" value="' + escapeAttribute(dateKey) + '" readonly required></div>' +
                 '<div class="agenda-admin-field"><label>Nama Kegiatan</label><input type="text" name="nama_kegiatan" required></div>' +
                 '<div class="agenda-admin-field"><label>Tempat Kegiatan</label><input type="text" name="tempat_kegiatan" required></div>' +
+                '<div class="agenda-admin-field"><label>Keterangan <small style="color:#94a3b8;font-weight:600;">(opsional)</small></label><textarea name="keterangan" placeholder="Tambahkan catatan kegiatan jika diperlukan"></textarea></div>' +
                 '<div class="agenda-admin-field"><label>Jam Kegiatan</label><div class="agenda-time-grid">' +
                 '<div class="agenda-time-field"><span>Jam Mulai</span><input type="time" name="jam_mulai" required></div>' +
                 '<div class="agenda-time-field"><span>Jam Selesai</span><input type="time" name="jam_selesai" required></div>' +
@@ -989,6 +993,15 @@
 
             if (start === null || end === null) {
                 return true;
+            }
+
+            const dateInput = form.querySelector('[name="tanggal_kegiatan"]');
+            const now = new Date();
+            const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+
+            if (dateInput && dateInput.value === todayKey && start < currentMinutes) {
+                showNotification('Jam mulai tidak boleh lebih awal dari jam saat ini.', 'warning');
+                return false;
             }
 
             const duration = end - start;
@@ -1086,6 +1099,7 @@
                 '<div class="agenda-admin-field"><label>Tanggal Kegiatan</label><input type="date" name="tanggal_kegiatan" value="' + escapeAttribute(item.tanggal_kegiatan) + '" min="' + todayKey + '" required><small style="display:block;margin-top:6px;color:#64748b;font-size:12px;line-height:1.35;">Ubah tanggal ini untuk memindahkan kegiatan.</small></div>' +
                 '<div class="agenda-admin-field"><label>Nama Kegiatan</label><input type="text" name="nama_kegiatan" value="' + escapeAttribute(item.nama_kegiatan) + '" required></div>' +
                 '<div class="agenda-admin-field"><label>Tempat Kegiatan</label><input type="text" name="tempat_kegiatan" value="' + escapeAttribute(item.tempat_kegiatan) + '" required></div>' +
+                '<div class="agenda-admin-field"><label>Keterangan <small style="color:#94a3b8;font-weight:600;">(opsional)</small></label><textarea name="keterangan" placeholder="Tambahkan catatan kegiatan jika diperlukan">' + escapeHtml(item.keterangan || '') + '</textarea></div>' +
                 '<div class="agenda-admin-field"><label>Jam Kegiatan</label><div class="agenda-time-grid">' +
                 '<div class="agenda-time-field"><span>Jam Mulai</span><input type="time" name="jam_mulai" value="' + escapeAttribute(timeRange.start) + '" required></div>' +
                 '<div class="agenda-time-field"><span>Jam Selesai</span><input type="time" name="jam_selesai" value="' + escapeAttribute(timeRange.end) + '" required></div>' +

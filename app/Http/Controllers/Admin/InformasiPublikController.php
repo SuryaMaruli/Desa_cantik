@@ -102,6 +102,7 @@ class InformasiPublikController extends Controller
             'tanggal_kegiatan' => 'required|date',
             'tempat_kegiatan' => 'required|string|max:255',
             'jam_kegiatan' => 'required|string|max:100',
+            'keterangan' => 'nullable|string|max:1000',
             'jam_mulai' => 'nullable|date_format:H:i',
             'jam_selesai' => 'nullable|date_format:H:i',
             'surat_pendukung' => 'nullable|file|mimes:pdf|max:5120',
@@ -168,6 +169,16 @@ class InformasiPublikController extends Controller
 
         if ($start === null || $end === null) {
             return;
+        }
+
+        if ($request->input('tanggal_kegiatan') === date('Y-m-d')) {
+            $currentMinutes = ((int) date('H') * 60) + (int) date('i');
+
+            if ($start < $currentMinutes) {
+                throw ValidationException::withMessages([
+                    'jam_mulai' => 'Jam mulai tidak boleh lebih awal dari jam saat ini.',
+                ]);
+            }
         }
 
         $duration = $end - $start;
@@ -247,6 +258,7 @@ class InformasiPublikController extends Controller
             'tanggal_kegiatan' => 'required|date',
             'tempat_kegiatan' => 'required|string|max:255',
             'jam_kegiatan' => 'required|string|max:100',
+            'keterangan' => 'nullable|string|max:1000',
             'jam_mulai' => 'nullable|date_format:H:i',
             'jam_selesai' => 'nullable|date_format:H:i',
             'surat_pendukung' => 'nullable|file|mimes:pdf|max:5120',
