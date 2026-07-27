@@ -389,6 +389,124 @@
             font-size: 18px;
             line-height: 1;
         }
+        .portal-return-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.24), transparent 28%),
+                linear-gradient(135deg, #F89039 0%, #f5a253 42%, #198754 100%);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+
+        .portal-return-loader.is-active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .portal-return-loader__content {
+            width: min(360px, 100%);
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .portal-return-loader__mark {
+            position: relative;
+            width: 112px;
+            height: 112px;
+            margin: 0 auto 28px;
+            display: grid;
+            place-items: center;
+        }
+
+        .portal-return-loader__mark::before,
+        .portal-return-loader__mark::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            animation: portal-loader-spin 1.2s linear infinite;
+        }
+
+        .portal-return-loader__mark::after {
+            inset: 12px;
+            border-top-color: rgba(255, 255, 255, 0.35);
+            border-bottom-color: #ffffff;
+            animation-direction: reverse;
+            animation-duration: 1.6s;
+        }
+
+        .portal-return-loader__logo {
+            width: 68px;
+            height: 68px;
+            border-radius: 22px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+            animation: portal-loader-float 1.8s ease-in-out infinite;
+        }
+
+        .portal-return-loader__logo img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
+
+        .portal-return-loader__title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0;
+        }
+
+        .portal-return-loader__text {
+            margin: 9px 0 24px;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 14px;
+        }
+
+        .portal-return-loader__bar {
+            width: min(260px, 100%);
+            height: 5px;
+            margin: 0 auto;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.32);
+        }
+
+        .portal-return-loader__bar span {
+            display: block;
+            width: 45%;
+            height: 100%;
+            border-radius: inherit;
+            background: #ffffff;
+            animation: portal-loader-bar 1.05s ease-in-out infinite;
+        }
+
+        @keyframes portal-loader-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes portal-loader-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.03); }
+        }
+
+        @keyframes portal-loader-bar {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(250%); }
+        }
 
         /* Membuat icon lokasi sederhana dengan CSS/SVG */
         .icon-location svg {
@@ -744,6 +862,18 @@
             <span></span>
         </div>
     </div>
+    <div class="portal-return-loader" id="portalReturnLoader" aria-hidden="true">
+        <div class="portal-return-loader__content" role="status" aria-live="polite">
+            <div class="portal-return-loader__mark">
+                <div class="portal-return-loader__logo">
+                    <img src="{{ asset('favicon.ico') }}" alt="Logo Desa Cantik">
+                </div>
+            </div>
+            <h2 class="portal-return-loader__title">Menuju Portal Utama</h2>
+            <p class="portal-return-loader__text">Menyiapkan portal terpadu kelurahan binaan.</p>
+            <div class="portal-return-loader__bar" aria-hidden="true"><span></span></div>
+        </div>
+    </div>
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -772,11 +902,12 @@
         </div>
 <ul class="nav-links">
             <li><a href="{{ ($currentVillageSlug ?? config('villages.default')) === config('villages.default') ? '/' : '/' . ($currentVillageSlug ?? '') }}">Beranda</a></li>
+            <li><a href="/" data-global-portal-link><i class="bi bi-grid-3x3-gap"></i> Portal Utama</a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle">Website Kelurahan <i class="fas fa-chevron-down"></i></a>
                 <ul class="dropdown-menu">
                     @foreach(($villages ?? []) as $slug => $village)
-                        <li><a href="{{ $slug === config('villages.default') ? '/' : '/' . $slug }}" data-village-switcher-option>{{ $village['official_name'] }}</a></li>
+                        <li><a href="{{ '/' . $slug }}" data-village-switcher-option>{{ $village['official_name'] }}</a></li>
                     @endforeach
                 </ul>
             </li>
@@ -938,6 +1069,33 @@ const backToTopBtn = document.getElementById('backToTopBtn');
                     hamburger.classList.remove('active');
                 }
             }
+        });
+
+        const portalReturnLoader = document.getElementById('portalReturnLoader');
+        const portalLinks = document.querySelectorAll('[data-global-portal-link]');
+
+        portalLinks.forEach(function (portalLink) {
+            portalLink.addEventListener('click', function (e) {
+                if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+                    return;
+                }
+
+                e.preventDefault();
+
+                if (portalReturnLoader) {
+                    portalReturnLoader.classList.add('is-active');
+                    portalReturnLoader.setAttribute('aria-hidden', 'false');
+                }
+
+                if (navLinks && hamburger) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+
+                setTimeout(function () {
+                    window.location.href = portalLink.href;
+                }, 650);
+            });
         });
     </script>
     @stack('scripts')

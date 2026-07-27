@@ -19,7 +19,7 @@ return [
         'karangasem' => [
             'name' => 'Karangasem',
             'official_name' => 'Kelurahan Karangasem',
-            'district' => 'Ciwandan',
+            'district' => 'Cibeber',
             'city' => 'Kota Cilegon',
             'province' => 'Banten',
             'postal_code' => '42447',
@@ -42,4 +42,6 @@ return [
         ],
     ],
 ];
+
+
 

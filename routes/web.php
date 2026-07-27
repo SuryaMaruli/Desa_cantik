@@ -66,7 +66,16 @@ $rawRequestCookies = function (Request $request): array {
 // 1. PUBLIC ROUTES (Frontend)
 // =========================================================================
 
-Route::get('/', [DashboardController::class, 'index'])->name('home');
+Route::get('/', function (Request $request) {
+    if ($request->server->get('CURRENT_VILLAGE_SLUG')) {
+        return app(DashboardController::class)->index();
+    }
+
+    return view('portal', [
+        'villages' => config('villages.items', []),
+        'defaultVillageSlug' => config('villages.default'),
+    ]);
+})->name('home');
 Route::get('/kata-sambutan', [DashboardController::class, 'kataSambutan'])->name('kata-sambutan');
 
 Route::get('/profil-kelurahan', function () {

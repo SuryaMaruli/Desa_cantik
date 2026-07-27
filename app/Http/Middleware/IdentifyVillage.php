@@ -117,7 +117,7 @@ class IdentifyVillage
         $protected = [];
 
         $html = preg_replace_callback(
-            '/<(a|option)\b(?=[^>]*\bdata-village-switcher-option\b)[^>]*>.*?<\/\1>/is',
+            '/<(a|option)\b(?=[^>]*\bdata-(?:village-switcher-option|global-portal-link)\b)[^>]*>.*?<\/\1>/is',
             function (array $matches) use (&$protected) {
                 $placeholder = '%%VILLAGE_SWITCHER_LINK_' . count($protected) . '%%';
                 $protected[$placeholder] = $matches[0];
