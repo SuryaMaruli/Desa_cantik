@@ -16,6 +16,13 @@
     .data-header-card h3 { margin: 0 0 8px; font-size: 24px; font-weight: 700; }
     .data-header-card p { margin: 0; max-width: 760px; color: rgba(255, 255, 255, 0.9); }
     .alert-success { background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; color: #166534; margin-bottom: 18px; padding: 12px 14px; }
+    .year-filter-card { align-items: end; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06); display: grid; gap: 12px; grid-template-columns: minmax(180px, 260px) auto; margin-bottom: 18px; padding: 16px; }
+    .year-filter-field label { color: #334155; display: block; font-size: 13px; font-weight: 800; margin-bottom: 7px; }
+    .year-filter-field input { border: 1px solid #d1d5db; border-radius: 8px; color: #111827; font-size: 15px; height: 42px; padding: 9px 12px; width: 100%; }
+    .year-filter-field input:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.14); outline: none; }
+    .btn-filter-year { align-items: center; background: #f97316; border: 0; border-radius: 8px; color: #fff; cursor: pointer; display: inline-flex; font-size: 14px; font-weight: 800; gap: 7px; min-height: 42px; padding: 9px 14px; }
+    .btn-filter-year:hover { background: #ea580c; }
+    .year-context { color: rgba(255,255,255,.92); display: inline-flex; font-size: 13px; font-weight: 800; margin-top: 12px; }
 
     .subject-picker { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06); margin-bottom: 18px; padding: 18px; }
     .subject-picker-top { align-items: flex-start; display: flex; gap: 14px; justify-content: space-between; margin-bottom: 14px; }
@@ -66,6 +73,7 @@
         .data-page { padding: 16px; }
         .subject-picker-top { flex-direction: column; }
         .subject-picker-actions { justify-content: flex-start; }
+        .year-filter-card { grid-template-columns: 1fr; }
         .dataset-row, .child-row { grid-template-columns: 1fr; }
     }
 </style>
@@ -76,14 +84,29 @@
     <div class="data-header-card">
         <h3>Data Kelurahan</h3>
         <p>Pilih satu atau beberapa subjek, lalu isi nilai dataset statistik yang tersedia.</p>
+        <span class="year-context"><i class='bx bx-calendar'></i>&nbsp; Tahun data: {{ $selectedYear }}</span>
     </div>
 
     @if(session('success'))
         <div class="alert-success">{{ session('success') }}</div>
     @endif
 
+    <form class="year-filter-card" method="GET" action="">
+        <div class="year-filter-field">
+            <label for="adminDataYear">Filter / Input Tahun Data</label>
+            <input id="adminDataYear" type="number" name="year" min="2000" max="2100" step="1" value="{{ $selectedYear }}" list="adminDataYearOptions" required>
+            <datalist id="adminDataYearOptions">
+                @foreach($availableYears as $year)
+                    <option value="{{ $year }}">
+                @endforeach
+            </datalist>
+        </div>
+        <button class="btn-filter-year" type="submit"><i class='bx bx-filter-alt'></i> Tampilkan Tahun</button>
+    </form>
+
     <form action="{{ route('admin.data-kelurahan.store') }}" method="POST">
         @csrf
+        <input type="hidden" name="year" value="{{ $selectedYear }}">
 
         <div class="subject-picker" aria-labelledby="adminSubjectPickerTitle">
             <div class="subject-picker-top">
@@ -91,7 +114,7 @@
                     <i class='bx bx-category-alt'></i>
                     <div>
                         <h4 id="adminSubjectPickerTitle">Pilih Subjek Data</h4>
-                        <p>Aktifkan beberapa kartu subjek untuk mengisi banyak dataset sekaligus.</p>
+                        <p>Aktifkan beberapa kartu subjek untuk mengisi dataset tahun {{ $selectedYear }}.</p>
                     </div>
                 </div>
                 <div class="subject-picker-actions">

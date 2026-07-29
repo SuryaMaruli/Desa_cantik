@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVillage;
 use Illuminate\Database\Eloquent\Model;
 
 class VillageSetting extends Model
 {
-    public function up()
-{
-    Schema::create('village_settings', function (Blueprint $table) {
-        $table->id();
-        $table->string('key'); // Contoh: kepadatan_penduduk
-        $table->string('value'); // Contoh: 2,981 jiwa/km²
-        $table->timestamps();
-    });
-}
+    use BelongsToVillage;
+
+    protected $fillable = [
+        'village_id',
+        'key',
+        'value',
+    ];
 }

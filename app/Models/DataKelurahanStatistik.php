@@ -15,12 +15,14 @@ class DataKelurahanStatistik extends Model
         'village_id',
         'subject_key',
         'dataset_key',
+        'year',
         'parent_key',
         'label',
         'value',
     ];
 
     protected $casts = [
+        'year' => 'integer',
         'value' => 'decimal:2',
     ];
 }

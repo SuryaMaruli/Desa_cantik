@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DataLurah;
+use Illuminate\Support\Facades\Storage;
 
 class DataLurahController extends Controller
 {
@@ -66,15 +67,15 @@ class DataLurahController extends Controller
                 $file = $request->file('fotoLurah');
                 
                 // Delete old photo if exists
-                if ($dataLurah->foto_lurah && file_exists(public_path('storage/foto-lurah/' . $dataLurah->foto_lurah))) {
-                    unlink(public_path('storage/foto-lurah/' . $dataLurah->foto_lurah));
+                if ($dataLurah->foto_lurah && Storage::disk('public')->exists('foto-lurah/' . $dataLurah->foto_lurah)) {
+                    Storage::disk('public')->delete('foto-lurah/' . $dataLurah->foto_lurah);
                 }
                 
                 // Generate unique filename
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                 
-                // Move file to storage
-                $file->move(public_path('storage/foto-lurah'), $filename);
+                // Store file through Laravel's public disk for hosting-safe permissions.
+                $file->storeAs('foto-lurah', $filename, 'public');
                 
                 $dataLurah->foto_lurah = $filename;
             }
@@ -141,8 +142,8 @@ class DataLurahController extends Controller
                 ], 404);
             }
 
-            if ($dataLurah->foto_lurah && file_exists(public_path('storage/foto-lurah/' . $dataLurah->foto_lurah))) {
-                unlink(public_path('storage/foto-lurah/' . $dataLurah->foto_lurah));
+            if ($dataLurah->foto_lurah && Storage::disk('public')->exists('foto-lurah/' . $dataLurah->foto_lurah)) {
+                Storage::disk('public')->delete('foto-lurah/' . $dataLurah->foto_lurah);
             }
 
             $dataLurah->foto_lurah = null;

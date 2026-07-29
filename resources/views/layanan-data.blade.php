@@ -3,6 +3,9 @@
 @section('title', 'Layanan Permintaan Data - Kelurahan Gunung Sugih')
 
 @section('content')
+    @php
+        $serviceInfo = $serviceInfo ?? [];
+    @endphp
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -243,9 +246,7 @@
                         <h4>Lokasi Kantor</h4>
                     </div>
                     <div class="info-content">
-                        <p><strong>Kantor Kelurahan Gunung Sugih</strong></p>
-                        <p>Jl. Raya Bulakan No. 123</p>
-                        <p>Kota Cilegon, Banten 42441</p>
+                        <p>{!! nl2br(e($serviceInfo['office_location'] ?? '-')) !!}</p>
                     </div>
                 </div>
 
@@ -255,9 +256,7 @@
                         <h4>Jam Pelayanan</h4>
                     </div>
                     <div class="info-content">
-                        <p>Senin – Jumat</p>
-                        <p>08:00 – 15:30 WIB</p>
-                        <p style="color: #999; font-size: 13px; margin-top: 5px;">(Tutup pada hari libur nasional)</p>
+                        <p>{!! nl2br(e($serviceInfo['service_hours'] ?? '-')) !!}</p>
                     </div>
                 </div>
 
@@ -267,13 +266,10 @@
                         <h4>Kontak</h4>
                     </div>
                     <div class="info-content">
-                        <p>Telepon: (0254) 123-4567</p>
-                        <p>WhatsApp: +62 878-5351-6685</p>
-                        <p>Email: admin@bulakan.go.id</p>
+                        <p>{!! nl2br(e($serviceInfo['contact'] ?? '-')) !!}</p>
                     </div>
                 </div>
             </div>
         </div>
-
     </main>
 @endsection

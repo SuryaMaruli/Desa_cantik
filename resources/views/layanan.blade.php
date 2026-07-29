@@ -3,6 +3,9 @@
 @section('title', 'Layanan Masyarakat - Kelurahan Gunung Sugih')
 
 @section('content')
+    @php
+        $serviceInfo = $serviceInfo ?? [];
+    @endphp
     <style>
         /* --- RESET & GLOBAL STYLES --- */
         * {
@@ -235,17 +238,17 @@
             
             <div class="info-item">
                 <strong>Jam Pelayanan:</strong>
-                Senin - Jumat: 08.00 - 15.00 WIB
+                {!! nl2br(e($serviceInfo['service_hours'] ?? '-')) !!}
             </div>
             
             <div class="info-item">
-                <strong>Lokasi:</strong>
-                Kantor Kelurahan Gunung Sugih, Jl. Raya Bulakan No. 123, Kota Cilegon
+                <strong>Lokasi Kantor:</strong>
+                {!! nl2br(e($serviceInfo['office_location'] ?? '-')) !!}
             </div>
             
             <div class="info-item">
                 <strong>Kontak:</strong>
-                Telp: (0254) 123-4567 | Email: kelurahan@bulakan.go.id
+                {!! nl2br(e($serviceInfo['contact'] ?? '-')) !!}
             </div>
         </section>
 

@@ -357,6 +357,18 @@
 
 @push('scripts')
 <script>
+    const beritaRoutes = {
+        update: @json(route('admin.berita.update', ['beritum' => '__ID__'])),
+        destroy: @json(route('admin.berita.destroy', ['beritum' => '__ID__'])),
+        editData: @json(route('admin.berita.edit-data', ['berita' => '__ID__'])),
+        togglePublish: @json(route('admin.berita.toggle-publish', ['berita' => '__ID__'])),
+        setUtama: @json(route('admin.berita.set-utama', ['berita' => '__ID__'])),
+    };
+
+    function beritaRoute(template, id) {
+        return template.replace('__ID__', encodeURIComponent(id));
+    }
+
     let createFiles = [];
     let editExisting = [];
     let editNewFiles = [];
@@ -691,7 +703,7 @@
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Mengupdate...';
 
-                fetch(`/admin/berita/${id}`, {
+                fetch(beritaRoute(beritaRoutes.update, id), {
                     method:'POST',
                     body:fd,
                     headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'}
@@ -714,7 +726,7 @@ function openEditModal(id) {
         // Reset popup flag when opening edit modal to ensure popup shows on every update click
         editPopupShown = false;
         
-        fetch(`/admin/berita/${id}/edit-data`)
+        fetch(beritaRoute(beritaRoutes.editData, id))
             .then(r => r.json())
             .then(d => {
                 if (!d.success) return showNotification(d.message || 'Gagal ambil data.', 'error');
@@ -727,7 +739,7 @@ function openEditModal(id) {
                 document.getElementById('edit_konten').value = b.konten;
                 document.getElementById('edit_tanggal_publikasi').value = b.tanggal_publikasi;
                 document.getElementById('edit_is_published').checked = !!b.is_published;
-                document.getElementById('editBeritaForm').action = `/admin/berita/${b.id}`;
+                document.getElementById('editBeritaForm').action = beritaRoute(beritaRoutes.update, b.id);
 
                 editExisting = (b.fotos || []).map((f, i) => ({
                     id: f.id,
@@ -805,7 +817,7 @@ popupConfirm.onclick = function() {
             const fd = new FormData();
             fd.append('_token', '{{ csrf_token() }}');
             
-            fetch(`/admin/berita/${id}/toggle-publish`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
+            fetch(beritaRoute(beritaRoutes.togglePublish, id), { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) reloadAfterNotification(d.message || 'Berita berhasil disimpan sebagai draft!', 'success');
@@ -820,7 +832,7 @@ popupConfirm.onclick = function() {
             const fd = new FormData();
             fd.append('_token', '{{ csrf_token() }}');
             
-            fetch(`/admin/berita/${id}/toggle-publish`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
+            fetch(beritaRoute(beritaRoutes.togglePublish, id), { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) reloadAfterNotification(d.message || 'Berita berhasil dipublikasikan!', 'success');
@@ -836,7 +848,7 @@ popupConfirm.onclick = function() {
             fd.append('_method', 'DELETE');
             fd.append('_token', '{{ csrf_token() }}');
 
-            fetch(`/admin/berita/${id}`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
+            fetch(beritaRoute(beritaRoutes.destroy, id), { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) reloadAfterNotification(d.message || 'Berita berhasil dihapus!', 'success');
@@ -857,7 +869,7 @@ popupConfirm.onclick = function() {
             const fd = new FormData();
             fd.append('_token', '{{ csrf_token() }}');
             
-            fetch(`/admin/berita/${id}/set-utama`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
+            fetch(beritaRoute(beritaRoutes.setUtama, id), { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) reloadAfterNotification(d.message || 'Berita berhasil dijadikan berita utama!', 'success');
@@ -872,7 +884,7 @@ popupConfirm.onclick = function() {
             const fd = new FormData();
             fd.append('_token', '{{ csrf_token() }}');
             
-            fetch(`/admin/berita/${id}/set-utama`, { method:'POST', body:fd, headers:{'Accept':'application/json'} })
+            fetch(beritaRoute(beritaRoutes.setUtama, id), { method:'POST', body:fd, headers:{'Accept':'application/json'} })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) reloadAfterNotification(d.message || 'Status berita utama berhasil dibatalkan!', 'success');

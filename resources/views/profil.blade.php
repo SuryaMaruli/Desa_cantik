@@ -7,6 +7,8 @@
         $villageText = fn ($value) => $value;
         $misiItems = $profilKelurahan?->misi ?? [];
         $profileVillageName = $profilKelurahan?->nama_kelurahan ?? ($currentVillage['official_name'] ?? 'Kelurahan Gunung Sugih');
+        $wilayahStats = $wilayahStats ?? [];
+        $formatStatNumber = fn ($value) => $value === null || $value === '' ? '-' : number_format((float) $value, fmod((float) $value, 1.0) === 0.0 ? 0 : 2, ',', '.');
     @endphp
     <style>
         /* --- CSS RESET & GLOBAL --- */
@@ -113,7 +115,7 @@
         .misi-list li::before { content: "•"; color: #1e88e5; font-weight: bold; position: absolute; left: 0; }
 
         /* --- 4. DATA WILAYAH (STATS) --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 50px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 50px; }
         .stat-card {
             background: white; padding: 25px 20px; border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -268,44 +270,34 @@
 
         <h2 class="section-title">Data Wilayah</h2>
         <div class="stats-grid">
-            <div class="stat-card border-green">
-                <div class="stat-icon icon-green">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-label">Luas Wilayah</div>
-                    <div class="stat-number">8.5 km²</div>
-                </div>
-            </div>
             <div class="stat-card border-blue">
                 <div class="stat-icon icon-blue">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </div>
                 <div class="stat-content">
                     <div class="stat-label">Jumlah Penduduk</div>
-                    <div class="stat-number">25,340</div>
+                    <div class="stat-number">{{ $formatStatNumber($wilayahStats['jumlah_penduduk'] ?? null) }}</div>
                 </div>
             </div>
             <div class="stat-card border-purple">
                 <div class="stat-icon icon-purple">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4.9V17L12 22l-9-4.9V7z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-8a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8"></path><path d="M7 21v-6"></path><path d="M17 21v-6"></path><path d="M8 9V6a4 4 0 0 1 8 0v3"></path></svg>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-label">Jumlah RW</div>
-                    <div class="stat-number">12 RW</div>
+                    <div class="stat-label">Jumlah Kepala Keluarga</div>
+                    <div class="stat-number">{{ $formatStatNumber($wilayahStats['jumlah_kepala_keluarga'] ?? null) }}</div>
                 </div>
             </div>
-            <div class="stat-card border-orange">
-                <div class="stat-icon icon-orange">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+            <div class="stat-card border-green">
+                <div class="stat-icon icon-green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-label">Jumlah RT</div>
-                    <div class="stat-number">48 RT</div>
+                    <div class="stat-label">Luas Wilayah</div>
+                    <div class="stat-number">{{ $wilayahStats['luas_wilayah'] ?? '-' }}</div>
                 </div>
             </div>
         </div>
-
 <h2 class="section-title-center">MONOGRAFI KELURAHAN GUNUNG SUGIH</h2>
 @if($monografis->count() > 0)
             @foreach($monografis as $monografi)

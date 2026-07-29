@@ -7,6 +7,161 @@
     .viz-page{background:#f0fbff;color:#1f2937;min-height:100vh;padding-bottom:56px}.viz-hero{background:radial-gradient(circle at 15% 20%,rgba(125,211,252,.7),transparent 28%),radial-gradient(circle at 82% 12%,rgba(253,224,71,.72),transparent 26%),linear-gradient(135deg,#bae6fd 0%,#bbf7d0 52%,#fde68a 100%);color:#1f2937;overflow:hidden;padding:50px 20px 44px;position:relative}.viz-hero:after{background:rgba(14,165,233,.18);content:'';height:170px;position:absolute;right:-70px;top:-80px;transform:rotate(18deg);width:280px}.viz-container{margin:0 auto;max-width:1180px;width:min(100% - 32px,1180px)}.viz-hero-content{align-items:center;display:grid;gap:28px;grid-template-columns:1fr;position:relative;z-index:1}.viz-hero h1{font-size:36px;font-weight:800;line-height:1.12;margin:0 0 12px}.viz-hero p{color:rgba(31,41,55,.86);font-size:16px;line-height:1.65;margin:0;max-width:780px}.viz-hero-kicker{align-items:center;background:rgba(255,255,255,.62);border:1px solid rgba(14,165,233,.24);border-radius:999px;display:inline-flex;font-size:12px;font-weight:800;gap:8px;letter-spacing:.08em;margin-bottom:16px;padding:8px 12px;text-transform:uppercase}
     .subject-picker{background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 14px 32px rgba(14,165,233,.10);margin-top:28px;padding:18px}.subject-picker-top{align-items:flex-start;display:flex;gap:14px;justify-content:space-between;margin-bottom:14px}.subject-picker-title{align-items:center;display:flex;gap:10px}.subject-picker-title i{align-items:center;background:#ecfeff;border-radius:8px;color:#06b6d4;display:inline-flex;font-size:22px;height:40px;justify-content:center;width:40px}.subject-picker-title h2{color:#1f2937;font-size:18px;font-weight:780;line-height:1.3;margin:0}.subject-picker-title p{color:#64748b;font-size:14px;line-height:1.5;margin:3px 0 0}.subject-picker-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.subject-mini-btn,.viz-toggle{align-items:center;background:#f8fdff;border:1px solid #dbe3ee;border-radius:8px;color:#475569;cursor:pointer;display:inline-flex;font-size:13px;font-weight:800;gap:6px;min-height:36px;padding:8px 11px}.subject-mini-btn:hover,.viz-toggle:hover{background:#ecfeff;border-color:#06b6d4;color:#06b6d4}.subject-search{align-items:center;background:#f8fdff;border:1px solid #dbe3ee;border-radius:8px;display:flex;gap:8px;min-height:42px;margin-bottom:14px;padding:0 12px}.subject-search i{color:#64748b;font-size:18px}.subject-search input{background:transparent;border:0;color:#1f2937;flex:1;font-size:14px;font-weight:650;min-width:0;outline:0}.subject-search input::placeholder{color:#94a3b8}.subject-choice-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}.subject-choice{align-items:flex-start;background:#f8fdff;border:1px solid #e5e7eb;border-radius:8px;color:#1f2937;cursor:pointer;display:flex;gap:12px;min-height:104px;padding:14px;position:relative;text-align:left;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease;width:100%}.subject-choice:hover,.subject-choice:focus{background:#fff;border-color:#38bdf8;box-shadow:0 12px 26px rgba(14,165,233,.16);outline:0;transform:translateY(-2px)}.subject-choice.is-active{background:#ecfeff;border-color:#38bdf8;box-shadow:inset 0 0 0 1px #38bdf8,0 12px 26px rgba(249,115,22,.10)}.subject-choice.is-active:after{align-items:center;background:#fb923c;border-radius:999px;color:#fff;content:'\2713';display:inline-flex;font-size:12px;font-weight:800;height:22px;justify-content:center;position:absolute;right:10px;top:10px;width:22px}.subject-choice-icon{align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:8px;color:#f97316;display:inline-flex;flex:0 0 42px;font-size:23px;height:42px;justify-content:center;width:42px}.subject-choice.is-active .subject-choice-icon{background:#38bdf8;border-color:#38bdf8;color:#fff}.subject-choice-name{display:block;font-size:14px;font-weight:750;line-height:1.35;padding-right:20px}.subject-choice-meta{color:#64748b;display:block;font-size:12px;font-weight:650;margin-top:6px}.subject-choice.is-active .subject-choice-meta{color:#0369a1}    .empty-state{align-items:center;background:#fff;border:1px dashed #cbd5e1;border-radius:8px;color:#64748b;display:flex;gap:12px;margin-top:18px;min-height:118px;padding:22px}.empty-state i{color:#38bdf8;font-size:28px}.viz-dashboard{display:none;margin-top:18px}.viz-dashboard.is-active{display:block}.featured-stat-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));padding:18px 18px 0}.featured-stat{align-items:center;border:1px solid #dbeafe;border-radius:8px;display:grid;gap:16px;grid-template-columns:auto 1fr auto;min-height:150px;overflow:hidden;padding:22px;position:relative}.featured-stat:before{background:linear-gradient(90deg,#2563eb,#f97316,#16a34a,#db2777,#eab308);content:'';height:5px;left:0;position:absolute;top:0;width:100%}.featured-stat--population{background:linear-gradient(135deg,#dbeafe 0%,#dcfce7 58%,#fef3c7 100%)}.featured-stat--family{background:linear-gradient(135deg,#fff7d6 0%,#dcfce7 52%,#dbeafe 100%)}.featured-stat--unemployment{background:linear-gradient(135deg,#fee2e2 0%,#ffedd5 48%,#fef9c3 100%)}.featured-stat--education{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#dcfce7 100%)}.featured-stat--health{background:linear-gradient(135deg,#cffafe 0%,#dcfce7 48%,#fef3c7 100%)}.featured-stat--economy{background:linear-gradient(135deg,#fef3c7 0%,#dcfce7 52%,#dbeafe 100%)}.featured-stat--civic{background:linear-gradient(135deg,#e0f2fe 0%,#ede9fe 48%,#fee2e2 100%)}.featured-stat-icon{align-items:center;background:#fff;border-radius:8px;box-shadow:0 12px 24px rgba(14,165,233,.14);color:#06b6d4;display:inline-flex;font-size:34px;height:68px;justify-content:center;width:68px}.featured-stat--family .featured-stat-icon{color:#f97316}.featured-stat--unemployment .featured-stat-icon{color:#ef4444}.featured-stat--education .featured-stat-icon{color:#7c3aed}.featured-stat--health .featured-stat-icon{color:#0891b2}.featured-stat--economy .featured-stat-icon{color:#16a34a}.featured-stat--civic .featured-stat-icon{color:#db2777}.featured-stat h3{color:#1f2937;font-size:18px;font-weight:800;line-height:1.25;margin:0 0 8px}.featured-stat strong{color:#06b6d4;display:block;font-size:52px;font-weight:850;line-height:1;margin-bottom:6px}.featured-stat--family strong{color:#f97316}.featured-stat--unemployment strong{color:#ef4444}.featured-stat--education strong{color:#7c3aed}.featured-stat--health strong{color:#0891b2}.featured-stat--economy strong{color:#16a34a}.featured-stat--civic strong{color:#db2777}.featured-stat span{color:#475569;display:block;font-size:14px;font-weight:800}.featured-stat-visual{align-items:center;color:rgba(6,182,212,.22);display:flex;font-size:82px;justify-content:center}.featured-stat--family .featured-stat-visual{color:rgba(249,115,22,.24)}.featured-stat--unemployment .featured-stat-visual{color:rgba(239,68,68,.22)}.featured-stat--education .featured-stat-visual{color:rgba(124,58,237,.22)}.featured-stat--health .featured-stat-visual{color:rgba(8,145,178,.22)}.featured-stat--economy .featured-stat-visual{color:rgba(22,163,74,.22)}.featured-stat--civic .featured-stat-visual{color:rgba(219,39,119,.20)}@media(max-width:720px){.featured-stat-grid{grid-template-columns:1fr;padding:14px 14px 0}.featured-stat{grid-template-columns:auto 1fr;min-height:132px;padding:18px}.featured-stat strong{font-size:40px}.featured-stat-visual{display:none}}
     .dataset-sections{display:grid;gap:18px}.subject-dataset-section{background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 12px 30px rgba(14,165,233,.10);overflow:hidden}.subject-dataset-head{align-items:center;background:#f8fdff;border-bottom:1px solid #e5e7eb;display:flex;gap:12px;padding:16px 18px}.subject-dataset-head i{align-items:center;background:#fff7d6;border-radius:8px;color:#f97316;display:inline-flex;flex:0 0 44px;font-size:25px;height:44px;justify-content:center;width:44px}.subject-dataset-head h2{color:#1f2937;font-size:18px;font-weight:800;line-height:1.3;margin:0 0 4px}.subject-dataset-head p{color:#64748b;font-size:13px;font-weight:650;line-height:1.45;margin:0}.dataset-card-grid{align-items:start;display:grid;gap:18px;grid-template-columns:repeat(2,minmax(0,1fr));padding:18px}.dataset-card-grid.has-odd .dataset-card:last-child{grid-column:1/-1;justify-self:center;width:min(100%,calc((100% - 18px)/2))}.dataset-card{border:1px solid #e8edf3;border-radius:8px;overflow:hidden;padding:14px;position:relative;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}.dataset-card.is-compact{align-self:start;padding:10px 12px 12px}.dataset-card.is-compact .dataset-head{align-items:center;margin-bottom:8px}.dataset-card.is-compact .dataset-icon{flex-basis:32px;font-size:17px;height:32px;width:32px}.dataset-card.is-compact .dataset-head h3{font-size:15px;line-height:1.25}.dataset-card.is-compact .single-value{gap:10px;min-height:72px;padding:10px 12px}.dataset-card.is-compact .single-value i{flex-basis:38px;font-size:21px;height:38px;width:38px}.dataset-card.is-compact .single-value strong{font-size:30px;margin-bottom:2px}.dataset-card.is-compact .single-value span{font-size:12px;line-height:1.2}.dataset-card.is-compact .single-value.population,.dataset-card.is-compact .single-value.family{min-height:72px;padding-right:76px}.dataset-card.is-compact .value-progress{height:6px;margin-top:8px;width:112px}.dataset-card.is-compact .population-visual{height:54px!important;right:10px!important;width:58px!important}.dataset-card.is-compact .population-dot.main{font-size:18px;height:34px;left:12px;top:0;width:34px}.dataset-card.is-compact .population-dot.side-a,.dataset-card.is-compact .population-dot.side-b{font-size:12px;height:23px;top:26px;width:23px}.dataset-card.is-compact .population-dot.mini{display:none}.dataset-card.is-compact .family-visual{font-size:28px!important;height:54px!important;right:10px!important;width:58px!important}.dataset-card:hover{border-color:#38bdf8;box-shadow:0 16px 34px rgba(14,165,233,.12);transform:translateY(-2px)}.dataset-card:before{background:linear-gradient(90deg,#2563eb,#f97316,#16a34a,#db2777,#9333ea,#eab308);content:'';height:4px;left:0;position:absolute;top:0;width:100%}.dataset-head{align-items:flex-start;display:flex;gap:10px;justify-content:space-between;margin-bottom:12px;padding-top:4px}.dataset-head h3{color:#1f2937;flex:1;font-size:15px;font-weight:760;line-height:1.42;margin:0}.dataset-icon{align-items:center;background:#fff7d6;border-radius:8px;color:#f97316;display:inline-flex;flex:0 0 34px;font-size:18px;height:34px;justify-content:center;width:34px}.dataset-mode-toggle{flex:0 0 auto;min-height:34px;padding:7px 9px}.single-value{align-items:center;background:linear-gradient(135deg,#ecfeff,#e0f7ff);border:1px solid #dbeafe;border-radius:8px;display:flex;gap:14px;min-height:104px;padding:14px;position:relative;overflow:hidden}.single-value i{align-items:center;background:#06b6d4;border-radius:8px;color:#fff;display:inline-flex;flex:0 0 44px;font-size:24px;height:44px;justify-content:center;width:44px}.single-value strong{color:#06b6d4;display:block;font-size:36px;line-height:.95;margin-bottom:4px}.single-value span{color:#475569;display:block;font-size:13px;font-weight:700;line-height:1.35}.mini-chart{height:340px;position:relative}.population-visual{display:none}.single-value.population{background:linear-gradient(135deg,#dbeafe 0%,#dcfce7 52%,#fef3c7 100%);min-height:104px;padding-right:104px}.single-value.population .population-visual{display:block;height:78px;position:absolute;right:12px;top:50%;transform:translateY(-50%);width:82px}.population-dot{align-items:center;border-radius:999px;color:#fff;display:inline-flex;justify-content:center;position:absolute}.population-dot.main{background:#2563eb;font-size:26px;height:50px;left:17px;top:5px;width:50px}.population-dot.side-a{background:#f97316;font-size:16px;height:32px;left:1px;top:35px;width:32px}.population-dot.side-b{background:#16a34a;font-size:16px;height:32px;right:0;top:35px;width:32px}.population-dot.mini{background:#db2777;font-size:13px;height:26px;left:30px;bottom:0;width:26px}.family-visual{display:none}.single-value.family{background:linear-gradient(135deg,#fff7d6 0%,#dcfce7 48%,#dbeafe 100%);min-height:104px;padding-right:104px}.single-value.family .family-visual{align-items:center;background:#fff;border:1px solid rgba(249,115,22,.22);border-radius:8px;box-shadow:0 10px 22px rgba(249,115,22,.12);color:#f97316;display:flex;font-size:38px;height:72px;justify-content:center;position:absolute;right:14px;top:50%;transform:translateY(-50%);width:78px}.value-progress{background:#e5e7eb;border-radius:999px;height:8px;margin-top:10px;overflow:hidden}.value-progress span{background:linear-gradient(90deg,#2563eb,#f97316,#16a34a,#db2777,#9333ea,#eab308);border-radius:inherit;display:block;height:100%;transition:width .45s ease;width:var(--progress-width,0%)}@media(max-width:980px){.viz-hero-content{grid-template-columns:1fr}.dataset-card-grid{grid-template-columns:1fr}.dataset-card-grid.has-odd .dataset-card:last-child{grid-column:auto;width:100%}}@media(max-width:720px){.viz-hero{padding-top:38px}.viz-hero h1{font-size:28px}.subject-picker-top{flex-direction:column}.subject-picker-actions{justify-content:flex-start}.subject-choice-grid,.dataset-card-grid{grid-template-columns:1fr}.mini-chart{height:280px}}
+    .data-year-filter {
+        align-items: end;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 14px 32px rgba(14,165,233,.10);
+        display: grid;
+        gap: 12px;
+        grid-template-columns: minmax(180px, 260px) auto;
+        margin-top: 28px;
+        padding: 16px;
+    }
+
+    .data-year-field label {
+        color: #334155;
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .data-year-field input {
+        background: #f8fdff;
+        border: 1px solid #dbe3ee;
+        border-radius: 8px;
+        color: #1f2937;
+        font-size: 15px;
+        font-weight: 750;
+        height: 42px;
+        outline: 0;
+        padding: 9px 12px;
+        width: 100%;
+    }
+
+    .data-year-field input:focus {
+        border-color: #06b6d4;
+        box-shadow: 0 0 0 3px rgba(14,165,233,.14);
+    }
+
+    .btn-filter-year {
+        align-items: center;
+        background: #06b6d4;
+        border: 0;
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 14px;
+        font-weight: 800;
+        gap: 7px;
+        min-height: 42px;
+        padding: 9px 14px;
+    }
+
+    .btn-filter-year:hover {
+        background: #0891b2;
+    }
+
+    .featured-stat > div:nth-child(2),
+    .single-value > div:not(.population-visual):not(.family-visual) {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .featured-stat strong,
+    .single-value strong {
+        max-width: 100%;
+        white-space: nowrap;
+        overflow-wrap: normal;
+        word-break: normal;
+        line-height: 1.05;
+    }
+
+    .featured-stat strong {
+        font-size: clamp(24px, 4vw, 42px);
+    }
+
+    .single-value strong {
+        font-size: clamp(22px, 3.4vw, 36px);
+    }
+
+    .dataset-card.is-compact .single-value strong {
+        font-size: clamp(21px, 3vw, 30px);
+    }
+
+    .featured-stat--civic strong,
+    .single-value strong {
+        letter-spacing: 0;
+    }
+
+    .featured-stat--civic strong {
+        font-size: clamp(20px, 3vw, 34px);
+    }
+
+    @media (max-width: 1180px) {
+        .featured-stat {
+            grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .featured-stat-visual {
+            display: none;
+        }
+    }
+
+    @media (max-width: 720px) {
+        .data-year-filter {
+            grid-template-columns: 1fr;
+        }
+
+        .featured-stat {
+            gap: 12px;
+        }
+
+        .featured-stat strong,
+        .single-value strong {
+            font-size: clamp(22px, 6.2vw, 32px) !important;
+        }
+
+        .featured-stat--civic strong {
+            font-size: clamp(18px, 5vw, 24px) !important;
+        }
+
+        .dataset-card.is-compact .single-value strong {
+            font-size: clamp(20px, 5.8vw, 28px) !important;
+        }
+
+        .single-value.population,
+        .single-value.family,
+        .dataset-card.is-compact .single-value.population,
+        .dataset-card.is-compact .single-value.family {
+            padding-right: 12px;
+        }
+
+        .population-visual,
+        .family-visual {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .featured-stat {
+            gap: 10px;
+            padding: 14px;
+        }
+
+        .featured-stat-icon {
+            font-size: 26px;
+            height: 52px;
+            width: 52px;
+        }
+
+        .featured-stat--civic strong {
+            font-size: 20px !important;
+        }
+    }
 </style>
 
 @php
@@ -18,7 +173,20 @@
 <div class="viz-page">
     <header class="viz-hero"><div class="viz-container viz-hero-content"><div><span class="viz-hero-kicker"><i class="bi bi-activity"></i> Dashboard Dataset</span><h1>Data Kelurahan</h1></div></div></header>
     <main class="viz-container">
-        <div class="subject-picker" aria-labelledby="publicSubjectPickerTitle"><div class="subject-picker-top"><div class="subject-picker-title"><i class="bi bi-sliders2"></i><div><h2 id="publicSubjectPickerTitle">Pilih Subjek Data</h2><p>Dataset dari subjek yang dipilih akan ditampilkan sebagai kartu visualisasi terpisah.</p></div></div><div class="subject-picker-actions"><button type="button" class="subject-mini-btn" id="publicSelectAllSubjects"><i class="bi bi-ui-checks-grid"></i> Pilih Semua</button><button type="button" class="subject-mini-btn" id="publicClearSubjects"><i class="bi bi-x-lg"></i> Bersihkan</button></div></div><label class="subject-search" for="subjectSearchInput"><i class="bi bi-search"></i><input type="search" id="subjectSearchInput" placeholder="Cari subjek data..." autocomplete="off"></label><div class="subject-choice-grid" role="listbox" aria-label="Subjek Data" aria-multiselectable="true">
+        <form class="data-year-filter" method="GET" action="">
+            <div class="data-year-field">
+                <label for="publicDataYear">Filter Tahun Data</label>
+                <input id="publicDataYear" type="number" name="year" min="2000" max="2100" step="1" value="{{ $selectedYear }}" list="publicDataYearOptions" required>
+                <datalist id="publicDataYearOptions">
+                    @foreach($availableYears as $year)
+                        <option value="{{ $year }}">
+                    @endforeach
+                </datalist>
+            </div>
+            <button class="btn-filter-year" type="submit"><i class="bi bi-funnel"></i> Tampilkan Tahun</button>
+        </form>
+
+        <div class="subject-picker" aria-labelledby="publicSubjectPickerTitle"><div class="subject-picker-top"><div class="subject-picker-title"><i class="bi bi-sliders2"></i><div><h2 id="publicSubjectPickerTitle">Pilih Subjek Data</h2><p>Dataset tahun {{ $selectedYear }} dari subjek yang dipilih akan ditampilkan sebagai kartu visualisasi terpisah.</p></div></div><div class="subject-picker-actions"><button type="button" class="subject-mini-btn" id="publicSelectAllSubjects"><i class="bi bi-ui-checks-grid"></i> Pilih Semua</button><button type="button" class="subject-mini-btn" id="publicClearSubjects"><i class="bi bi-x-lg"></i> Bersihkan</button></div></div><label class="subject-search" for="subjectSearchInput"><i class="bi bi-search"></i><input type="search" id="subjectSearchInput" placeholder="Cari subjek data..." autocomplete="off"></label><div class="subject-choice-grid" role="listbox" aria-label="Subjek Data" aria-multiselectable="true">
             @foreach($subjects as $subject)
                 @php($datasetCount = count($subject['datasets'] ?? []))
                 <button type="button" class="subject-choice" data-subject-card-choice="{{ $subject['key'] }}" role="option" aria-selected="false" aria-pressed="false"><span class="subject-choice-icon"><i class="bi bi-folder2-open"></i></span><span><span class="subject-choice-name">{{ $subject['name'] }}</span><span class="subject-choice-meta">{{ $datasetCount }} dataset</span></span></button>

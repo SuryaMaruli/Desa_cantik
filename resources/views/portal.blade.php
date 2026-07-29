@@ -257,7 +257,7 @@
         h1 {
             margin: 0;
             max-width: 720px;
-            font-size: clamp(40px, 7vw, 82px);
+            font-size: clamp(34px, 7vw, 82px);
             line-height: 0.96;
             letter-spacing: 0;
             font-weight: 800;
@@ -388,6 +388,7 @@
         }
 
         .village-card {
+            display: block;
             position: absolute;
             width: min(280px, calc(100% - 36px));
             padding: 17px;
@@ -516,13 +517,56 @@
         }
 
         @media (max-width: 980px) {
-            .portal-shell { width: min(720px, calc(100% - 28px)); }
-            .portal-nav { align-items: flex-start; flex-wrap: wrap; }
-            .nav-actions { flex: 1 1 100%; justify-content: space-between; }
-            .partner-logos { flex: 1; justify-content: flex-start; flex-wrap: wrap; }
-            .hero { grid-template-columns: 1fr; gap: 8px; }
+            .portal-shell {
+                width: min(720px, calc(100% - 28px));
+                min-height: auto;
+                padding-bottom: 28px;
+            }
+
+            .portal-nav {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .nav-actions {
+                flex: 1 1 100%;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .partner-logos {
+                flex: 1 1 auto;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                row-gap: 10px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                align-items: start;
+            }
+
             .hero-copy { padding: 18px 0 6px; }
-            .map-stage { min-height: 650px; }
+
+            .portal-panel {
+                padding: 12px;
+                border-radius: 16px;
+            }
+
+            .map-stage {
+                min-height: auto;
+                padding: 1px 0 78px;
+                border-radius: 12px;
+            }
+
+            .map-stage::before,
+            .route-line,
+            .pulse-dot {
+                display: none;
+            }
+
             .village-card:nth-of-type(1),
             .village-card:nth-of-type(2),
             .village-card:nth-of-type(3) {
@@ -532,26 +576,170 @@
                 bottom: auto;
                 left: auto;
                 width: auto;
-                margin: 18px;
+                margin: 14px;
             }
-            .route-line,
-            .pulse-dot { display: none; }
         }
 
         @media (max-width: 640px) {
-            .portal-shell { min-height: auto; padding-top: 18px; }
-            .portal-nav { align-items: flex-start; }
-            .nav-actions { gap: 8px; }
-            .partner-logos { width: 100%; justify-content: space-between; }
-            .partner-logo { flex: 0 1 auto; min-width: 0; }
-            .partner-logo img { max-width: 100%; }
-            .portal-user-menu { width: 100%; justify-content: space-between; border-radius: 8px; }
-            .portal-user-greeting span { max-width: calc(100vw - 132px); }
+            body::before { background-size: 34px 34px; }
+
+            .portal-shell {
+                width: min(100% - 24px, 520px);
+                gap: 18px;
+                padding-top: 16px;
+            }
+
+            .portal-nav { gap: 14px; }
+
+            .brand {
+                width: 100%;
+                align-items: center;
+            }
+
+            .brand-mark {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                flex: 0 0 auto;
+            }
+
             .brand-title { font-size: 13px; }
             .brand-subtitle { font-size: 11px; }
-            .quick-stats { grid-template-columns: 1fr; }
-            .map-stage { min-height: auto; padding: 1px 0 78px; }
-            .hint-bar { align-items: flex-start; flex-direction: column; }
+
+            .nav-actions {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .partner-logos {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                align-items: center;
+                justify-items: center;
+                gap: 10px;
+            }
+
+            .partner-logo {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .partner-logo img {
+                max-width: 100%;
+                max-height: 34px;
+            }
+
+            .partner-logo--berakhlak img { max-height: 28px; }
+            .partner-logo--bps img { max-height: 34px; }
+            .partner-logo--wbk img,
+            .partner-logo--dc img { max-height: 36px; }
+
+            .icon-button {
+                align-self: flex-end;
+                width: 40px;
+                height: 40px;
+            }
+
+            .portal-user-menu {
+                width: 100%;
+                justify-content: space-between;
+                border-radius: 8px;
+            }
+
+            .portal-user-greeting span { max-width: calc(100vw - 132px); }
+
+            .eyebrow {
+                max-width: 100%;
+                align-items: flex-start;
+                border-radius: 8px;
+                font-size: 12px;
+                line-height: 1.35;
+            }
+
+            h1 {
+                font-size: 34px;
+                line-height: 1.04;
+            }
+
+            .lead {
+                margin-top: 16px;
+                font-size: 15px;
+                line-height: 1.62;
+            }
+
+            .search-row {
+                margin-top: 20px;
+                padding: 9px 10px;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .stat {
+                min-height: auto;
+                padding: 14px;
+            }
+
+            .stat strong { font-size: 26px; }
+
+            .portal-panel {
+                padding: 8px;
+                box-shadow: 0 16px 42px rgba(23, 32, 38, 0.12);
+            }
+
+            .map-stage { padding: 1px 0 10px; }
+
+            .village-card:nth-of-type(1),
+            .village-card:nth-of-type(2),
+            .village-card:nth-of-type(3) {
+                display: block;
+                margin: 10px;
+                padding: 14px;
+            }
+
+            .village-card h2 {
+                font-size: 18px;
+                overflow-wrap: anywhere;
+            }
+
+            .village-card p {
+                font-size: 13px;
+            }
+
+            .pin {
+                width: 40px;
+                height: 40px;
+            }
+
+            .hint-bar {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                left: auto;
+                margin: 10px;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 8px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .portal-shell { width: min(100% - 18px, 360px); }
+            .partner-logos { gap: 8px; }
+            .partner-logo img { max-height: 30px; }
+            .partner-logo--berakhlak img { max-height: 24px; }
+            h1 { font-size: 30px; }
+            .lead { font-size: 14px; }
+            .village-card:nth-of-type(1),
+            .village-card:nth-of-type(2),
+            .village-card:nth-of-type(3) { margin: 8px; }
         }
     </style>
 </head>

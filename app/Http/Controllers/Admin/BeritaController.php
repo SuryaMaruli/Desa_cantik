@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Berita;
 use App\Models\BeritaFoto;
+use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
@@ -72,11 +73,6 @@ class BeritaController extends Controller
 
             $berita = Berita::create($data);
 
-            $uploadPath = public_path('storage/berita');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-
             $files = $request->file('fotos', []);
             $fotoUtamaIndex = (int) $request->input('foto_utama_index', 0);
 
@@ -88,7 +84,7 @@ class BeritaController extends Controller
 
             foreach ($files as $index => $file) {
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move($uploadPath, $filename);
+                $file->storeAs('berita', $filename, 'public');
 
                 $isUtama = ((int) $index === $fotoUtamaIndex);
 
@@ -218,19 +214,11 @@ class BeritaController extends Controller
 
             $berita->update($data);
 
-            $uploadPath = public_path('storage/berita');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-
             $deleteIds = $request->input('delete_foto_ids', []);
             if (!empty($deleteIds)) {
                 $fotosToDelete = $berita->fotos()->whereIn('id', $deleteIds)->get();
                 foreach ($fotosToDelete as $foto) {
-                    $full = public_path('storage/berita/' . $foto->foto);
-                    if (file_exists($full)) {
-                        @unlink($full);
-                    }
+                    Storage::disk('public')->delete('berita/' . $foto->foto);
                     $foto->delete();
                 }
             }
@@ -239,7 +227,7 @@ class BeritaController extends Controller
             $lastUrutan = (int) ($berita->fotos()->max('urutan') ?? -1);
             foreach ($newFiles as $file) {
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move($uploadPath, $filename);
+                $file->storeAs('berita', $filename, 'public');
 
                 $lastUrutan++;
                 BeritaFoto::create([
@@ -344,14 +332,10 @@ class BeritaController extends Controller
             }
 
             foreach ($berita->fotos as $foto) {
-                $full = public_path('storage/berita/' . $foto->foto);
-                if (file_exists($full)) {
-                    @unlink($full);
-                }
+                Storage::disk('public')->delete('berita/' . $foto->foto);
             }
-
-            if ($berita->gambar && file_exists(public_path('storage/berita/' . $berita->gambar))) {
-                @unlink(public_path('storage/berita/' . $berita->gambar));
+            if ($berita->gambar) {
+                Storage::disk('public')->delete('berita/' . $berita->gambar);
             }
 
             $deleted = $berita->delete();

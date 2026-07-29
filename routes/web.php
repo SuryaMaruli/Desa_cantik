@@ -36,6 +36,7 @@ use App\Models\Penduduk;
 use App\Models\DataKelurahanStatistik;
 use App\Models\ProfilKelurahan;
 use App\Models\Monografi;
+use App\Models\VillageSetting;
 
 $rawRequestCookies = function (Request $request): array {
     $cookieHeader = (string) $request->server->get('HTTP_COOKIE', '');
@@ -55,6 +56,36 @@ $rawRequestCookies = function (Request $request): array {
     }
 
     return $cookies ?: $request->cookies->all();
+};
+$serviceInfoForCurrentVillage = function (): array {
+    $defaults = function (): array {
+        $currentVillage = app()->bound('currentVillage') ? app('currentVillage') : [];
+        $officialName = $currentVillage['official_name'] ?? 'Kantor Kelurahan Gunung Sugih';
+        $address = $currentVillage['address'] ?? 'Jl. Raya Gunung Sugih No. 123';
+        $city = $currentVillage['city'] ?? 'Kota Cilegon';
+        $province = $currentVillage['province'] ?? 'Banten';
+        $postalCode = $currentVillage['postal_code'] ?? '42447';
+        $phone = $currentVillage['phone'] ?? '(0254) 123-4567';
+        $email = $currentVillage['email'] ?? 'kelurahan@gunungsugih.go.id';
+
+        return [
+            'office_location' => $officialName . "\n" . $address . "\n" . $city . ', ' . $province . ' ' . $postalCode,
+            'service_hours' => "Senin - Jumat\n08.00 - 15.00 WIB\nTutup pada hari libur nasional",
+            'contact' => 'Telepon: ' . $phone . "\nEmail: " . $email,
+        ];
+    };
+
+    $settings = VillageSetting::query()
+        ->whereIn('key', array_map(fn ($key) => 'service_info.' . $key, array_keys($defaults())))
+        ->pluck('value', 'key');
+
+    $serviceInfo = [];
+
+    foreach ($defaults() as $key => $defaultValue) {
+        $serviceInfo[$key] = $settings->get('service_info.' . $key, $defaultValue);
+    }
+
+    return $serviceInfo;
 };
 /*
 |--------------------------------------------------------------------------
@@ -81,11 +112,35 @@ Route::get('/kata-sambutan', [DashboardController::class, 'kataSambutan'])->name
 Route::get('/profil-kelurahan', function () {
     $profilKelurahan = ProfilKelurahan::first();
     $monografis = Monografi::latest()->get();
-    return view('profil', compact('profilKelurahan', 'monografis'));
-});
+    $statKeys = ['jumlah_penduduk', 'jumlah_kepala_keluarga'];
+    $profileDataYear = DataKelurahanStatistik::query()
+        ->whereIn('dataset_key', $statKeys)
+        ->whereNotNull('year')
+        ->max('year') ?? (int) date('Y');
+    $profileStatValues = DataKelurahanStatistik::query()
+        ->whereIn('dataset_key', $statKeys)
+        ->where('year', $profileDataYear)
+        ->get()
+        ->keyBy('dataset_key');
+    $areaByVillage = [
+        'gunung-sugih' => "17,12 km\u{00B2}",
+        'karangasem' => "7,54 km\u{00B2}",
+        'bulakan' => "3,95 km\u{00B2}",
+    ];
+    $profileVillageSlug = app()->bound('currentVillageSlug') ? app('currentVillageSlug') : config('villages.default');
+    $wilayahStats = [
+        'jumlah_penduduk' => optional($profileStatValues->get('jumlah_penduduk'))->value,
+        'jumlah_kepala_keluarga' => optional($profileStatValues->get('jumlah_kepala_keluarga'))->value,
+        'luas_wilayah' => $areaByVillage[$profileVillageSlug] ?? '-',
+        'tahun' => $profileDataYear,
+    ];
 
-Route::get('/layanan', function () {
-    return view('layanan');
+    return view('profil', compact('profilKelurahan', 'monografis', 'wilayahStats'));
+});
+Route::get('/layanan', function () use ($serviceInfoForCurrentVillage) {
+    $serviceInfo = $serviceInfoForCurrentVillage();
+
+    return view('layanan', compact('serviceInfo'));
 });
 
 Route::get('/layanan-kependudukan', function () {
@@ -94,19 +149,41 @@ Route::get('/layanan-kependudukan', function () {
     return view('layanan-kependudukan', compact('layananKependudukan'));
 });
 
-Route::get('/layanan-data', function () {
+Route::get('/layanan-data', function () use ($serviceInfoForCurrentVillage) {
     $layananData = Layanan::where('kategori', 'data')
         ->orderBy('nama_layanan', 'asc')->get();
-    return view('layanan-data', compact('layananData'));
-});
+    $serviceInfo = $serviceInfoForCurrentVillage();
 
-Route::get('/data', function () {
+    return view('layanan-data', compact('layananData', 'serviceInfo'));
+});
+Route::get('/data', function (Request $request) {
     $subjects = config('data_kelurahan.subjects', []);
+    $availableYears = DataKelurahanStatistik::query()
+        ->whereNotNull('year')
+        ->distinct()
+        ->orderByDesc('year')
+        ->pluck('year')
+        ->map(fn ($year) => (int) $year)
+        ->all();
+
+    $currentYear = (int) date('Y');
+
+    if (!in_array($currentYear, $availableYears, true)) {
+        array_unshift($availableYears, $currentYear);
+    }
+
+    $selectedYear = is_numeric($request->query('year')) ? (int) $request->query('year') : ($availableYears[0] ?? $currentYear);
+
+    if ($selectedYear < 2000 || $selectedYear > 2100) {
+        $selectedYear = $availableYears[0] ?? $currentYear;
+    }
+
     $values = DataKelurahanStatistik::query()
+        ->where('year', $selectedYear)
         ->get()
         ->keyBy('dataset_key');
 
-    return view('data', compact('subjects', 'values'));
+    return view('data', compact('subjects', 'values', 'availableYears', 'selectedYear'));
 });
 
 Route::get('/cek-login', function () {
@@ -360,6 +437,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('admin', AdminController::class)->except(['show']);
 
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
+    Route::post('/layanan/settings', [LayananController::class, 'updateSettings'])->name('layanan.settings.update');
     Route::post('/layanan', [LayananController::class, 'store'])->name('layanan.store');
     Route::put('/layanan/{id}', [LayananController::class, 'update'])->name('layanan.update');
     Route::delete('/layanan/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');

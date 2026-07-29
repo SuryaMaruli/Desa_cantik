@@ -19,6 +19,34 @@
         </div>
     </div>
 
+    <div class="card service-info-card">
+        <div class="service-info-head">
+            <div>
+                <h3 class="section-title">Informasi Pelayanan Publik</h3>
+                <p>Informasi ini tampil di halaman Layanan dan Layanan Permintaan Data.</p>
+            </div>
+        </div>
+        <form action="{{ route('admin.layanan.settings.update') }}" method="POST" class="service-info-form">
+            @csrf
+            <div class="setting-grid">
+                <div class="setting-field">
+                    <label for="office_location">Lokasi Kantor</label>
+                    <textarea id="office_location" name="service_info[office_location]" rows="4" class="form-control" placeholder="Nama kantor, alamat, kota">{{ old('service_info.office_location', $serviceInfo['office_location'] ?? '') }}</textarea>
+                </div>
+                <div class="setting-field">
+                    <label for="service_hours">Jam Pelayanan</label>
+                    <textarea id="service_hours" name="service_info[service_hours]" rows="4" class="form-control" placeholder="Senin - Jumat&#10;08.00 - 15.00 WIB">{{ old('service_info.service_hours', $serviceInfo['service_hours'] ?? '') }}</textarea>
+                </div>
+                <div class="setting-field">
+                    <label for="service_contact">Kontak</label>
+                    <textarea id="service_contact" name="service_info[contact]" rows="4" class="form-control" placeholder="Telepon, WhatsApp, Email">{{ old('service_info.contact', $serviceInfo['contact'] ?? '') }}</textarea>
+                </div>
+            </div>
+            <div class="service-info-actions">
+                <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan Informasi</button>
+            </div>
+        </form>
+    </div>
     {{-- KATEGORI: KEPENDUDUKAN --}}
     <div class="card">
         <h3 class="section-title">Layanan Kependudukan</h3>
@@ -207,6 +235,15 @@
     .service-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
     .service-name { font-weight: 600; font-size: 1rem; }
     .requirements-list { padding-left: 20px; margin: 0; color: #718096; font-size: 0.9rem; }
+    .service-info-card { border-color: #fed7aa; }
+    .service-info-head { margin-bottom: 16px; }
+    .service-info-head .section-title { margin-bottom: 4px; }
+    .service-info-head p { color: #64748b; font-size: 14px; margin: 0; }
+    .setting-grid { display: grid; gap: 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .setting-field label { color: #334155; display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+    .setting-field textarea { min-height: 118px; resize: vertical; }
+    .service-info-actions { display: flex; justify-content: flex-end; margin-top: 16px; }
+    @media (max-width: 900px) { .setting-grid { grid-template-columns: 1fr; } }
     
     /* MODAL STYLES */
     .modal-overlay { 
